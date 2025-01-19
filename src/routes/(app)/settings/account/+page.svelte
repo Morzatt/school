@@ -5,7 +5,7 @@
     import { enhance } from '$app/forms';
 
     let { data }: { data: PageData } = $props();
-    let { usuario } = data
+    let { usuario } = $derived(data)
 </script>
 
 <div class="size-full flex items-center justify-between gap-2">
@@ -49,14 +49,14 @@
                     <div class="label">
                         <span class="label-text">Nombre</span>
                     </div>
-                    <input name="nombre" type="text" placeholder="{usuario.nombre}" class="input input-bordered w-full" />
+                    <input value="{usuario.nombre}" name="nombre" type="text" placeholder="{usuario.nombre}" class="input input-bordered w-full" />
                 </label>       
 
                 <label class="form-control w-full">
                     <div class="label">
                         <span class="label-text">Apellido</span>
                     </div>
-                    <input name="apellido" type="text" placeholder="{usuario.apellido}" class="input input-bordered w-full" />
+                    <input value="{usuario.apellido}" name="apellido" type="text" placeholder="{usuario.apellido}" class="input input-bordered w-full" />
                 </label>       
             </div>
 
@@ -69,25 +69,26 @@
             <h4>Configurar Preguntas de Seguridad</h4>
             <div class="flex items-center justify-between w-full gap-4 ">
                 <input type="hidden" name="usuario" value="{usuario.usuario}">
+
                 <div class="w-2/4">
                     <label class="form-control w-full ">
                         <div class="label">
                             <span class="label-text">Pregunta de Seguridad 1</span>
                         </div>
-                        <select class="select select-bordered">
-                            <option disabled selected>Pick one</option>
-                            <option>Star Wars</option>
-                            <option>Harry Potter</option>
-                            <option>Lord of the Rings</option>
-                            <option>Planet of the Apes</option>
-                            <option>Star Trek</option>
+                        <select class="select select-bordered" name="preg_1">
+                            <option disabled selected>Escoger Pregunta</option>
+                            <option>Nombre de su Primera Mascota</option>
+                            <option>Ciudad en que nació</option>
+                            <option>Nombre de su Madre</option>
+                            <option>Apellido de su mejor amigo de la Infancia</option>
+                            <option>Titulo de su Pelicula Favorita</option>
                         </select>
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Respuesta</span>
                         </div>
-                        <input name="apellido" type="text" placeholder="{usuario.apellido}" class="input input-bordered w-full " />
+                        <input name="res_1" type="text" class="input input-bordered w-full " />
                     </label>     
                 </div>
 
@@ -96,20 +97,20 @@
                         <div class="label">
                             <span class="label-text">Pregunta de Seguridad 1</span>
                         </div>
-                        <select class="select select-bordered">
-                            <option disabled selected>Pick one</option>
-                            <option>Star Wars</option>
-                            <option>Harry Potter</option>
-                            <option>Lord of the Rings</option>
-                            <option>Planet of the Apes</option>
-                            <option>Star Trek</option>
+                        <select class="select select-bordered" name="preg_2">
+                            <option disabled selected>Escoger Pregunta</option>
+                            <option>Nombre de su Escuela Primaria</option>
+                            <option>En que Hospital Nacio</option>
+                            <option>Deporte Favorito</option>
+                            <option>Cantante o Banda Favorita</option>
+                            <option>Restaurante Favorito</option>
                         </select>
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Respuesta</span>
                         </div>
-                        <input name="apellido" type="text" placeholder="{usuario.apellido}" class="input input-bordered w-full " />
+                        <input name="res_2" type="text" class="input input-bordered w-full " />
                     </label>     
                 </div>
             </div>
@@ -123,7 +124,7 @@
 
 <style lang="postcss">
     input {
-        @apply focus:outline-0;
+        @apply focus:outline-0 rounded-none input-md;
     }
 
     h4 {

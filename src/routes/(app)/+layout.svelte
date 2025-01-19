@@ -21,7 +21,7 @@
     import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
 
     let { data, children }: { data: LayoutData, children: Snippet } = $props();
-    let { usuario } = data;
+    let { usuario } = $derived(data);
 </script>
 
 {#snippet US()}

@@ -1,9 +1,10 @@
 import { db } from "../";
-import type { InsertPregSeg, PregSeg } from "../types";
+import type { InsertPregSeg, PregSeg, UpdatePregSeg } from "../types";
 
 export interface PregSegRepositoryInterface {
     insert(usuario: PregSeg): Promise<void>
     get(usuario: string): Promise<PregSeg | undefined>
+    update(pregseg: UpdatePregSeg, usuario: string): Promise<void>
 }
 
 export let pregSegRepository: PregSegRepositoryInterface = {
@@ -25,6 +26,18 @@ export let pregSegRepository: PregSegRepositoryInterface = {
                 .where("preguntas.usuario", "=", usuario)
                 .executeTakeFirst()
             return result
+        } catch (error) {
+            throw error
+        }
+    },
+
+    update: async (pregseg, usuario) => {
+        try {
+            await db
+                .updateTable("preguntas")
+                .set(pregseg)
+                .where("usuario", "=", usuario)
+                .execute()
         } catch (error) {
             throw error
         }
