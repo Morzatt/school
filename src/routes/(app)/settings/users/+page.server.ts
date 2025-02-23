@@ -85,4 +85,14 @@ export const actions = {
         await async(usuarioRepository.update({ role: newRole.toLowerCase() }, usuario), log)
         return response.success("Rol cambiado con éxito")
     },
+
+    delete: async ({request, locals}) => {
+        let { log, response } = locals
+        let data = await request.formData() 
+        let usuario = data.get("usuario") as string
+
+        await async(usuarioRepository.delete(usuario) ,log)
+        log.info({ msg: "Usuario Eliminado", usuario: usuario })
+        return response.success("Usuario Eliminado correctamente")
+    }
 } satisfies Actions

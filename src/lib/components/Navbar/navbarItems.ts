@@ -33,11 +33,6 @@ export const routes: RouteGroup[] = [
                 name: "Constancias de Estudio"
             },
             {
-                icon: inscripcion_icon,
-                href: "",
-                name: "Constancias de Inscripción"
-            },
-            {
                 icon: retiros_icon,
                 href: "",
                 name: "Retiros"
@@ -48,6 +43,11 @@ export const routes: RouteGroup[] = [
         name: "Alumnos",
         routes: [
             {
+                icon: inscripcion_icon,
+                href: "alumnos",
+                name: "Administrar Alumnos"
+            },
+            {
                 icon: on,
                 href: "",
                 name: "Aulas"
@@ -57,11 +57,7 @@ export const routes: RouteGroup[] = [
                 href: "",
                 name: "Graduandos"
             },
-            {
-                icon: th,
-                href: "",
-                name: "Notas"
-            },
+           
         ]
     },
 ]

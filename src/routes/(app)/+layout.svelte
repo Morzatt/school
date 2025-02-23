@@ -31,11 +31,10 @@
             <span class="*:flex *:items-center *:justify-end *:gap-2">
                 <p> {usuario.nombre} {usuario.apellido} </p>
                 <b>
-                    <img src="{usuario.role === "Administrador" ? admin_icon : user_icon}" alt="" class="size-fit">
+                    <img src="{usuario.role.includes("admin") ? admin_icon : user_icon}" alt="" class="size-fit">
                     { capitalizeFirstLetter(usuario.role)}
                 </b>
             </span>
-
         </div>
 
         <div class="dropdown dropdown-end text-sm">
@@ -54,8 +53,9 @@
         </div>
     </div>
 {/snippet}
+
 {#snippet themeController()}
-   <label class="swap swap-rotate">
+    <label class="swap swap-rotate">
         <!-- this hidden checkbox controls the state -->
         <input type="checkbox" class="theme-controller" value="dark" />
 
@@ -79,13 +79,20 @@
     </label> 
 {/snippet}
 
-<main class="h-screen w-full" transition:slide={{ duration: 200, easing: sineInOut, axis: "x" }}>
-    <Navbar data={ usuario }/>
-    <div class="size-full overflow-hidden">
+<main class="h-screen w-full 
+            min-h-screen 
+            flex flex-col lg:flex-row items-center justify-center
+            overflow-y-hidden bg-base-200/60"
+         transition:slide={{ duration: 200, easing: sineInOut, axis: "x" }}>
 
-        <div class="w-full min-h-10 flex justify-end
-        sticky top-0 z-40 bg-base-200/60 border-b border-base-content/20 p-1 shadow-sm 
-        px-8 items-center"> 
+    <Navbar data={ usuario }/>
+
+    <div class="size-full overflow-hidden">
+        <div class="w-full min-h-10 
+                hidden lg:flex justify-end items-center
+                sticky top-0 z-40 
+                bg-base-200/60 border-b border-base-content/20 shadow-sm 
+                px-8 p-1"> 
             {@render themeController()}
             {@render US()}
         </div> 
@@ -98,8 +105,6 @@
 
 <style lang="postcss">
 	main {
-		@apply min-h-screen w-full flex items-center justify-center overflow-y-hidden bg-base-200/60;
-
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FFFFFF", endColorstr="#EEEEFA", GradientType=1 );
 	}
     

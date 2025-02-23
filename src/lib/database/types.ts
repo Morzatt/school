@@ -10,8 +10,21 @@ export interface Database {
     usuarios: UsuariosTable,
     preguntas: PreguntasSeguridadTable,
     sessions: SessionsTable,
+    alumnos: AlumnosTable
 }
 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
 // Usuarios
 export type UsuariosTable = {
     nombre: string
@@ -30,6 +43,18 @@ export type Usuario = Selectable<UsuariosTable>
 export type NewUsuario = Insertable<UsuariosTable>
 export type UpdateUsuario = Updateable<UsuariosTable>
 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
 // Preguntas de Seguridad
 export type PreguntasSeguridadTable = {
     usuario: ColumnType<string, string, never>,
@@ -42,6 +67,18 @@ export type PregSeg = Selectable<PreguntasSeguridadTable>
 export type InsertPregSeg = Insertable<PreguntasSeguridadTable>
 export type UpdatePregSeg = Updateable<PreguntasSeguridadTable>
 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
 // Sessions 
 export type SessionsTable = {
     usuario: ColumnType<string, string, never>,
@@ -54,3 +91,34 @@ export type SessionsTable = {
 export type Session = Selectable<SessionsTable>
 export type SessionInsertable = Insertable<SessionsTable>
 export type SessionUpdateable = Updateable<SessionsTable>
+
+
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// Alumnos 
+// Cuando carajito saca cedula se cambia la ceudla escolar por la propia del alumno
+export type AlumnosTable = {
+    cedula_escolar: string,
+    cedula_alumno: string,
+    primer_nombre: string,
+    segundo_nombre: string,
+    primer_apellido: string,
+    segundo_apellido:string,
+    sexo: "Masculino" | "Femenino",
+    fecha_nacimiento: ColumnType<Date, Date, never>
+    created_at: ColumnType<Date, never>,
+}
+
+export type Alumno = Selectable<AlumnosTable>
+export type AlumnoInsertable = Insertable<AlumnosTable>
+export type AlumnoUpdateable = Updateable<AlumnosTable>

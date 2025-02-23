@@ -80,3 +80,5 @@ export let usuarioRepository: UsuarioRepositoryInterface = {
         }
     }
 }
+
+export const SQLiteUsuariosRepository = {} as UsuarioRepositoryInterface

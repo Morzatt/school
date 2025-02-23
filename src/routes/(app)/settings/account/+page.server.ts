@@ -41,5 +41,15 @@ export const actions = {
         } satisfies UpdatePregSeg | InsertPregSeg
 
         await async(pregSegRepository.update({ ...form }, usuario), log)
-    }
+    },
+
+    delete: async ({request, locals}) => {
+        let { log, response } = locals
+        let data = await request.formData() 
+        let usuario = data.get("usuario") as string
+
+        await async(usuarioRepository.delete(usuario) ,log)
+        log.info({ msg: "Usuario Eliminado", usuario: usuario })
+        return response.success("Usuario Eliminado correctamente")
+    } 
 } satisfies Actions
