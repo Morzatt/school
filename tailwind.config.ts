@@ -12,7 +12,6 @@ export default {
     daisyui,
   ],
   daisyui: {
-    themes: ["light", "dark", "nord"]
+    themes: ["dark", "nord"]
   },
-  darkMode: ["selector", '[data-theme="dark"]']
 } satisfies Config;

@@ -100,7 +100,7 @@
                     {#if usuario.usuario !== data.usuario.usuario} <!-- if user is not the same -->
                         {#if usuario.role !== "superadmin"} <!-- if user is not super admin-->
                             {#if usuarioRange > usuario.range}
-                                <div class="collapse collapse-plus bg-base-200 border border-base-content/20 w-full overflow-x-auto">
+                                <div class="collapse collapse-plus bg-base-100 border border-base-content/20 w-full overflow-x-auto">
                                     <input type="radio" name="users-accordion"/>
 
                                     <div class="collapse-title grid grid-cols-4 gap-6 w-full">
@@ -127,7 +127,7 @@
                                                     <label class="cursor-pointer label">
                                                         <div class="mr-3">
                                                             <p class="label-text">Leer</p>
-                                                            <img src="{read_icon}" alt="">
+                                                            <img src="{read_icon}" alt="" class="icon">
                                                         </div>
                                                         <form action="?/read" method="POST" use:enhance id="{usuario.usuario}_read_form">
                                                             <input type="hidden" value={usuario.usuario} name="usuario">
@@ -145,7 +145,7 @@
                                                     <label class="cursor-pointer label">
                                                         <div class="mr-3">
                                                             <p class="label-text">Editar</p>
-                                                            <img src="{write_icon}" alt="">
+                                                            <img src="{write_icon}" alt="" class="icon">
                                                         </div>
 
                                                         <form action="?/write" method="POST" use:enhance id="{usuario.usuario}_write_form">
@@ -204,7 +204,7 @@
                                                 deleteConfirmation = true;
                                                 userToDelete = usuario.usuario
                                               }}">
-                                                <img src="{eliminar_icon}" alt="" class="group-hover:invert filter size-6">
+                                                <img src="{eliminar_icon}" alt="" class="group-hover:invert filter size-6 icon">
                                             </button>
                                         </div>
                                     </div>

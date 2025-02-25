@@ -31,7 +31,7 @@
             <span class="*:flex *:items-center *:justify-end *:gap-2">
                 <p> {usuario.nombre} {usuario.apellido} </p>
                 <b>
-                    <img src="{usuario.role.includes("admin") ? admin_icon : user_icon}" alt="" class="size-fit">
+                    <img src="{usuario.role.includes("admin") ? admin_icon : user_icon}" alt="" class="size-fit icon">
                     { capitalizeFirstLetter(usuario.role)}
                 </b>
             </span>
@@ -40,13 +40,13 @@
         <div class="dropdown dropdown-end text-sm">
             <div tabindex="0" role="button" class="transition-all duration-200 ease-in-out 
                 p-1 rounded-lg hover:bg-gray-200 active:bg-gray-900 group">
-                <img src="{menu_icon}" alt="" class="filter group-active:invert">
+                <img src="{menu_icon}" alt="" class="filter group-active:invert icon">
             </div>
 
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <ul tabindex="0"
             class="menu dropdown-content bg-base-100 z-[1] mt-4 w-52 p-2 shadow">
-                <li><a href="{basePath}/settings/account"><img src="{administrar_usuario_icon}" alt="">Mi Usuario</a></li>
+                <li><a href="{basePath}/settings/account"><img src="{administrar_usuario_icon}" alt="" class="icon">Mi Usuario</a></li>
 
                 <li class="border-t border-base-300 mt-1.5 text-red-500"><a href="{basePath}/logout" class="m-1.5"><img src="{logout_icon}" alt="" class="red-filter">Cerrar Sesión</a></li>
             </ul>
@@ -82,7 +82,7 @@
 <main class="h-screen w-full 
             min-h-screen 
             flex flex-col lg:flex-row items-center justify-center
-            overflow-y-hidden bg-base-200/60"
+            overflow-y-hidden bg-base-300"
          transition:slide={{ duration: 200, easing: sineInOut, axis: "x" }}>
 
     <Navbar data={ usuario }/>
@@ -91,13 +91,13 @@
         <div class="w-full min-h-10 
                 hidden lg:flex justify-end items-center
                 sticky top-0 z-40 
-                bg-base-200/60 border-b border-base-content/20 shadow-sm 
+                bg-base-300 border-b border-base-content/30 shadow-sm 
                 px-8 p-1"> 
             {@render themeController()}
             {@render US()}
         </div> 
 
-        <div class="p-4 w-full h-full max-h-[calc(100%-3.5rem)] overflow-y-scroll overflow-x-hidden">
+        <div class="p-4 w-full h-full relative max-h-[calc(100%-3.5rem)] overflow-y-auto overflow-x-hidden">
             {@render children()}
         </div>
     </div>

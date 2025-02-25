@@ -166,7 +166,7 @@
 
 <nav class="h-16 w-full lg:h-screen lg:w-[18rem]
             flex items-center justify-center
-            shadow-sm border-b lg:border-r border-base-content/20 bg-transparent
+            shadow-sm border-b lg:border-r border-base-content/30 bg-transparent
             p-2">
 
     <div class="size-full lg:h-screen flex max-lg:items-center max-lg:justify-end">
@@ -184,7 +184,7 @@
         @apply mt-4 my-1;
     }
     .items li:hover {
-        @apply bg-base-300;
+        @apply bg-base-content/10;
     }
     .items li:active {
         @apply bg-base-200;

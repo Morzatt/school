@@ -72,33 +72,3 @@ function setAge(date: Date) {
     return date
 }
 let underAgeDate = setAge(new Date())
-
-
-// NUEVO DONANTE
-export const newDonanteSchema= z.object({
-    primer_nombre: z.string().min(1, "Campo vacío.").min(2, "Mínimo de 2 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-    segundo_nombre: z.string().min(1, "Campo vacío.").min(2, "Mínimo de 2 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-    primer_apellido: z.string().min(1, "Campo vacío.").min(2, "Mínimo de 2 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-    segundo_apellido: z.string().min(1, "Campo vacío.").min(2, "Mínimo de 2 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-    edad: z.number()
-        .int("El número ingresado no debe contener puntos ni espacios, ni empezar por cero")
-        .min(18, "La edad mínima para donar es de 18 años")
-        .nonnegative("La cedula ingresada no puede ser un valor negativo")
-        .max(60, "La edad maxima para donar es de 60 años").optional(),
-
-    sexo: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(20, "Máximo de 20 caracteres").trim().optional(),
-    lugar_nacimiento: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-
-    fecha_nacimiento: z.date()
-        .max(underAgeDate, "Debe de ser mayor de edad para poder realizar una donación").optional(),
-
-    cedula: z.number().int("El número ingresado no debe contener puntos ni espacios, ni empezar por cero").min(1, "").nonnegative("El numero ingresado no puede estar vacio").optional(),
-    profesion: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-    ocupacion: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(100, "Máximo de 100 caracteres").trim().optional(),
-
-    telefono_personal: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(15, "Máximo de 15 caracteres").trim().optional(),
-    telefono_habitacion: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(15, "Máximo de 15 caracteres").trim().optional(),
-
-    direccion_habitacion: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(150, "Máximo de 150 caracteres").trim().optional(), 
-    direccion_trabajo: z.string().min(1, "Campo vacío.").min(4, "Mínimo de 4 caracteres").max(150, "Máximo de 150 caracteres").trim().optional()
-})

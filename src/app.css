@@ -9,36 +9,33 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Poppins";
-    src: url("./lib/fonts/poppins/Poppins-Regular.ttf");
-}
-
-@font-face {
     font-family: "Open Sans", serif;
     src: url("./lib/fonts/open_sans/OpenSans_SemiCondensed-Regular.ttf");
 }
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 body, main {
     overflow-x: hidden;
     scroll-behavior: smooth; 
     font-family: "Open Sans", serif;
-    /* font-family: "Poppins" */
 }
 
-[data-theme="dark"] .btn {
-  @apply bg-red-500;
-}
+
 
 :root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
     overflow-y: hidden;
     scrollbar-gutter: unset;
 }
+
+
+
 @layer components {
     .bb {
         @apply border border-black;
     }
-
-    .icon {
-        @apply filter dark:invert;
+    
+    :root:has(input.theme-controller[value=dark]:checked) img.icon{
+        @apply filter invert;
     }
 }
