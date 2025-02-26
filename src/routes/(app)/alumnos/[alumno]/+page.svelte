@@ -12,9 +12,10 @@
 
     let { data }: { data: PageData } = $props();
 
-    let { alumno, representantes } = $derived(data)
+    let { alumno, representantes, telefonos } = $derived(data)
 
     type PersonalData = {
+        name: string,
         icon: string,
         title: string,
         value: string,
@@ -25,24 +26,29 @@
     import male_icon from "$lib/images/icons/male_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import birhtday_icon from "$lib/images/icons/cake_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import RepresentanteModal from './RepresentanteModal.svelte';
 
     let personalData: PersonalData[] = $derived([
         {
+            name: "cedula_escolar",
             icon: cedula_escolar_icon,
             title: "Cédula Escolar",
             value: `${formatStringWithDots(alumno.cedula_escolar)}`
         },
         {
+            name: "sexo",
             icon: alumno.sexo === "Masculino" ? male_icon : female_icon,
             title: "Género",
             value: `${alumno.sexo}`
         },
         {
+            name: "fecha_nacimiento",
             icon: birhtday_icon,
             title: "Fecha de Nacimiento",
             value: new Date(alumno.fecha_nacimiento).toLocaleDateString()
         },
         {
+            name: "edad",
             icon: edad_icon,
             title: "Edad",
             value: `${alumno.edad}`
@@ -145,6 +151,7 @@
 
                         {#if edicion}
                             <input type="text" 
+                                name="{field.name}"
                                 placeholder="{field.title}..."
                                 class="input input-bordered input-sm max-w-xs"
                                 value="{field.value}">
@@ -171,8 +178,9 @@
                 </button>
             </div>
 
-            <div class="mt-3 *:w-full *:grid *:text-sm *:grid-cols-[2fr_3fr_3fr_2fr_1fr]">
-                <div class="p-1 border-base-content/40 mb-1 font-bold bg-base-content text-base-100">
+            <div class="mt-3 w-full">
+                <div class="p-1 border-base-content/40 mb-1 font-bold bg-base-content text-base-100
+                            w-full grid text-sm grid-cols-[2fr_3fr_3fr_2fr_1fr]">
                     <p>Cedula</p>
                     <p>Nombre</p>
                     <p>Teléfono</p>
@@ -181,7 +189,7 @@
                 </div>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
-                        <div class="p-1">
+                        <div class="p-1 w-full grid text-sm grid-cols-[2fr_3fr_3fr_2fr_1fr]">
                             <p>{formatStringWithDots(representante.cedula)}</p>
                             <p>{representante.nombre} {representante.apellido}</p>
                             <p>{representante.telefono}</p>
@@ -190,23 +198,8 @@
                                 <img src="{ver_icon}" alt="" class="icon">
                             </button>
                         </div>
-
-                        <dialog id="representante_{representante.cedula}_modal" class="modal modal-bottom sm:modal-middle">
-                            <div class="modal-box relative
-                                        sm:w-10/12 sm:max-w-xl overflow-hidden">
-
-                                <form method="dialog">
-                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                                    id="representante_{representante.cedula}_close">✕</button>
-                                </form>
-
-                                <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar el Alumno?</h3>
-                                <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
-                                <div class="modal-container">
-                                    {representante.cedula}
-                                </div>
-                            </div>
-                        </dialog>
+                    
+                        <RepresentanteModal representante={ representante } lista_telefonos={telefonos}/>
                     {/each}
                 {/if}
             </div>

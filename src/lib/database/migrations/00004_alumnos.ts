@@ -22,8 +22,14 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('apellido', 'text', (col) => col.notNull())
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
     .addColumn('direccion', 'text', (col) => col.notNull())
-    .addColumn('telefono', 'text', (col) => col.notNull())
     .addColumn('correo_electronico', 'text', (col) => col.notNull())
+    .execute()
+
+  await db.schema
+    .createTable('telefonos_representantes')
+    .addColumn('representante', 'text')
+    .addColumn('numero_telefono', 'text')
+    .addForeignKeyConstraint("fk_alumno", ["representante"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 
   await db.schema

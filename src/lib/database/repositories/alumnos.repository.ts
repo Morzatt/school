@@ -1,5 +1,5 @@
 import { db } from ".."
-import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable } from "../types"
+import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable, TelefonosRepresentante } from "../types"
 
 export interface AlumnosRepositoryInterface {
     create: (alumno: AlumnoInsertable) => Promise<void>    ,
@@ -98,8 +98,8 @@ export const representantesRepository = {
     }
 } satisfies RepresentantesRepositoryInterface 
 
-type RepresentantesByAlumnosResult = Representante & RepresentantesAlumnos
-type AlumnosByRepresentantesResult = Alumno & RepresentantesAlumnos
+export type RepresentantesByAlumnosResult = Representante & RepresentantesAlumnos
+export type AlumnosByRepresentantesResult = Alumno & RepresentantesAlumnos
 
 // REPRESENTANTES ALUMNOS
 export interface RepresentantesAlumnosRepositoryInterface {
@@ -123,13 +123,15 @@ export const representantesAlumnosRepository = {
     getRepresentantesByAlumno: async (alumno) => {
          try {
              let result = await db
-                 .selectFrom("representantes")
-                 .selectAll()
-                 .innerJoin("representantes_alumnos", "representantes.cedula", "representantes_alumnos.id_representante")
-                 .where("representantes_alumnos.id_alumno", "=", alumno)
-                 .selectAll()
+                .selectFrom("representantes")
+                .selectAll()
+                .innerJoin("representantes_alumnos", "representantes.cedula", "representantes_alumnos.id_representante")
+                .where("representantes_alumnos.id_alumno", "=", alumno)
+                .selectAll()
                 .execute()
-             return result
+
+            console.log(result)
+            return result
         } catch (error) {
             throw error 
         }       

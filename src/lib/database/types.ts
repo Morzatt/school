@@ -12,6 +12,7 @@ export interface Database {
     sessions: SessionsTable,
     alumnos: AlumnosTable,
     representantes: RepresentantesTable
+    telefonos_representantes: TelefonosRepresentantesTable
     representantes_alumnos: RepresentantesAlumnosTable
 }
 
@@ -151,6 +152,31 @@ export type RepresentantesTable = {
 export type Representante = Selectable<RepresentantesTable>
 export type RepresentanteInsertable = Insertable<RepresentantesTable>
 export type RepresentanteUpdateable = Updateable<RepresentantesTable>
+
+
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// Telefonos Representantes
+export type TelefonosRepresentantesTable = {
+    representante: string,
+    numero_telefono: string,
+}
+
+export type TelefonosRepresentante = Selectable<TelefonosRepresentantesTable>
+export type TelefonosRepresentanteInsertable = Insertable<TelefonosRepresentantesTable>
+export type TelefonosRepresentanteUpdateable = Updateable<TelefonosRepresentantesTable>
+
+
 
 
 // 

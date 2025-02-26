@@ -3,6 +3,7 @@ import async from '$lib/utils/asyncHandler';
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { basePath } from '$lib';
+import { db } from '$lib/database';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -11,7 +12,21 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
     let dataResult = await async(alumnosRepository.getById(cedula) ,log)
 
     let representantes = await async(representantesAlumnosRepository.getRepresentantesByAlumno(cedula), log)
-    return { alumno: dataResult!, representantes: representantes };
+
+    let telefonosQuery = await async(
+        db
+        .selectFrom('representantes')
+        .leftJoin('telefonos_representantes', "representantes.cedula", "telefonos_representantes.representante")
+        .select([
+            'representantes.cedula as representante',
+            (eb) =>
+                eb.fn.agg("array_agg", [eb.ref('telefonos_representantes.numero_telefono')])
+                .as('telefonos')
+        ]).groupBy('representantes.cedula')
+        .execute()
+    , log)
+
+    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery };
 });
 
 function getId(url: string): string {
