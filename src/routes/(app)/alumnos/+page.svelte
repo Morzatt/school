@@ -152,16 +152,16 @@
                         <!-- TABLE -->
                         <div class="overflow-auto">
                             <table class="table mt-2 text-center flex">
-                                <thead class="bg-base-100 [&_span]:font-bold">
+                                <thead class="bg-base-content [&_span]:font-bold">
                                     <tr>
-                                        <th><span class="text-sm font-medium text-base-content/80">#</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Cédula</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Nombre</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Apellido</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Fecha de Nacimiento</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Edad</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Sexo</span></th>
-                                        <th><span class="text-sm font-medium text-base-content/80">Ver</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">#</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Cédula</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Nombre</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Apellido</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Fecha de Nacimiento</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Edad</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Ver</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -3,6 +3,12 @@
     import Alert from "$lib/components/Messages/Alert.svelte";
     import type { ActionData } from "./$types";
     let { cedula_representante, cedula_alumno, form }: { cedula_representante:string, cedula_alumno: string, form: ActionData | null} = $props()
+
+    $effect(() => {
+        if (form?.success) {
+            document.getElementById(`delete_representante_${cedula_representante}_confirmation_close`)?.click()
+        }
+    })
 </script>
 
 <dialog id="delete_representante_{cedula_representante}_confirmation" class="modal modal-bottom sm:modal-middle">

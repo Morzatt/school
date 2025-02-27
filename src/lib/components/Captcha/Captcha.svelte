@@ -35,15 +35,15 @@
 
 <div class="w-full min-h-20 rounded-md border border-base-content/20 flex flex-col">
     <div class="border-b py-3 px-5 border-base-content/20 w-full flex justify-end items-center">
-        <div id="image" class=" w-full text-3xl italic line-through select-none relative">
+        <div id="image" class="w-full text-3xl italic line-through select-none relative">
             {@html data}
         </div>
 
         <div class="border border-base-content/20 
                     rounded-md flex items-center justify-center cursor-pointer">
             <button type="button" class="size-7 flex items-center justify-center p-0.5
-            hover:bg-base-content/10 active:bg-transparent rounded-md transition-all" onclick="{generate}">
-                <img src="{renew_icon}" alt="" class="size-full">
+            hover:bg-base-content/10 active:bg-transparent rounded-md transition-all icon" onclick="{generate}">
+                <img src="{renew_icon}" alt="" class="size-full icon">
             </button>
         </div>
     </div>

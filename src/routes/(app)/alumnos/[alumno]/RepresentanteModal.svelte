@@ -1,26 +1,19 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
     import { formatStringWithDots } from "$lib";
-    import type { FormResponse } from "$lib/classes/responses.classes";
     import Alert from "$lib/components/Messages/Alert.svelte";
     import type { RepresentantesByAlumnosResult } from "$lib/database/repositories/alumnos.repository";
     import edit_icon from "$lib/images/icons/edit_icon.svg"
 
-    let { representante, lista_telefonos, form }: {
-         representante: RepresentantesByAlumnosResult,
-          lista_telefonos: { representante: string, telefonos:string[] | unknown}[] | undefined,
-        form: any | null } = $props()
+    let { representante, form, tel }: {
+        representante: RepresentantesByAlumnosResult,
+        form: any | null,
+        tel: string[] | undefined
+    } = $props()
+
+    let telefonos = $derived(tel)
 
     let infoEdit = $state(false);
-
-    let telefonos: string[] | null = $derived.by(() => {
-        let tel: string[] | null = null;
-        lista_telefonos?.forEach(i => {
-            tel = i.representante === representante.cedula ? i.telefonos as string[] : null
-        })
-
-        return tel
-    })
 
     type RepresentanteData = {
         title: string,

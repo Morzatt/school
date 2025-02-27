@@ -86,39 +86,33 @@ export async function recoveryHandler
         { request, locals }: RequestEvent,
         ur: UsuarioRepositoryInterface = usuarioRepository,
         pgsgr: PregSegRepositoryInterface = pregSegRepository,
-        mock?: { formData: RecoveryForm }
     ) {
     let { response, log } = locals 
 
     let respuestas = { 
         usuario:  "",
-        res_1: "",
-        res_2: "",
         contraseña:"" ,
-    } satisfies RecoveryForm
+        rcontraseña: ""
+    } 
 
-    await getFormData<RecoveryForm>(respuestas, request, mock)
+    await getFormData(respuestas, request, null)
 
-    let validationResult = validateObject(respuestas, recoverySchema);
+    let validationResult = validateObject(respuestas, 
+        recoverySchema
+        .omit({
+            res_1: true,
+            res_2: true
+        })
+        .extend({
+             rcontraseña: z.string().min(1, "Debe proveer una verificacion de contraseña")
+        })
+    );
+
     if (!validationResult.success) return newValidationFailObject(validationResult.error, log);
-
-    const usuarioDB = await async(ur.getByUsername(respuestas.usuario), log)
-    if (!usuarioDB) {return fail(400, response.error("El usuario no se encuentra registrado"))}
-
-    const pregseg = await async(pgsgr.get(respuestas.usuario), log, { args: respuestas.usuario })
-    if (!pregseg) { return fail(400, response.error("El usuario no cuenta con Preguntas de Seguridad asociadas a su cuenta.")) }
-
-    respuestas.res_1.toLowerCase()
-    respuestas.res_2.toLowerCase()
-
-    if (pregseg?.res_1 !== respuestas.res_1) {
-        return fail(400, response.error("La respuesta #1 no coincide."))
-    }
-    if (pregseg?.res_2 !== respuestas.res_2) {
-        return fail(400, response.error("La respuesta #2 no coincide."));
+    if (respuestas.contraseña !== respuestas.rcontraseña) {
+        return response.error("Las contraseñas no coinciden, intente de nuevo.")
     }
 
     await async(ur.changePassword(respuestas.usuario, hashPwd(respuestas.contraseña)), log, { args: respuestas.usuario })
-    log.info("CONTRASEÑA CAMBIADA", { usuario: respuestas.usuario })
     return response.success("Preguntas de Seguridad cambiadas correctamente.")
 }

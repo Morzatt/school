@@ -29,13 +29,14 @@ body, main {
 }
 
 
-
 @layer components {
     .bb {
         @apply border border-black;
     }
     
-    :root:has(input.theme-controller[value=dark]:checked) img.icon{
+    :root:has(input.theme-controller[value=dark]:checked) img.icon, .dark-invert{
         @apply filter invert;
     }
+
+    
 }

@@ -21,6 +21,7 @@
     })
 
     // let manageRepresentanteForm = $derived.by(() => filterForm('asociarRepresentante'))
+    let deleteRepresentanteForm = $derived.by(() => filterForm('deleteRepresentante'))
 
     function filterForm(name: string) {
         return form?.form === name ? form : null
@@ -33,6 +34,7 @@
         icon: string,
         title: string,
         value: string,
+        updateable?: boolean,
     }
 
     import cedula_escolar_icon from "$lib/images/icons/personalizar_icon.svg"
@@ -45,24 +47,28 @@
     let personalData: Data[] = $derived([
         {
             name: "cedula_escolar",
+            updateable: true,
             icon: cedula_escolar_icon,
             title: "Cédula Escolar",
             value: `${formatStringWithDots(alumno.cedula_escolar)}`
         },
         {
             name: "sexo",
+            updateable: false,
             icon: alumno.sexo === "Masculino" ? male_icon : female_icon,
             title: "Género",
             value: `${alumno.sexo}`
         },
         {
             name: "fecha_nacimiento",
+            updateable: false,
             icon: birhtday_icon,
             title: "Fecha de Nacimiento",
             value: new Date(alumno.fecha_nacimiento).toLocaleDateString()
         },
         {
             name: "edad",
+            updateable: false,
             icon: edad_icon,
             title: "Edad",
             value: `${alumno.edad}`
@@ -104,9 +110,18 @@
     function closeModal(id: string) {
         document!.getElementById(id)!.click()
     }
+
+    function filterCellphoneNumber(id: string): string[] | undefined {
+        let n: string[] | undefined;
+        telefonos?.forEach(i => 
+            i.representante === id ? n = i.telefonos as string[] : null
+        )
+        return n
+    }
 </script>
 
-<main class="w-full h-full">
+<main class="w-full h-full relative">
+    <Alert form={form} styles="absolute top-4 left-4 max-w-sm" />
     <div class="w-full h-max max-h-20 flex items-center justify-between">
         <div>
             <h2 class="text-xl font-bold">Datos del Alumno</h2>
@@ -176,16 +191,19 @@
             </div>
         </div>
 
-        <div class="w-3/5 min-h-60 rounded-md p-4 bg-base-100">
+        <form use:enhance action="?/edit" method="POST" class="w-3/5 min-h-60 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Detalles del Alumno</h3>
 
-                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" onclick="{() =>{edicion = !edicion;}}">
+                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                 onclick="{() =>{ setTimeout(() => {edicion = !edicion;},100) }}"
+                 type={edicion ? "submit" : "button"}>
                     <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
                 </button>
             </div>
 
             <div class="mt-2">
+                <input type="hidden" name="alumno" value={alumno.cedula_escolar}>
                 {#each personalData as field}
                     <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                         <div class="flex items-center justify-between gap-2">
@@ -193,7 +211,7 @@
                             <p class="font-semibold text-base-content/80">{field.title}</p> 
                         </div>
 
-                        {#if edicion}
+                        {#if edicion && field.updateable}
                             <input type="text" 
                                 name="{field.name}"
                                 placeholder="{field.title}..."
@@ -205,7 +223,7 @@
                     </div>
                 {/each}
             </div>
-        </div>
+        </form>
 
         <div class="flex-1 min-h-72 rounded-md p-4 bg-base-100">
 
@@ -246,8 +264,8 @@
                             </button>
                         </div>
 
-                        <DeleteRepresentanteModal cedula_alumno={alumno.cedula_escolar} cedula_representante={representante.cedula} form={null}/>
-                        <RepresentanteModal representante={ representante } lista_telefonos={telefonos} form={null}/>
+                        <DeleteRepresentanteModal cedula_alumno={alumno.cedula_escolar} cedula_representante={representante.cedula} form={deleteRepresentanteForm}/>
+                        <RepresentanteModal representante={ representante } form={null} tel={filterCellphoneNumber(representante.cedula)}/>                           
                     {/each}
                 {/if}
             </div>

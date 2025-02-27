@@ -24,7 +24,7 @@
         return response
     }
 
-    type FormContent = "login" | "register" | "recovery"
+    type FormContent = "login" | "register" | "recovery" | "pwd"
     let formContent: FormContent = $state("login")
     function changeContent() {
         formContent === "login" ? formContent = "register" : formContent = "login"
@@ -113,17 +113,21 @@
         }
     }
 
+    let usuarioRecovery: string | null = $state("")
+
     $effect(() => {
         if (form?.success && form?.form === "login") { setTimeout(() => { goto("/") }, 1000) }
+        if (form?.success && form?.form === "verify") {formContent = "pwd"; usuarioRecovery = form?.usuario!}
+        if (form?.success && form?.form === "recovery") {formContent = "login"; usuarioRecovery = null}
     })
     let captchaResult = $state(false);
 </script>
 
 {#snippet pregseg()}
-    <form action="?/recovery" method="POST" use:enhance
+    <form action="?/verify" method="POST" use:enhance
     class="w-full flex flex-col gap-2 items-center mt-2 p-2" transition:slide={{axis: "y", duration: 150, easing: sineInOut}}>
-        <h1 class="text-3xl font-bold">Recuperar Contraseña</h1>
-        <p class="text-xs text-center mb-1">Cambie su contraseña en caso de haberla perdido/olvidado</p>
+        <h1 class="text-3xl font-bold">Verificar Usuario</h1>
+        <p class="text-xs text-center mb-1">Verifique su <b>Usuario</b> y <b>Preguntas de Seguridad</b></p>
 
         <div class="w-full flex items-center justify-around gap-2">
             <label class="form-control w-3/4">
@@ -168,27 +172,65 @@
                 </label>
             </label>
         </div>
+        <button class="btn btn-wide mt-4 bg-[#d6d0a5] text-orange-950" type="submit">Verificar</button>
+   </form> 
+{/snippet}
 
-        <label class="input input-md rounded-none input-bordered flex items-center gap-2 w-full mt-1">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                class="h-4 w-4 opacity-70">
-                <path
-                fill-rule="evenodd"
-                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                clip-rule="evenodd" />
-            </svg>
-            <input type="password" class="w-full grow shrink" placeholder="Nueva Contraseña" id="recoveryPwd" name="contraseña" />
-            
-            <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("recoveryPwd")}}">
-                <img src="{pwdIcon}" alt="">
-            </button>
+{#snippet pwd()}
+    <form action="?/recovery" method="POST" use:enhance
+    class="w-full flex flex-col gap-2 items-center mt-2 p-2 *:w-full" transition:slide={{axis: "y", duration: 150, easing: sineInOut}}>
+        <h1 class="text-3xl font-bold">Recuperar Contraseña</h1>
+        <p class="text-xs text-center mb-1">Introduzca su nueva <b>contraseña</b> y hágala coincidir dos veces para realizar su <b>cambio de contraseña</b></p>
+
+        <label class="form-control mt-4">
+            <div class="label">
+                <span class="label-text">Nueva Contraseña</span>
+            </div>
+            <label class="input input-md rounded-none input-bordered flex items-center gap-2 w-full mt-1">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="h-4 w-4 opacity-70">
+                    <path
+                    fill-rule="evenodd"
+                    d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <input type="password" class="w-full grow shrink" placeholder="Nueva Contraseña" id="recoveryPwd" name="contraseña" />
+                
+                <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("recoveryPwd")}}">
+                    <img src="{pwdIcon}" alt="">
+                </button>
+            </label>
         </label>
 
-        <button class="btn btn-wide mt-4 bg-[#d6d0a5] text-orange-950" type="submit">Confirmar</button>
-   </form> 
+        <label class="form-control">
+            <div class="label">
+                <span class="label-text">Vuelva a Introducir su Nueva Contraseña</span>
+            </div>
+            <label class="input input-md rounded-none input-bordered flex items-center gap-2 w-full mt-1">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="h-4 w-4 opacity-70">
+                    <path
+                    fill-rule="evenodd"
+                    d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <input type="password" class="w-full grow shrink" placeholder="Nueva Contraseña" id="recoveryPwd2" name="rcontraseña" />
+                <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("recoveryPwd2")}}">
+                    <img src="{pwdIcon}" alt="">
+                </button>
+            </label>
+        </label>
+
+        <input type="hidden" name="usuario" value="{usuarioRecovery}">
+
+        <button class="btn btn-wide mt-4 bg-[#d6d0a5] text-orange-950" type="submit">Verificar</button>
+    </form>
 {/snippet}
 
 {#snippet registerForm()}
@@ -256,7 +298,7 @@
             <input type="password" class="w-full grow shrink" placeholder="Contraseña" id="registerPwd" name="contraseña" />
             
             <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("registerPwd")}}">
-                <img src="{pwdIcon}" alt="">
+                <img src="{pwdIcon}" alt="" class="icon">
             </button>
         </label>
 
@@ -297,7 +339,7 @@
                 <input type="password" class="grow" placeholder="Contraseña" id="loginPwd" name="contraseña"/>
 
                 <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("loginPwd")}}">
-                    <img src="{pwdIcon}" alt="">
+                    <img src="{pwdIcon}" alt="" class="icon">
                 </button>
             </label>
 
@@ -332,11 +374,13 @@
                          onclick="{() => {changeContent()}}">{formContent === "login" ? "Registrarse" : "Acceder"}</button>
                     </div>
 
-                    <div class="p-1 min-h-[30rem] mt-2 w-full overflow-hidden ">
+                    <div class="p-1 min-h-[30rem] mt-2 w-full overflow-hidden">
                         {#if formContent === "register"}
                             {@render registerForm()} 
                         {:else if formContent === "recovery"}
                             {@render pregseg()} 
+                        {:else if formContent === "pwd"}
+                            {@render pwd()} 
                         {:else}
                             {@render loginForm()} 
                         {/if}
@@ -349,7 +393,7 @@
 
 <style lang="postcss">
 	main {
-		@apply max-h-screen w-full flex items-center justify-center overflow-y-hidden bg-[whitesmoke];
+		@apply max-h-screen w-full flex items-center justify-center overflow-y-hidden bg-primary/10;
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FFFFFF", endColorstr="#EEEEFA", GradientType=1 );
 	}
     label input {

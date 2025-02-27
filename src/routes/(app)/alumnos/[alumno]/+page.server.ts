@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 import { basePath } from '$lib';
 import { db } from '$lib/database';
 import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
-import type { RepresentantesAlumnosInsertable, RepresentanteUpdateable } from '$lib/database/types';
+import type { AlumnoUpdateable, RepresentantesAlumnosInsertable, RepresentanteUpdateable } from '$lib/database/types';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -18,6 +18,8 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
     let telefonosQuery = await async(
         db
             .selectFrom('representantes')
+            .innerJoin("representantes_alumnos", "representantes.cedula", "representantes_alumnos.id_representante")
+            .where("representantes_alumnos.id_alumno", "=", cedula)
             .leftJoin('telefonos_representantes', "representantes.cedula", "telefonos_representantes.representante")
             .select([
                 'representantes.cedula as representante',
@@ -43,6 +45,24 @@ export const actions = {
         await async(alumnosRepository.delete(cedula_escolar), log)
 
         redirect(307, `${basePath}/alumnos`)
+    },
+
+    edit: async ({locals, request}) => {
+        let { response, log } = locals
+        let data = await request.formData()
+
+        let id = data.get("alumno") as string
+        let alumno = {
+            cedula_escolar: data.get("cedula_escolar") as string
+        } satisfies AlumnoUpdateable
+
+        let alumnoFromDB = await async(alumnosRepository.getById(alumno.cedula_escolar), log)
+        if (alumnoFromDB) {
+            return response.error('La identificación del alumno ya existe dentro de la base de datos.')
+        }
+
+        await async(alumnosRepository.update({ cedula_escolar: alumno.cedula_escolar }, id), log)
+        redirect(307, `${basePath}/alumnos/${alumno.cedula_escolar}`)
     },
 
     asociarRepresentante: async ({request, locals}) => {
@@ -80,6 +100,7 @@ export const actions = {
             alumno: data.get("cedula_alumno") as string,
         }
         await async(representantesAlumnosRepository.delete(cedulas.representante, cedulas.alumno), log)
+        return response.success('Representante Eliminado Correctamente.')
     },
 
     editRepresentante: async ({ request, locals }) => {
