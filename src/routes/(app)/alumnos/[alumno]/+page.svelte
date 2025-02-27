@@ -1,6 +1,6 @@
 <script lang="ts">
     import { basePath, formatStringWithDots } from '$lib';
-    import type { PageData } from './$types';
+    import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import camera_icon from "$lib/images/icons/camara_icon.svg"   
@@ -10,11 +10,25 @@
     import { enhance } from '$app/forms';
 
 
-    let { data }: { data: PageData } = $props();
+    let { data, form }: { data: PageData, form: ActionData } = $props();
+
+    let createRepresentanteForm = $derived.by(() => {
+        let f = filterForm('asociarRepresentante');
+        if (f?.success) {
+            closeModal('create_representante_close')
+        }
+        return f
+    })
+
+    // let manageRepresentanteForm = $derived.by(() => filterForm('asociarRepresentante'))
+
+    function filterForm(name: string) {
+        return form?.form === name ? form : null
+    }
 
     let { alumno, representantes, telefonos } = $derived(data)
 
-    type PersonalData = {
+    type Data = {
         name: string,
         icon: string,
         title: string,
@@ -28,7 +42,7 @@
     import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import RepresentanteModal from './RepresentanteModal.svelte';
 
-    let personalData: PersonalData[] = $derived([
+    let personalData: Data[] = $derived([
         {
             name: "cedula_escolar",
             icon: cedula_escolar_icon,
@@ -54,11 +68,41 @@
             value: `${alumno.edad}`
         }
     ])
-
     let edicion = $state(false)
 
+    import curso_actual from "$lib/images/icons/curso_actual.svg"
+    import profesor from "$lib/images/icons/profesor.svg"
+    import seccion from "$lib/images/icons/seccion.svg"
+    import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
+    import Alert from '$lib/components/Messages/Alert.svelte';
+
+    let escolarData: Data[] = $derived([
+        {
+            name: "",
+            icon: curso_actual,
+            title: "Curso Actual",
+            value: "1er Grado"
+        },
+        {
+            name: "",
+            icon: seccion,
+            title: "Sección",
+            value: '"A"'
+        },
+        {
+            name: "",
+            icon: profesor,
+            title: "Profesor@",
+            value: 'José Jimenez'
+        },
+    ]);
+
     function openModal(id: string) {
-        document.getElementById(id).showModal()
+        document!.getElementById(id)!.showModal()
+    }
+
+    function closeModal(id: string) {
+        document!.getElementById(id)!.click()
     }
 </script>
 
@@ -173,33 +217,37 @@
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Representantes</h3>
 
-                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group">
+                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                onclick="{() => openModal(`create_representante_modal`)}">
                     <img src="{add_icon}" alt="" class="group-active:invert filter icon">
                 </button>
             </div>
 
             <div class="mt-3 w-full">
                 <div class="p-1 border-base-content/40 mb-1 font-bold bg-base-content text-base-100
-                            w-full grid text-sm grid-cols-[2fr_3fr_3fr_2fr_1fr]">
+                            w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
                     <p>Cedula</p>
                     <p>Nombre</p>
-                    <p>Teléfono</p>
                     <p>Relación</p>
                     <p>Ver</p>
+                    <p>Eliminar</p>
                 </div>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
-                        <div class="p-1 w-full grid text-sm grid-cols-[2fr_3fr_3fr_2fr_1fr]">
-                            <p>{formatStringWithDots(representante.cedula)}</p>
+                        <div class="p-1 w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
+                            <p>V-{formatStringWithDots(representante.cedula)}</p>
                             <p>{representante.nombre} {representante.apellido}</p>
-                            <p>{representante.telefono}</p>
                             <p>{representante.relacion}</p>
                             <button class="btn btn-xs btn-square" onclick={()=>{openModal(`representante_${representante.cedula}_modal`)}}>
                                 <img src="{ver_icon}" alt="" class="icon">
                             </button>
+                            <button class="btn btn-xs btn-square hover:btn-error hover:text-white" onclick={()=>{openModal(`delete_representante_${representante.cedula}_confirmation`)}}>
+                               <span>✕</span>
+                            </button>
                         </div>
-                    
-                        <RepresentanteModal representante={ representante } lista_telefonos={telefonos}/>
+
+                        <DeleteRepresentanteModal cedula_alumno={alumno.cedula_escolar} cedula_representante={representante.cedula} form={null}/>
+                        <RepresentanteModal representante={ representante } lista_telefonos={telefonos} form={null}/>
                     {/each}
                 {/if}
             </div>
@@ -207,7 +255,7 @@
 
         <div class="w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
-                <h3 class="text-xl font-bold">Detalles del Alumno</h3>
+                <h3 class="text-xl font-bold">Datos Escolares</h3>
 
                 <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" onclick="{() =>{edicion = !edicion;}}">
                     <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
@@ -215,7 +263,7 @@
             </div>
 
             <div class="mt-2">
-                {#each personalData as field}
+                {#each escolarData as field}
                     <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                         <div class="flex items-center justify-between gap-2">
                             <img src="{field.icon}" alt="" class="icon">
@@ -276,13 +324,60 @@
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             id="delete_confirmation_close">✕</button>
         </form>
-
         <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar el Alumno?</h3>
         <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
         <div class="modal-container">
             <form action="?/delete" method="POST" use:enhance class="h-auto w-full ">
                 <input type="hidden" value="{alumno.cedula_escolar}" name="cedula_escolar">
                 <button class="btn btn-error btn-sm mt-6">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="create_representante_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-lg overflow-hidden">
+
+        <Alert form={createRepresentanteForm} styles="absolute top-4 left-3 w-3/4 text-sm" />
+
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="create_representante_close">✕</button>
+        </form>
+
+        <h3 class="text-lg mt-2 font-bold">Introduzca el número de cédula del Representante</h3>
+        <p class="text-wrap text-sm">Para asociar un nuevo representante al alumno, introduzca su número de cédula y su relación o parentesco con el alumno</p>
+        <p class="text-wrap text-xs mt-3"> <b>IMPORTANTE: </b> El representante debe estar registrado de antemano con sus datos dentro del sistema. En caso de no encontrarse registrado dirigirse a <b>Registrar Representante</b></p>
+
+        <div class="h-max w-full mt-4 text-end">
+            <a href="/representantes/create" class="btn btn-xs btn-info">Registrar Representante</a>
+        </div>
+
+        <div class="modal-container">
+            <form action="?/asociarRepresentante" method="POST" use:enhance class="h-auto w-full">
+                <input type="hidden" value="{alumno.cedula_escolar}" name="cedula_escolar">
+                
+                <div class="w-full">
+                    <div class="form-control w-2/4 h-full ">
+                        <div class="label">
+                            <span class="label-text font-bold">Cédula</span>
+                        </div>
+                        <input type="text" class="input input-bordered w-full input-sm" 
+                        name="cedula_representante" placeholder="Representante...">
+                    </div> 
+
+                    <div class="form-control w-2/4 h-full mt-2">
+                        <div class="label">
+                            <span class="label-text font-bold">Parentesco/Relación al Alumno</span>
+                        </div>
+                        <input type="text" class="input input-bordered w-full input-sm" 
+                        name="relacion" placeholder="Parentesco...">
+                    </div> 
+                </div>
+
+
+                <button class="btn btn-success btn-sm mt-6">Asociar</button>
             </form>
         </div>
     </div>

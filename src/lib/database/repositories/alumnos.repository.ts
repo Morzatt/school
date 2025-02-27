@@ -1,5 +1,6 @@
+import type { Transaction } from "kysely"
 import { db } from ".."
-import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable, TelefonosRepresentante } from "../types"
+import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Database, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable, TelefonosRepresentante } from "../types"
 
 export interface AlumnosRepositoryInterface {
     create: (alumno: AlumnoInsertable) => Promise<void>    ,
@@ -57,16 +58,20 @@ export const alumnosRepository = {
 
 // REPRESENTANTES
 export interface RepresentantesRepositoryInterface {
-    create: (alumno: RepresentanteInsertable) => Promise<void>    ,
+    create: (alumno: RepresentanteInsertable, trx: Transaction<Database>) => Promise<void>    ,
     getById: (cedula: string) => Promise<Representante | undefined>
     delete: (cedula: string) => Promise<void>
     update: (data: RepresentanteUpdateable, cedula: string) => Promise<void>
 }
 
 export const representantesRepository = {
-    create: async (representante) => {
+    create: async (representante, trx) => {
         try {
-           await db.insertInto("representantes").values(representante).execute()
+            if (trx) {
+                await trx.insertInto("representantes").values(representante).execute()
+            } else {
+                await db.insertInto("representantes").values(representante).execute()
+            }
         } catch (error) {
             throw error 
         }
@@ -83,7 +88,7 @@ export const representantesRepository = {
 
     delete: async (cedula) => {
          try {
-           await db.deleteFrom("alumnos").where("alumnos.cedula_escolar", "=", cedula).execute()
+           await db.deleteFrom("representantes").where("representantes.cedula", "=", cedula).execute()
         } catch (error) {
             throw error 
         }    
@@ -91,7 +96,7 @@ export const representantesRepository = {
 
     update: async (data, cedula) => {
          try {
-            await db.updateTable("alumnos").set(data).where("alumnos.cedula_escolar", "=", cedula).execute()
+             await db.updateTable("representantes").set(data).where("representantes.cedula", "=", cedula).execute()
         } catch (error) {
             throw error 
         }    
@@ -106,7 +111,7 @@ export interface RepresentantesAlumnosRepositoryInterface {
     create: (rep: RepresentantesAlumnosInsertable) => Promise<void> 
     getRepresentantesByAlumno: (alumno: string) => Promise<RepresentantesByAlumnosResult[] | undefined>
     getAlumnosByRepresentante: (representante: string) => Promise<AlumnosByRepresentantesResult[] | undefined>
-    delete: (cedula: string) => Promise<void>
+    delete: (representante: string, alumno: string) => Promise<void>
     update: (data: RepresentanteUpdateable, cedula: string) => Promise<void>
 }
 
@@ -129,8 +134,6 @@ export const representantesAlumnosRepository = {
                 .where("representantes_alumnos.id_alumno", "=", alumno)
                 .selectAll()
                 .execute()
-
-            console.log(result)
             return result
         } catch (error) {
             throw error 
@@ -153,9 +156,14 @@ export const representantesAlumnosRepository = {
         }       
     },
 
-    delete: async (cedula) => {
+    delete: async (representante, alumno) => {
          try {
-           await db.deleteFrom("alumnos").where("alumnos.cedula_escolar", "=", cedula).execute()
+            await db.deleteFrom("representantes_alumnos")
+            .where((eb) => eb.and([
+                eb('representantes_alumnos.id_representante', '=', representante),
+                eb('representantes_alumnos.id_alumno', '=', alumno)
+            ]))
+            .execute()
         } catch (error) {
             throw error 
         }    

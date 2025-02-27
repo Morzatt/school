@@ -12,6 +12,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('fecha_nacimiento', 'date', (col) => col.notNull())
     .addColumn('direccion', 'text', (col) => col.notNull())
     .addColumn('edad', 'text', (col) => col.notNull())
+    .addColumn('estado', 'text', (col) => col.notNull().check(sql`estado IN  ('Activo', 'Retirado', 'Expulsado')`))
     .addColumn('created_at', "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
     .execute()
 

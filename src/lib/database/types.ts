@@ -140,18 +140,18 @@ export type AlumnoUpdateable = Updateable<AlumnosTable>
 // 
 // Representantes
 export type RepresentantesTable = {
-    cedula: string,
+    cedula: ColumnType<string, string, never>,
     nombre: string,
     apellido: string,
-    sexo: "Masculino" | "Femenino",
+    sexo: ColumnType<"Masculino" | "Femenino", "Masculino" | "Femenino", never>,
     direccion: string,
-    telefono: string,
     correo_electronico: string,
 }
 
 export type Representante = Selectable<RepresentantesTable>
 export type RepresentanteInsertable = Insertable<RepresentantesTable>
 export type RepresentanteUpdateable = Updateable<RepresentantesTable>
+
 
 
 // 
