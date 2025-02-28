@@ -10,6 +10,7 @@ import retiros_icon from "$lib/images/icons/permisos_icon.svg"
 import on from "$lib/images/icons/square_foot_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 import tw from "$lib/images/icons/school_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 import th from "$lib/images/icons/history_edu_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+import { basePath } from "$lib"
 
 type RouteGroup = {
     name: string,
@@ -25,17 +26,12 @@ type Route = {
 
 export const routes: RouteGroup[] = [
     {
-        name: "Constancias",
+        name: "Representantes",
         routes: [
             {
-                icon: constancias_icon,
-                href: "",
-                name: "Constancias de Estudio"
-            },
-            {
                 icon: retiros_icon,
-                href: "",
-                name: "Retiros"
+                href: `representantes`,
+                name: "Administrar Representantes"
             },
         ]
     },

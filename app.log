@@ -17,3 +17,7 @@
 {"level":30,"time":"2025-02-27T21:05:17.831Z","pid":20220,"hostname":"PC","url":"/auth","href":"login","msg":"SESION CREADA PARA EL USUARIO wiston","usuario":"wiston","session":"fbe1c15f-837d-4f03-872f-44dc9bdc3218"}
 {"level":30,"time":"2025-02-27T21:05:27.551Z","pid":20220,"hostname":"PC","url":"/logout","href":"logout","session_id":"fbe1c15f-837d-4f03-872f-44dc9bdc3218","usuario":"wiston","msg":"SESION FINALIZADA"}
 {"level":30,"time":"2025-02-27T21:05:40.816Z","pid":20220,"hostname":"PC","url":"/auth","href":"login","msg":"SESION CREADA PARA EL USUARIO wiston","usuario":"wiston","session":"32192500-be57-499d-b833-a97bbfa6b68d"}
+{"level":30,"time":"2025-02-27T21:15:34.595Z","pid":2416,"hostname":"PC","url":"/logout","href":"logout","session_id":"32192500-be57-499d-b833-a97bbfa6b68d","usuario":"wiston","msg":"SESION FINALIZADA"}
+{"level":30,"time":"2025-02-27T22:30:11.382Z","pid":2416,"hostname":"PC","url":"/auth","href":"login","msg":"SESION CREADA PARA EL USUARIO wiston","usuario":"wiston","session":"16748f56-ebf0-4888-b924-8e3ebcf3049a"}
+{"level":30,"time":"2025-02-28T12:45:48.129Z","pid":10432,"hostname":"PC","url":"/logout","href":"logout","session_id":"543fc527-1f2a-472b-b86b-ec559c0b9aa1","usuario":"wiston","msg":"SESION FINALIZADA"}
+{"level":30,"time":"2025-02-28T12:46:32.928Z","pid":10432,"hostname":"PC","url":"/auth","href":"login","msg":"SESION CREADA PARA EL USUARIO wiston","usuario":"wiston","session":"d160629f-4e88-4883-8a30-17250e22c9c7"}
