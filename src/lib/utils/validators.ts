@@ -1,7 +1,8 @@
 import { fail } from "@sveltejs/kit"
-import z, { ZodError, ZodSchema, type SafeParseReturnType } from "zod"
+import z, { ZodError, ZodObject, ZodSchema, type SafeParseReturnType, type ZodObjectDef } from "zod"
 import { capitalizeFirstLetter } from "./capitlizeFirstLetter"
 import type pino from "pino"
+import type { Empleado, EmpleadoInsertable, GradoInsertable } from "$lib/database/types"
 
 // INPUT VALIDATION FUNCTION
 export function validateObject(obj: object, schema: ZodSchema) {
@@ -64,6 +65,34 @@ export const recoverySchema = z.object({
         `Su contraseña no cumple con los parametros de seguridad minimos: debe de contener al menos 
         8 caracteres, una letra mayuscula, una letra minuscula y un caracter especial.`)
 })
+
+export const InsertEmpleadoSchema = z.object({
+    cedula: z.string().min(1, 'El campo no puede estar vacio'),
+    primer_nombre: z.string().min(1, 'El campo no puede estar vacio'),
+    segundo_nombre: z.string().min(1, 'El campo no puede estar vacio'),
+    primer_apellido: z.string().min(1, 'El campo no puede estar vacio'),
+    segundo_apellido:z.string().min(1, 'El campo no puede estar vacio'),
+    sexo: z.string().min(1, 'El campo no puede estar vacio'),
+    fecha_nacimiento: z.string().min(1, 'El campo no puede estar vacio'),
+    edad:z.string().min(1, 'El campo no puede estar vacio'),
+    direccion: z.string().min(1, 'El campo no puede estar vacio'),
+    grado_instruccion: z.string().min(1, 'El campo no puede estar vacio'),
+    especializacion: z.string().min(1, 'El campo no puede estar vacio'),
+    cargo: z.string().min(1, 'El campo no puede estar vacio'),
+    area: z.string().min(1, 'El campo no puede estar vacio'),
+    fecha_ingreso:z.string().min(1, 'El campo no puede estar vacio'),
+    tiempo_servicio: z.string().min(1, 'El campo no puede estar vacio'),
+    turno:z.string().min(1, 'El campo no puede estar vacio'),
+})
+
+export const insertAulaSchema = z.object({
+    numero: z.string().min(1, "El campo no puede estar vacio"),
+    nivel: z.string().min(1, "El campo no puede estar vacio"),
+    seccion: z.string().min(1, "El campo no puede estar vacio"),
+    turno: z.string().min(1, "El campo no puede estar vacio"),
+    profesor: z.string().min(1, "El campo no puede estar vacio"),
+})
+
 
 function setAge(date: Date) {
     date.setFullYear(date.getFullYear() - 18)

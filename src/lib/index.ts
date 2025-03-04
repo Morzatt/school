@@ -1,6 +1,7 @@
 // VALIDAR NOMBRES Y APELLIDOS DE REPRESENTANTES => SOLO UN NOMBRE Y APELLIDO POR CAMPO, NO PUEDE CONTENER DOS NOMBRE POR CAMPO
-// NUMERO DE REPRESENTANTES POR ALUMNO
-// DONDE SE INSERTAN Y ADMINISTRAN PADRES Y GRADOS
+// NUMERO DE REPRESENTANTES POR ALUMNO => 2
+// manejar eliminacion de profesor = que no se borren los grados
+// manejar eliminacion de grados q no se borre lo demas
 
 export let basePath = "";
 

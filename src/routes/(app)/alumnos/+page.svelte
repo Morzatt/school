@@ -15,10 +15,12 @@
     let { alumnos } = $derived(data)
 
     let index = $state(data.index ? data.index : 0)
-    let filter = $state("")
+    let filter = $state("Filtro")
     let search = $state("")
+    let nivel = $state("all")
+    let estado = $state("all")
 
-    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter}&search=${search}`) 
+    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro"?"":filter}&search=${search}&nivel=${nivel}&estado=${estado}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -77,7 +79,7 @@
 
                         <!-- SEARCH, SORT, ADD -->
                         <div class="flex items-center justify-between px-5 pt-5">
-                            <div class="inline-flex items-center gap-3">
+                            <div class="inline-flex items-center gap-3"> 
                                 <div class="join">
                                     <label class="form-control flex flex-row items-center 
                                     rounded-xl rounded-r-none border border-base-content/20
@@ -91,11 +93,17 @@
                                         <img src="{search_icon}" alt="" class="size-[1.8em] icon">
                                     </button>
                                 </div>
+                                <select class="btn btn-outline btn-sm px-5" oninput="{() =>{ index = 0; setTimeout(handleSearch,100) } }" bind:value={filter}>
+                                    <option disabled selected>Filtro</option>
+                                    <option value="cedula_escolar">Cedula</option>
+                                    <option value="cedula_escolar">Nombre</option>
+                                    <option value="cedula_escolar">Apellido</option>
+                                </select>
 
                                 <label class="form-control flex flex-row items-center border border-base-content/20">
                                     <input type="date" id="date_search" placeholder="Buscar Donantes"
                                     class="w-full scale-0 absolute origin-left translate-x-[-50px] focus:border-transparent active:outline-0 transition-all input-sm active:outline-offset-0"
-                                    oninput="{searchHandler.search}">
+                                    oninput="{handleSearch}">
                                 </label>
                             </div>
 
@@ -109,25 +117,58 @@
                         </div>
                         
                         <!-- FILTER -->
-                        <div class="flex items-center justify-between px-5 h-16">
-                            <div class="join gap-2 *:bg-base-100 flex items-center justify-between tooltip" data-tip="Seleccionar Filtro">
-                                <div class="select-none border border-base-content/40 rounded-md btn-square btn-sm flex items-center justify-center">
-                                    <img src="{filter_icon}" alt="" class="icon">
-                                </div>
-                                <select oninput="{() =>{ index = 0; handleSearch() } }" bind:value={filter}
-                                    class="max-w-xs p-1
-                                            text-sm 
-                                            btn btn-sm
-                                            rounded-none border border-base-content/20
-                                            focus:outline-0 focus:outline-offset-0">
-                                    <option disabled selected>Filtro</option>
-                                    <option value="cedula_escolar">Cédula Escolar</option>
-                                    <option value="primer_nombre">Nombre</option>
-                                    <option value="primer_apellido">Apellido</option>
-                                    <option value="edad">Edad</option>
-                                </select>       
-                            </div>
+                        <div class="flex items-end mt-1 justify-between px-5 h-16 mb-4">
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="join gap-4 flex items-end justify-between tooltip
+                                [&_.label-text]:font-bold" data-tip="Seleccionar Filtro">
+                                    <div class="select-none bg-base-100 border border-base-content/40 rounded-md btn-square btn-sm flex items-center justify-center">
+                                        <img src="{filter_icon}" alt="" class="icon">
+                                    </div>
 
+                                    <div class="form-control">
+                                        <div class="label">
+                                            <span class="label-text">Nivel</span>
+                                        </div>
+                                        <div class="join grado-content rounded-md
+                                        bg-base-content/10 p-1 gap-1 group">
+                                            <button class="{nivel === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {nivel = 'all'; index=0; handleSearch()}}>
+                                                Todo
+                                            </button>
+                                            <button class="{nivel === "inicial" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {nivel = 'inicial'; index=0; handleSearch()}}>
+                                                Inicial 
+                                            </button>
+                                            <button class="{nivel === "primaria" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {nivel = 'primaria'; index=0; handleSearch()}}>
+                                                Primaria
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-control">
+                                        <div class="label">
+                                            <span class="label-text">Estado</span>
+                                        </div>
+                                        <div class="join grado-content rounded-md
+                                        bg-base-content/10 p-1 gap-1 group">
+                                            <button class="{estado === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {estado = 'all'; index=0; handleSearch()}}>
+                                                Todo
+                                            </button>
+                                            <button class="{estado === "activo" ? "bg-success" : "text-base-content/50"}" 
+                                                onclick={() => {estado = 'activo'; index=0; handleSearch()}}>
+                                                Activo
+                                            </button>
+                                            <button class="{estado === "retirado" ? "bg-error" : "text-base-content/50"}" 
+                                                onclick={() => {estado = 'retirado'; index=0; handleSearch()}}>
+                                                Retirado 
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="join">
                                 <div class="mr-4 px-3 text-sm font-bold flex items-center justify-center">
                                     <p class="text-base-content/60">Pag. <b class="text-base-content">{index/15}</b> de {paginas === 0 ? 1 : paginas}</p>
@@ -141,13 +182,15 @@
                                 </button>
 
                                 <button 
-                                onclick="{() => {index=0;filter="", search=""; handleSearch()}}"
+                                onclick="{() => {index=0;filter=""; search="";nivel="all"; handleSearch()}}"
                                  aria-label="pagination-next"
                                   class="btn mx-4 gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Limpiar Busqueda">
                                     <img src="{clear_icon}" alt="" class="size-[1.4em] group-active:invert filter icon">
                                 </button>
                             </div>
                         </div>
+
+                        <div class="divider"></div>
 
                         <!-- TABLE -->
                         <div class="overflow-auto">
@@ -224,10 +267,20 @@
 
 <style lang="postcss">
     .content-wrapper {
-        @apply flex-grow p-1 pb-8 xl:px-6 transition-all duration-150;
+        @apply flex-grow p-1 pb-8 transition-all duration-150;
     }
 
     .red-filter {
         filter: brightness(0) saturate(100%) invert(38%) sepia(93%) saturate(2710%) hue-rotate(339deg) brightness(102%) contrast(86%);
+    }
+    .grado-content button {
+        @apply font-semibold rounded-md px-2 py-0.5
+        hover:bg-base-300
+        transition-all duration-200 ease-in-out
+        active:bg-base-300 active:scale-95;
+    }
+
+    .paginator button {
+        @apply hover:scale-125 hover:text-accent px-2 hover:shadow-xl transition-all duration-200 ease-in-out shadow-accent-content;
     }
 </style>

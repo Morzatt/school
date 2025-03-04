@@ -112,7 +112,7 @@ export interface RepresentantesAlumnosRepositoryInterface {
     getRepresentantesByAlumno: (alumno: string) => Promise<RepresentantesByAlumnosResult[] | undefined>
     getAlumnosByRepresentante: (representante: string) => Promise<AlumnosByRepresentantesResult[] | undefined>
     delete: (representante: string, alumno: string) => Promise<void>
-    update: (data: RepresentanteUpdateable, cedula: string) => Promise<void>
+    update: (data: AlumnoUpdateable, cedula: string) => Promise<void>
 }
 
 export const representantesAlumnosRepository = {

@@ -43,17 +43,26 @@ export const routes: RouteGroup[] = [
                 href: "alumnos",
                 name: "Administrar Alumnos"
             },
+        ]
+    },
+    {
+        name: "Empleados",
+        routes: [
             {
                 icon: on,
-                href: "",
-                name: "Aulas"
+                href: "empleados",
+                name: "Administrar Empleados"
             },
+        ]
+    },
+    {
+        name: "Aulas",
+        routes: [
             {
-                icon: tw,
-                href: "",
-                name: "Graduandos"
+                icon: on,
+                href: "aulas",
+                name: "Administrar Aulas"
             },
-           
         ]
     },
 ]

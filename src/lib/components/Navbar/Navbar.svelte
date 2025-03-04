@@ -15,6 +15,8 @@
     import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
 
     let { data }: { data: Omit<Usuario, "contraseña"> } = $props()
+
+    let swtch = $state(false)
 </script>
 
 {#snippet drawer()}
@@ -67,7 +69,7 @@
                     </span>
                 </div>
 
-                <ul class="items flex flex-col">
+                <ul class="items flex flex-col ">
                     <li class="mt-5">
                         <img src="{home_icon}" alt="" class="icon">
                         <a href="/" onclick="{() => {document.getElementById("side-drawer")?.click()}}">Inicio</a>
@@ -164,14 +166,68 @@
     </ul>
 {/snippet}
 
-<nav class="h-16 w-full lg:h-screen lg:w-[18rem]
+{#snippet itemsNormal()}
+    <ul class="items hidden lg:flex flex-col pb-7 {swtch ? "" : "scale-0"} overflow-y-auto" style="scrollbar-width: thin;">
+        <li class="mt-4 mb-4">
+            <img src="{home_icon}" alt="" class="icon">
+            <a href="/">Inicio</a>
+        </li>
+        
+
+        {#each routes as group}
+            <h2 class="font-bold">{group.name}</h2>
+
+            <div class="join join-vertical w-full px-1 pt-2 pb-4">
+                {#each group.routes as route}
+                    <li class="join-item border border-base-content/40">
+                        <img src="{route.icon}" alt="" class="icon">
+                        <a href="{basePath}/{route.href}">{route.name}</a>
+                    </li> 
+                {/each}
+            </div>
+        {/each}
+
+        {#if data.role.toLowerCase().includes('admin')}
+            <div class="w-full mt-4">
+                {#each adminRoutes as group}
+                    <h2 class=" mb-2 font-bold">{group.name}</h2>
+
+                    <div class="w-content w-full px-1 join join-vertical">
+                        {#each group.routes as route}
+                            <li class="join-item border border-base-content/40">
+                                <img src="{route.icon}" alt="" class="icon">
+                                <a href="{basePath}/{route.href}">{route.name}</a>
+                            </li> 
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        {/if}
+    </ul>
+{/snippet}
+
+<!-- lg:w-18 -->
+<nav class="h-16 w-full
+            lg:h-screen lg:w-[16rem]
+            transition-all duration-200 ease-out
             flex items-center justify-center
             shadow-sm border-b lg:border-r border-base-content/30 bg-transparent
             p-2">
 
-    <div class="size-full lg:h-screen flex max-lg:items-center max-lg:justify-end">
-        {@render drawer()}
+    <!-- <div class="hidden lg:flex
+                size-fit lg:h-screen 
+                max-lg:items-center max-lg:justify-center
+                {swtch ? "border-r pr-3" : ""} border-base-content/40">
+        <button class="btn btn-sm mt-4"
+        onclick={() => {swtch = !swtch}}>
+            <img src="{menu_icon}" alt="" class="icon">
+        </button>
+    </div> -->
 
+    <div class="max-lg:w-full lg:h-screen
+                transition-all ease-in-out duration-200
+                flex max-lg:items-center max-lg:justify-end">
+        {@render drawer()}
         {@render items()}
     </div>
 </nav>

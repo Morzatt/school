@@ -10,6 +10,7 @@
 
     // Images Import
     import menu_icon from "$lib/images/icons/menu_icon.svg"
+    import chevron_icon from "$lib/images/icons/chevron_right.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import logout_icon from "$lib/images/icons/logout_icon.svg"
     import admin_icon from "$lib/images/icons/admin_icon.svg"
@@ -40,7 +41,7 @@
         <div class="dropdown dropdown-end text-sm">
             <div tabindex="0" role="button" class="transition-all duration-200 ease-in-out 
                 p-1 rounded-lg hover:bg-gray-200 active:bg-gray-900 group">
-                <img src="{menu_icon}" alt="" class="filter group-active:invert icon">
+                <img src="{chevron_icon}" alt="" class="filter group-active:invert icon rotate-[90deg]">
             </div>
 
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->

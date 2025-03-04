@@ -3,35 +3,45 @@ import { Kysely, sql } from 'kysely'
 export async function up(db: Kysely<any>):  Promise<void> {
   await db.schema
     .createTable('grados')
-    // 3BM => 3ro "B", Turno de la Mañana
-    // 6AT => 5to "A", Turno de la Tarde
+    // 3GBM => 3er Grado "B", Turno de la Mañana
+    // 6GAT => 6to Grado "A", Turno de la Tarde
+    // 2NBM => 2do Nivel "A", Turno de la Mañana 
     .addColumn('id_grado', 'text', (col) => col.primaryKey()) 
+    // 3
+    .addColumn('numero', 'varchar(1)', (col) => col.notNull().check(sql`numero IN ('1', '2', '3', '4', '5', '6')`)) 
+    // Inicial | Primaria | Bachillerato
+    .addColumn('nivel', 'text', (col) => col.notNull().check(sql`nivel IN ('Primaria', 'Inicial', 'Bachillerato')`)) 
+    // A | B | C | D
+    .addColumn('seccion', 'text', (col) => col.notNull().check(sql`seccion IN ('A', 'B', 'C', 'D')`)) 
     // 'Mañana' | 'Tarde'
     // CHECK - El un profesor con turno de 'Tarde' no puede dar clases en una sección de turno 'Mañana'
-    .addColumn('turno', 'text') 
-    // A | B | C | D
-    .addColumn('seccion', 'text') 
+    .addColumn('turno', 'text', (col) => col.notNull().check(sql`turno IN ('Mañana', 'Tarde')`)) 
     // 8933618 -> Cedula del profesor
-    .addColumn('profesor', 'text') 
-    .addForeignKeyConstraint("fk_profesor", ["profesor"], "profesores", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    // CHECK - Al introducir una cedula, el cargo del empleado debe de ser 'Docente'
+    .addColumn('profesor', 'text', (col) => col.notNull().defaultTo('Sin Profesor')) 
+
+    .addForeignKeyConstraint("fk_profesor", ["profesor"], "empleados", ["cedula"], (col) => col.onDelete("set default").onUpdate("cascade"))
     .execute()
 
+    // https://es.pinterest.com/pin/164803667607207691/
     await db.schema
     .createTable('grados_alumnos')
-    // 3BM 
-    .addColumn('id_grado', 'text')
+    // 3GBM 
+    .addColumn('id_grado', 'text', (col) => col.notNull())
     // 11930451822
-    .addColumn('id_alumno', 'text')
+    .addColumn('id_alumno', 'text', (col) => col.notNull())
+
+    .addPrimaryKeyConstraint('primary_grado_alumno', ['id_alumno', 'id_grado'])
     .addForeignKeyConstraint("fk_grado", ["id_grado"], "grados", ["id_grado"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .addForeignKeyConstraint("fk_alumno", ["id_alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 
     await db.schema
     .createTable('materias')
-    // MATE-LENG-GEOG-HISV-HISU-BIOL
-    .addColumn('id_materia', 'text', (col) => col.primaryKey())
+    
+    .addColumn('id_materia', 'uuid', (col) => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
     // Matemáticas
-    .addColumn('nombre_materia', 'text')
+    .addColumn('nombre_materia', 'text', (col) => col.notNull())
     .execute()
 }
 
