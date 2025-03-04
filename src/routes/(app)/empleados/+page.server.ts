@@ -12,6 +12,7 @@ export const load = (async ({ locals, url }) => {
     let type = url.searchParams.get("type") as string
     let filter = url.searchParams.get("filter") as string
     let search = url.searchParams.get("search") as string
+    let turno= url.searchParams.get("turno") as string
 
     let empleados: Empleado[] | undefined;
     let total_empleados: { records: number };
@@ -24,6 +25,10 @@ export const load = (async ({ locals, url }) => {
     
     if (type && type !== 'all') {
         query = query.where('empleados.area', '=', capitalizeFirstLetter(type))
+    }
+
+    if (turno && turno !== 'all') {
+        query = query.where('empleados.turno', '=', capitalizeFirstLetter(turno))
     }
     
     if (filter && search) {

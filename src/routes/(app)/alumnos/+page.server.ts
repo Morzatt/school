@@ -37,7 +37,34 @@ export const load = (async ({ locals, url }) => {
                 .executeTakeFirst(), log) as { records: number }
     }
 
-    return { alumnos: alumnos, total_alumnos: total_alumnos ? total_alumnos.records : 0, index };
+    let matricula = await async(
+        db.selectFrom("alumnos")
+        .select((eb) => eb.fn.count('alumnos.cedula_escolar').as('alumnos'))
+        .executeTakeFirst()
+    ,log)
+    let matricula_manana = await async(
+        db.selectFrom("alumnos")
+        .innerJoin('grados_alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
+        .innerJoin('grados', 'grados_alumnos.id_grado', 'grados.id_grado')
+        .select((eb) => eb.fn.count('alumnos.cedula_escolar').as('alumnos'))
+        .where('grados.turno', '=', 'Mañana')
+        .executeTakeFirst()
+    ,log)
+    let matricula_tarde = await async(
+        db.selectFrom("alumnos")
+        .innerJoin('grados_alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
+        .innerJoin('grados', 'grados_alumnos.id_grado', 'grados.id_grado')
+        .select((eb) => eb.fn.count('alumnos.cedula_escolar').as('alumnos'))
+        .where('grados.turno', '=', 'Tarde')
+        .executeTakeFirst()
+    ,log)
+
+
+    return { alumnos: alumnos, total_alumnos: total_alumnos ? total_alumnos.records : 0, index,
+        matriculas: {
+            matricula, matricula_manana, matricula_tarde
+        }
+    };
 }) satisfies PageServerLoad;
 
 export const actions = {

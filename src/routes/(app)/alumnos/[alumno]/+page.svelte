@@ -9,7 +9,6 @@
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import { enhance } from '$app/forms';
 
-
     let { data, form }: { data: PageData, form: ActionData } = $props();
 
     let createRepresentanteForm = $derived.by(() => {
@@ -77,29 +76,43 @@
     let edicion = $state(false)
 
     import curso_actual from "$lib/images/icons/curso_actual.svg"
-    import profesor from "$lib/images/icons/profesor.svg"
+    import turnos from "$lib/images/icons/turnos_icon.svg"
     import seccion from "$lib/images/icons/seccion.svg"
     import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
     import Alert from '$lib/components/Messages/Alert.svelte';
 
-    let escolarData: Data[] = $derived([
+    function formatNumero(nm: Numeros) {
+        switch (nm) {
+            case "1":
+                return "1er"
+            case "2" :
+                return "2do"
+            case "3":
+                return "3er"
+            default:
+                return `${nm}to`
+        }
+    }
+                
+    let escolarData = $derived([
         {
             name: "",
             icon: curso_actual,
             title: "Curso Actual",
-            value: "1er Grado"
+            value: `${formatNumero(alumno.numero)} 
+                ${alumno.nivel == "Inicial" ? "Nivel" : alumno.nivel === "Primaria" ? "Grado" : "Año"}`,
         },
         {
             name: "",
             icon: seccion,
             title: "Sección",
-            value: '"A"'
+            value: `"${alumno.seccion}"`
         },
         {
             name: "",
-            icon: profesor,
-            title: "Profesor@",
-            value: 'José Jimenez'
+            icon: turnos,
+            title: "Turno",
+            value: `"${alumno.turno}"`
         },
     ]);
 
@@ -117,6 +130,13 @@
             i.representante === id ? n = i.telefonos as string[] : null
         )
         return n
+    }
+
+    let editEscolares = $state(false)
+    let nivel = $state('')
+
+    function stripDots(inputString: string) {
+        return inputString.replace(/\./g, '');
     }
 </script>
 
@@ -180,7 +200,14 @@
                     </button>
                 </div>
                 <h3 class="font-bold text-lg mt-2">{alumno.primer_nombre} {alumno.segundo_nombre} {alumno.primer_apellido} {alumno.segundo_apellido}</h3>
-                <h3 class="text-base-content/60 text-sm">Alumno de Primaria</h3>
+                <h3 class="text-base-content/60 text-sm"> 
+                    {
+                        alumno.estado !== "Retirado" ?
+                            alumno.nivel ? 
+                            `Alumno de ${alumno.nivel === "Inicial" ? "Preescolar" : alumno.nivel}`
+                            : "Nivel no asignado"
+                        : "Alumno Retirado"} 
+                </h3>
                 <div class="w-full h-max shadow-md mt-4 rounded-md bg-base-100 flex items-center justify-between gap-3 px-4 py-2">
                     {#each [1,2,3,4] as i}
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
@@ -213,10 +240,11 @@
 
                         {#if edicion && field.updateable}
                             <input type="text" 
+                                min="3"
                                 name="{field.name}"
                                 placeholder="{field.title}..."
                                 class="input input-bordered input-sm max-w-xs"
-                                value="{field.value}">
+                                value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
                         {:else}
                             <b>{field.value}</b> 
                         {/if}
@@ -271,35 +299,114 @@
             </div>
         </div>
 
-        <div class="w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+        <form action="?/editAula" method="POST" use:enhance class="w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Datos Escolares</h3>
 
-                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" onclick="{() =>{edicion = !edicion;}}">
+                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" 
+                onclick="{() =>{setTimeout(() => {editEscolares = !editEscolares},100)}}"
+                type={editEscolares? "submit" : "button"}>
                     <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
                 </button>
             </div>
 
-            <div class="mt-2">
-                {#each escolarData as field}
-                    <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
-                        <div class="flex items-center justify-between gap-2">
-                            <img src="{field.icon}" alt="" class="icon">
-                            <p class="font-semibold text-base-content/80">{field.title}</p> 
-                        </div>
+            <div class="mt-2 [&_.label]:hidden">
+                <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
 
-                        {#if edicion}
-                            <input type="text" 
-                                placeholder="{field.title}..."
-                                class="input input-bordered input-sm max-w-xs"
-                                value="{field.value}">
-                        {:else}
-                            <b>{field.value}</b> 
-                        {/if}
+                <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                    <div class="flex items-center justify-between gap-2">
+                        <img src="{curso_actual}" alt="" class="icon">
+                        <p class="font-semibold text-base-content/80">Curso Actual</p> 
                     </div>
-                {/each}
+
+                    {#if editEscolares}
+                        <div class="w-fit flex items-center justify-normal gap-3">
+                            <label class="form-control">
+                                <div class="label">
+                                    <span class="label-text">Nivel</span>
+                                </div>
+                                <select name="nivel" bind:value={nivel} required>
+                                    <option disabled selected>Elegir</option>
+                                    <option value="Inicial">Inicial</option>
+                                    <option value="Primaria">Primaria</option>
+                                </select>
+                            </label>
+
+                            <div class="form-control focus:outline-0">
+                                <div class="label">
+                                    <span class="label-text">
+                                        Grado
+                                    </span>
+                                </div>
+
+                                <label class="flex items-center justify-start 
+                                input input-sm input-bordered focus:outline-0 
+                                rounded-md max-w-[12rem]">
+                                    <input type="number" name="numero" 
+                                    placeholder="..."
+                                    class="max-w-[3rem] focus:outline-0"
+                                    max="6" min="{alumno.numero}" required>
+                                    <p class="select-none">{nivel === "Elegir" ?  "Seleccionar" : nivel === 'Inicial' ? 'Nivel' : 'Grado'}</p>
+                                </label>
+                            </div>
+                        </div>
+                    {:else}
+                        <b>
+                            {alumno.numero && alumno.nivel ?
+                            `${formatNumero(alumno.numero)} 
+                            ${alumno.nivel == "Inicial" ? "Nivel" : alumno.nivel === "Primaria" ? "Grado" : "Año"}` :
+                            "No Asignado"}
+                        </b> 
+                    {/if}
+                </div>
+
+                <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                    <div class="flex items-center justify-between gap-2">
+                        <img src="{seccion}" alt="" class="icon">
+                        <p class="font-semibold text-base-content/80">Seccion</p> 
+                    </div>
+
+                    {#if editEscolares}
+                        <label class="form-control">
+                            <div class="label">
+                                <span class="label-text">Seccion</span>
+                            </div>
+                            <select name="seccion" required>
+                                <option disabled selected>Elegir</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </label>
+                    {:else}
+                        <b>"{alumno.seccion ? alumno.seccion : "No Asignado"}"</b> 
+                    {/if}
+                </div>
+
+                <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                    <div class="flex items-center justify-between gap-2">
+                        <img src="{turnos}" alt="" class="icon">
+                        <p class="font-semibold text-base-content/80">Turno</p> 
+                    </div>
+
+                    {#if editEscolares}
+                        <label class="form-control">
+                            <div class="label">
+                                <span class="label-text">Turno</span>
+                            </div>
+                            <select name="turno" required>
+                                <option disabled selected>Elegir</option>
+                                <option value="Mañana">Mañana</option>
+                                <option value="Tarde">Tarde</option>
+                            </select>
+                        </label>
+                    {:else}
+                        <b>"{alumno.turno ? alumno.turno : "No Asignado"}"</b> 
+                    {/if}
+                </div>
             </div>
-        </div>  
+        </form>  
     </div>
 
     <div class="w-full mt-4 flex items-center justify-start gap-4">
@@ -401,6 +508,8 @@
     </div>
 </dialog>
 
+
+
 <style lang="postcss">
     .modal-container {
         @apply flex max-h-[20rem] overflow-y-auto overflow-x-hidden;
@@ -408,5 +517,8 @@
     }
     .input {
         @apply focus:outline-0 ;
+    }
+    select {
+        @apply btn btn-sm btn-outline border-base-content/40 focus:outline-0;
     }
 </style>

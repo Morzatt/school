@@ -5,13 +5,24 @@ import type { PageServerLoad } from './$types';
 import { basePath } from '$lib';
 import { db } from '$lib/database';
 import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
-import type { AlumnoUpdateable, RepresentantesAlumnosInsertable, RepresentanteUpdateable } from '$lib/database/types';
+import type { AlumnoUpdateable, GradoID, GradoInsertable, Niveles, Numeros, RepresentantesAlumnosInsertable, RepresentanteUpdateable, Secciones, Turnos } from '$lib/database/types';
+import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/utils/validators';
+import { createGradoId } from '$lib/utils/createGradoId';
+import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
+import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
 
     let cedula = getId(url.pathname)
-    let dataResult = await async(alumnosRepository.getById(cedula), log)
+    let dataResult = await async(
+        db.selectFrom('alumnos')
+        .leftJoin('grados_alumnos', 'grados_alumnos.id_alumno', 'alumnos.cedula_escolar')
+        .leftJoin('grados', 'grados_alumnos.id_grado', 'grados.id_grado')
+        .selectAll()
+        .where('alumnos.cedula_escolar', '=', cedula)
+        .executeTakeFirst()
+    , log)
 
     let representantes = await async(representantesAlumnosRepository.getRepresentantesByAlumno(cedula), log)
 
@@ -45,6 +56,38 @@ export const actions = {
         await async(alumnosRepository.delete(cedula_escolar), log)
 
         redirect(307, `${basePath}/alumnos`)
+    },
+
+    editAula: async ({ locals, request }) => {
+        let { response, log } = locals
+        let data = await request.formData()
+
+        let aula = {
+            numero: data.get('numero') as Numeros,
+            nivel: data.get('nivel') as Niveles,
+            seccion: data.get('seccion') as Secciones,
+            turno: data.get('turno') as Turnos,
+        } satisfies Omit<Omit<GradoInsertable, "id_grado">, "profesor"> 
+
+        let validation = validateObject(aula, insertAulaSchema.omit({ profesor: true }))
+        if (!validation.success) {
+            return newValidationFailObject(validation.error, log)
+        }
+
+        let gradoID = createGradoId(aula) as GradoID
+        console.log(gradoID)
+
+        let gradoFromDB = await async(gradosRepository.getById(gradoID), log)
+        if (!gradoFromDB) {
+            return fail(403, response.error('El aula no existe'))
+        }
+
+        await async(gradosAlumnosRepository.create({
+            id_alumno: data.get("cedula_escolar") as string,
+            id_grado: gradoID
+        }), log)
+
+        return response.success('Alumno añadido al aula correctamente.')
     },
 
     edit: async ({locals, request}) => {

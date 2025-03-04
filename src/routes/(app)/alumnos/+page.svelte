@@ -12,7 +12,7 @@
     import { goto, invalidateAll } from '$app/navigation';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { alumnos } = $derived(data)
+    let { alumnos, matriculas } = $derived(data)
 
     let index = $state(data.index ? data.index : 0)
     let filter = $state("Filtro")
@@ -44,6 +44,23 @@
     let paginas = $derived(Math.floor(data.total_alumnos/15)) 
 </script>
 
+{#snippet stat(title:string, stat: any, ten: string)}
+<div class="h-28 w-[calc(50%-0.25rem)] lg:w-1/4">
+    <div class="border border-base-content/40 h-2/6
+                px-2 flex items-center justify-start
+                text-sm font-bold bg-primary text-base-100
+                rounded-md rounded-bl-none rounded-br-none border-b-0">
+        <span>{title}</span>
+    </div>
+    <div class="border border-base-content/40 h-4/6
+                px-2 flex items-center justify-start 
+                rounded-md rounded-tl-none rounded-tr-none bg-base-100 border-t-0">
+        <span class="text-4xl font-bold pr-4 border-r border-base-content/40">{stat}</span>
+        <span class="bg-success rounded-lg text-xs ml-2 p-1 px-2 text-success-content">{ten}</span>
+    </div>
+</div>
+{/snippet}
+
 <div class="w-full h-full relative">
     <Alert form={ form } styles="fixed right-6 top-12 max-w-sm"/>
     <div class="content-wrapper">
@@ -59,22 +76,9 @@
 
                         <!-- STATS -->
                         <div class="flex items-center justify-between max-lg:flex-wrap lg:px-5 pt-5 lg:gap-5 gap-1">
-                            {#each [1,2,3,4] as i}
-                                <div class="h-28 w-[calc(50%-0.25rem)] lg:w-1/4">
-                                    <div class="border border-base-content/40 h-2/6
-                                                px-2 flex items-center justify-start
-                                                text-sm font-bold bg-primary text-base-100
-                                                rounded-md rounded-bl-none rounded-br-none border-b-0">
-                                        <span>Total Matricula</span>
-                                    </div>
-                                    <div class="border border-base-content/40 h-4/6
-                                                px-2 flex items-center justify-start 
-                                                rounded-md rounded-tl-none rounded-tr-none bg-base-100 border-t-0">
-                                        <span class="text-4xl font-bold pr-4 border-r border-base-content/40">12</span>
-                                        <span class="bg-success rounded-lg text-xs ml-2 p-1 px-2 text-success-content">+231</span>
-                                    </div>
-                                </div> 
-                            {/each}
+                            {@render stat("Matricula Total", matriculas.matricula!.alumnos, '+230')}
+                            {@render stat("Matricula Mañana", matriculas.matricula_manana!.alumnos, '+230')}
+                            {@render stat("Matricula Tarde", matriculas.matricula_tarde!.alumnos, '+230')}
                         </div>                        
 
                         <!-- SEARCH, SORT, ADD -->
@@ -201,9 +205,10 @@
                                         <th><span class="text-sm font-medium text-base-100">Cédula</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Nombre</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Apellido</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Fecha de Nacimiento</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Edad</span></th>
-                                        <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Estado</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Ver</span></th>
                                     </tr>
                                 </thead>
@@ -215,9 +220,10 @@
                                                 <th>{alumno.cedula_escolar}</th>
                                                 <th>{alumno.primer_nombre}</th>
                                                 <th>{alumno.primer_apellido}</th>
+                                                <th>{alumno.sexo}</th>
                                                 <th>{new Date(alumno.fecha_nacimiento).toLocaleDateString()}</th>
                                                 <th>{alumno.edad}</th>
-                                                <th>{alumno.sexo}</th>
+                                                <th>{alumno.estado}</th>
                                                 <th>
                                                     <a class="btn btn-sm btn-square" href="{basePath}/alumnos/{alumno.cedula_escolar}">
                                                         <img src="{ver_icon}" alt="" class="icon">

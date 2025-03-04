@@ -129,6 +129,7 @@ export type AlumnosTable = {
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
     edad: string
+    estado: 'Activo' | 'Retirado'
     created_at: ColumnType<Date, never>,
 }
 
