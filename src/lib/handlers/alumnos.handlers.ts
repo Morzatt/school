@@ -2,6 +2,7 @@ import { alumnosRepository } from "$lib/database/repositories/alumnos.repository
 import type { AlumnoInsertable } from "$lib/database/types";
 import async from "$lib/utils/asyncHandler";
 import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
+import { getAge } from "$lib/utils/getAge";
 import type { RequestEvent } from "@sveltejs/kit";
 
 export async function createAlumnoHandler (

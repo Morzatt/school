@@ -37,6 +37,8 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .createTable('horarios_grados_alt')
     // 3BM:Lu-900A-1100A
     .addColumn('id_horario', 'text', (col) => col.notNull().primaryKey()) 
+    // 3BM
+    .addColumn('id_grado', 'text', (col) => col.notNull()) 
     // 30451822
     .addColumn('cedula_profesor', 'text', (col) => col.notNull().defaultTo('Sin Profesor')) 
     // MATE
@@ -50,6 +52,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
 
     .addForeignKeyConstraint("fk_profesor", ["cedula_profesor"], "empleados", ["cedula"], (col) => col.onDelete("set default").onUpdate("cascade"))
     .addForeignKeyConstraint("fk_materia", ["id_materia"], "materias", ["id_materia"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .addForeignKeyConstraint("fk_materia", ["id_grado"], "grados", ["id_grado"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 }
 

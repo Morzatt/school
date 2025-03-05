@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="w-full flex items-center justify-center pb-12">
-                    <button class="btn btn-success btn-wide">Crear Donante</button>
+                    <button class="btn btn-success btn-wide">Crear Empleado</button>
                 </div>
             </form>
         </div>

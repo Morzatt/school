@@ -13,8 +13,22 @@ export const load = (async ({ locals, url }) => {
     let queryType = capitalizeFirstLetter(qParam ? qParam : "") as Niveles & 'all'
     let { log } = locals
 
-    let query = db.selectFrom('grados').selectAll()
+    let query = db
+        .selectFrom('grados')
+        .leftJoin('grados_alumnos', 'grados_alumnos.id_grado', 'grados.id_grado')
+        .innerJoin('empleados', 'empleados.cedula', 'grados.profesor')
+        .leftJoin('alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
+        .select([
+            'grados.id_grado', 'grados.nivel', 'grados.numero', 'grados.profesor', 'grados.seccion', 'grados.turno', 
+            'empleados.primer_nombre as nombre_profesor', 'empleados.primer_apellido as apellido_profesor'
+        ])
+        .select((eb) => [eb.fn.count('grados_alumnos.id_alumno').as('matricula_grado')])
+        .select((eb) => [eb.fn.count('alumnos.cedula_escolar').filterWhere('alumnos.sexo', '=', 'Masculino').as('matricula_varones')])
+        .select((eb) => [eb.fn.count('alumnos.cedula_escolar').filterWhere('alumnos.sexo', '=', 'Femenino').as('matricula_hembras')])
+        .groupBy(['grados.id_grado', 'empleados.primer_nombre', 'empleados.primer_apellido'])
+
     let grados; 
+
 
     if (queryType && queryType !== 'All') {
         grados = await async(query.where('grados.nivel', '=', queryType).execute(), log)

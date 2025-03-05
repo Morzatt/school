@@ -24,7 +24,7 @@ export interface Database {
 
     bloques_horarios: BloquesHorariosTable
     horarios_grados: HorariosGradosTable
-    horarios_grados_alt: HorariosGradosTable
+    horarios_grados_alt: HorariosGradosAltTable
 }
 
 // 
@@ -129,7 +129,7 @@ export type AlumnosTable = {
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
     edad: string
-    estado: 'Activo' | 'Retirado'
+    estado: ColumnType<'Activo' | 'Retirado', never, "Activo" | "Retirado">
     created_at: ColumnType<Date, never>,
 }
 
@@ -290,7 +290,7 @@ export type MateriaUpdateable = Updateable<MateriasTable>
 export type DiasSemana = "Lunes" | 'Martes' | 'Miercoles' | 'Jueves' | 'Viernes'
 type FirstTwoLetters<T extends string> = T extends `${infer A}${infer B}${infer _}` ? `${A}${B}` : never;
 
-export type BloqueID = `${FirstTwoLetters<DiasSemana>}-${number}${'A' | 'T'}-${number}${'A' | 'T'}` 
+export type BloqueID = `${FirstTwoLetters<DiasSemana>}-${number}${'A' | 't'}-${number}${'A' | 'T'}` 
 export type TimeString = `${number}${number}:${number}${number} ${'AM' | 'PM'}`
 
 export type BloquesHorariosTable = {
@@ -315,11 +315,17 @@ export type HorarioGrado = Selectable<HorariosGradosTable>
 export type HorarioGradoInsertable = Insertable<HorariosGradosTable>
 export type HorarioGradoUpdateable = Updateable<HorariosGradosTable>
 
+export type HorarioID = `${GradoID}:${BloqueID}`
 export type HorariosGradosAltTable = {
-    id_horario: `${GradoID}:${BloqueID}`,
+    id_horario: ColumnType<HorarioID, HorarioID, never>,
+    id_grado: ColumnType<GradoID, GradoID, never>,
     cedula_profesor: string,
     id_materia: string,
     dia_semana: DiasSemana,
     hora_inicio: TimeString,
     hora_fin: TimeString,
 }
+
+export type HorarioGradoAlt = Selectable<HorariosGradosAltTable>
+export type HorarioGradoAltInsertable = Insertable<HorariosGradosAltTable>
+export type HorarioGradoAltUpdateable = Updateable<HorariosGradosAltTable>

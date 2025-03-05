@@ -105,7 +105,7 @@
                                 </select>
 
                                 <label class="form-control flex flex-row items-center border border-base-content/20">
-                                    <input type="date" id="date_search" placeholder="Buscar Donantes"
+                                    <input type="date" id="date_search" placeholder="Buscar Alumnos"
                                     class="w-full scale-0 absolute origin-left translate-x-[-50px] focus:border-transparent active:outline-0 transition-all input-sm active:outline-offset-0"
                                     oninput="{handleSearch}">
                                 </label>
@@ -186,7 +186,7 @@
                                 </button>
 
                                 <button 
-                                onclick="{() => {index=0;filter=""; search="";nivel="all"; handleSearch()}}"
+                                onclick="{() => {index=0;filter=""; search="";nivel="all"; estado ='all'; handleSearch()}}"
                                  aria-label="pagination-next"
                                   class="btn mx-4 gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Limpiar Busqueda">
                                     <img src="{clear_icon}" alt="" class="size-[1.4em] group-active:invert filter icon">

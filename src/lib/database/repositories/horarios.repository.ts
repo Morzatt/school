@@ -1,5 +1,5 @@
 import { db } from "../";
-import type { BloqueHorario, BloqueHorarioInsertable, BloqueHorarioUpdateable, BloqueID, GradoID, HorarioGrado, HorarioGradoInsertable } from "../types";
+import type { BloqueHorario, BloqueHorarioInsertable, BloqueHorarioUpdateable, BloqueID, GradoID, HorarioGrado, HorarioGradoAlt, HorarioGradoAltInsertable, HorarioGradoInsertable, HorarioID } from "../types";
 
 export interface BloquesHorariosRepositoryInterface{
     create(bloque: BloqueHorarioInsertable): Promise<void>
@@ -85,14 +85,14 @@ export let horariosGradosRepository: HorariosGradosRepositoryInterface = {
 }
 
 export interface HorariosGradosAltRepositoryInterface {
-    createBloque(bloque: HorarioGradoInsertable): Promise<void>
-    getHorarioByGrado(id: GradoID): Promise<HorarioGrado[] | undefined>
+    createBloque(bloque: HorarioGradoAltInsertable): Promise<void>
+    getHorarioByGrado(id: HorarioID): Promise<HorarioGradoAlt[] | undefined>
 }
 
 export let horariosGradosAltRepository: HorariosGradosAltRepositoryInterface = {
     createBloque: async (bloque) => {
         try {
-            await db.insertInto("horarios_grados").values(bloque).execute()
+            await db.insertInto("horarios_grados_alt").values(bloque).execute()
         } catch (error) {
             throw error
         }
@@ -101,9 +101,9 @@ export let horariosGradosAltRepository: HorariosGradosAltRepositoryInterface = {
     getHorarioByGrado: async (id) => {
         try {
             let result = await db
-                .selectFrom("horarios_grados")
+                .selectFrom("horarios_grados_alt")
                 .selectAll()
-                .where('horarios_grados.id_grado', '=', id)
+                .where('horarios_grados_alt.id_horario', '=', id)
                 .execute()
             return result
         } catch (error) {

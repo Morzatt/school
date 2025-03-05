@@ -141,7 +141,7 @@
 </script>
 
 <main class="w-full h-full relative">
-    <Alert form={form} styles="absolute top-4 left-4 max-w-sm" />
+    <Alert form={form} styles="lg:fixed absolute top-8 left-12 max-w-sm" />
     <div class="w-full h-max max-h-20 flex items-center justify-between">
         <div>
             <h2 class="text-xl font-bold">Datos del Alumno</h2>
