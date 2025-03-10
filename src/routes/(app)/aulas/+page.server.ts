@@ -11,6 +11,10 @@ import { gradosRepository } from '$lib/database/repositories/grados.repository';
 export const load = (async ({ locals, url }) => {
     let qParam = url.searchParams.get('type') 
     let queryType = capitalizeFirstLetter(qParam ? qParam : "") as Niveles & 'all'
+
+    let turnos = url.searchParams.get('turno')
+    let turno =  capitalizeFirstLetter(turnos ? turnos : "") as Turnos & 'all'
+
     let { log } = locals
 
     let query = db
@@ -29,6 +33,9 @@ export const load = (async ({ locals, url }) => {
 
     let grados; 
 
+    if (turno && turno !== "All") {
+        query = query.where("grados.turno", '=', turno)
+    } 
 
     if (queryType && queryType !== 'All') {
         grados = await async(query.where('grados.nivel', '=', queryType).execute(), log)

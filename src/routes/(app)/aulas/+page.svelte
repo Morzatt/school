@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto, invalidateAll } from '$app/navigation';
     import { basePath } from '$lib';
     import type { ActionData, PageData } from './$types';
     import AulaCard from './AulaCard.svelte';
@@ -7,27 +8,60 @@
     let { data, form }: { data: PageData, form: ActionData } = $props();
     let { grados } = $derived(data)
 
-    let gradoContent: 'all' | 'inicial' | 'primaria' = $state('all')
+    let type = $state('all')
+    let turno = $state("all")
+
+    let url = $derived(`${basePath}/aulas?type=${type}&turno=${turno}`) 
+    async function handleSearch() {
+        // await invalidateAll()
+        goto(url)
+    }
 </script>
 
 <div class="">
     <h1 class="font-bold text-2xl">Aulas</h1>
 
-    <div class="w-full h-12 mt-4 flex items-center justify-start gap-6">
-        <div class="join grado-content rounded-md
-        bg-base-content/10 p-1 gap-1 group">
-            <a href="{basePath}/aulas?type=all" class="{gradoContent === "all" ? "bg-base-100" : "text-base-content/50"}" 
-                onclick={() => {gradoContent = "all";}}>
-                Todo
-            </a>
-            <a href="{basePath}/aulas?type=inicial" class="{gradoContent === "inicial" ? "bg-base-100" : "text-base-content/50"}" 
-                onclick={() => {gradoContent = "inicial";}}>
-                Inicial
-            </a>
-            <a href="{basePath}/aulas?type=primaria" class="{gradoContent === "primaria" ? "bg-base-100" : "text-base-content/50"}" 
-                onclick={() => {gradoContent = "primaria";}}>
-                Primaria
-            </a>
+    <div class="w-full h-12 mt-8 flex items-end justify-start gap-6">
+        <div class="form-control">
+            <div class="label">
+                <b class="label-text">Nivel</b>
+            </div>
+            <div class="join grado-content rounded-md
+            bg-base-content/10 p-1 gap-1 group">
+                <button class="{type === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {type = "all"; await handleSearch();}}>
+                    Todo
+                </button>
+                <button class="{type === "inicial" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {type = "inicial"; await handleSearch();}}>
+                    Inicial
+                </button>
+                <button class="{type === "primaria" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {type = "primaria"; await handleSearch();}}>
+                    Primaria
+                </button>
+            </div>
+        </div>
+        
+        <div class="form-control">
+            <div class="label">
+                <b class="label-text">Turno</b>
+            </div>
+            <div class="join grado-content rounded-md
+            bg-base-content/10 p-1 gap-1 group">
+                <button class="{turno === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {turno = "all"; await handleSearch();}}>
+                    Todo
+                </button>
+                <button class="{turno === "mañana" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {turno = "mañana"; await handleSearch();}}>
+                    Mañana
+                </button>
+                <button class="{turno === "tarde" ? "bg-base-100" : "text-base-content/50"}" 
+                    onclick={async () => {turno = "tarde"; await handleSearch();}}>
+                    Tarde
+                </button>
+            </div>
         </div>
 
         <button class="btn btn-outline btn-sm"

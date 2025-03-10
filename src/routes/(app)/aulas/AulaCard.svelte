@@ -44,7 +44,7 @@
                 "{grado.seccion}"
             </span>
 
-            <div class="w-full mt-3 flex items-center justify-between my-1 
+            <div class="w-full mt-3 flex items-center justify-between 
             [&_.label-text]:font-bold
             *:w-1/3 *:border-y *:border-base-content/40">
                 <div class="form-control flex flex-col items-center justify-center border-l rounded-l-md">
@@ -75,13 +75,10 @@
                 </div>
             </div>
         </div>
-        <div class="divider py-0 my-0"></div>
-        <div class="h-fit w-full mt-2 join gap-2 *:flex-1 *:btn-outline *:border-base-content/50">
-            <button class="btn btn-xs px-9 join-item btn-secondary">
+
+        <div class="h-fit w-full mt-1 join gap-2 *:flex-1 *:btn-outline *:border-base-content/50">
+            <a href="{basePath}/aulas/{grado.id_grado}" class="btn btn-xs btn-primary px-9 join-item [&_span]:hover:text-base-100">
                 <span>Administrar</span>
-            </button>
-            <a href="{basePath}/aulas/{grado.id_grado}" class="btn btn-xs btn-primary px-9 join-item">
-                <span>Ver</span>
             </a>
         </div>
     </div>

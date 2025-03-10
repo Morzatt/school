@@ -15,6 +15,7 @@
     import { enhance } from '$app/forms';
     import Horario from './Horario.svelte';
     import type { ActionData } from '../$types';
+    import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
     let { grado, materias, alumnos } = $derived(data)
@@ -100,26 +101,39 @@
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="rounded-md p-4 bg-base-100">
+        <!-- RIGHT / ALUMNOS -->
+        <div class="rounded-md p-4 bg-base-100 min-h-[30rem]">
             <div class="w-full flex items-center justify-between">
                 <h3 class="text-xl font-bold">Lista de Alumnos</h3>
-                <button class="btn btn-circle btn-xs">
+
+                <button class="btn btn-circle btn-xs" onclick={() => {openModal('add_alumno_modal')}}>
                     <img src="{add_icon}" alt="" class="icon">
                 </button>
+                <AddAlumnosModal form={null}/>
             </div>
 
-            <div class="w-full mt-3">
+            <div class="w-full mt-3 max-h-[25rem]
+                         overflow-x-hidden overflow-y-auto 
+                         border border-base-content/40 p-3 rounded-md" style="scrollbar-width: thin;">
                 {#if alumnos && alumnos.length > 0}
                     {#each alumnos as alumno, i}
-                        <div class="w-full grid grid-cols-[5fr_1fr] *:bb [&_a]:text-center">
-                            <div class="">
-                                <span class="font-bold mx-2">{i+1}</span>
-                                <span>{alumno.primer_nombre} {alumno.primer_apellido}</span>
+                        <div class="w-full flex items-center justify-between">
+                            <div class="flex items-center">
+                                <b class="mr-3">{i+1}</b>
+                                <div class="border-l border-base-content/40 pl-3">
+                                    <p>{alumno.primer_nombre} {alumno.primer_apellido}</p>
+                                    <span>
+                                        <span class="text-sm">Cedula: </span>
+                                        <span class="text-base-content/60 text-xs font-semibold">{alumno.cedula_escolar}</span>
+                                    </span> 
+                                </div>
                             </div>
 
-                            <a href="{basePath}/alumnos/{alumno.cedula_escolar}">ver</a>
+                            <a href="{basePath}/alumnos/{alumno.cedula_escolar}" class="btn btn-xs btn-square p-0 m-0 flex items-center justify-center">
+                                <img src="{ver_icon}" alt="" class="icon">
+                            </a>
                         </div> 
+                        <div class="bg-base-content/30 h-px my-1 py-0"></div>
                     {/each}                   
                 {/if}
             </div>
@@ -135,3 +149,26 @@
         </div>
     </div>
 </main>
+
+<dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="delete_confirmation_close">✕</button>
+        </form>
+        <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar esta Aula?</h3>
+        <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+
+        <div class="modal-container">
+            <form action="?/delete" method="POST" use:enhance class="h-auto w-full ">
+                <input type="hidden" value="{grado!.id_grado}" name="grado">
+                <button class="btn btn-error btn-sm mt-6">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<style>
+
+</style>

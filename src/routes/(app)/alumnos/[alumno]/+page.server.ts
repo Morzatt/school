@@ -4,7 +4,6 @@ import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { basePath } from '$lib';
 import { db } from '$lib/database';
-import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
 import type { AlumnoUpdateable, GradoID, GradoInsertable, Niveles, Numeros, RepresentantesAlumnosInsertable, RepresentanteUpdateable, Secciones, Turnos } from '$lib/database/types';
 import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/utils/validators';
 import { createGradoId } from '$lib/utils/createGradoId';

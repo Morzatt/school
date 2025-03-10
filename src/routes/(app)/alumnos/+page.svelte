@@ -214,8 +214,8 @@
                                 </thead>
                                 <tbody>
                                     {#if alumnos}
-                                        {#each alumnos as alumno, i}
-                                            <tr class="border-none">
+                                        {#each alumnos as alumno, i(alumno)}
+                                            <tr class="border-0 border-base-content/30 shadow-sm">
                                                 <th>{(i+1)+index}</th>
                                                 <th>{alumno.cedula_escolar}</th>
                                                 <th>{alumno.primer_nombre}</th>

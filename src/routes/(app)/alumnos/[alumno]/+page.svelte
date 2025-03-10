@@ -189,8 +189,8 @@
         </button>
     </div>
 
-    <div class="w-full mt-4 flex items-start justify-start gap-4">
-        <div class="w-max min-h-60 flex flex-col items-center justify-center">
+    <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
+        <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center">
             <div class="w-max p-5 flex items-center justify-center flex-col rounded-md bg-base-200 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <form use:enhance action="?/edit" method="POST" class="w-3/5 min-h-60 rounded-md p-4 bg-base-100">
+        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Detalles del Alumno</h3>
 
@@ -253,13 +253,13 @@
             </div>
         </form>
 
-        <div class="flex-1 min-h-72 rounded-md p-4 bg-base-100">
+        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100">
 
         </div>
     </div>
 
-    <div class="w-full mt-4 flex items-center justify-start gap-4">
-        <div class="w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+    <div class="w-full mt-4 flex flex-col lg:flex-row items-center justify-start gap-4">
+        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Representantes</h3>
 
@@ -299,7 +299,7 @@
             </div>
         </div>
 
-        <form action="?/editAula" method="POST" use:enhance class="w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Datos Escolares</h3>
 
@@ -507,8 +507,6 @@
         </div>
     </div>
 </dialog>
-
-
 
 <style lang="postcss">
     .modal-container {

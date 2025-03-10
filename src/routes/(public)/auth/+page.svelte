@@ -359,8 +359,8 @@
     <Alert form={ form } styles="absolute left-10 top-6 max-w-[25rem]"/>
 
 	<div class="h-screen w-full lg:w-[85%] xl:w-3/4 border-0 border-red-500 flex items-center justify-center">
-        <div class="p-5 size-full">
-            <div class="main-container size-full
+        <div class="p-5 w-full lg:h-full">
+            <div class="main-container w-full lg:h-full
                 p-2 bg-white rounded-xl shadow-xl
                 min-[730px]:flex min-[730px]:items-center min-[730px]:justify-between">
 
@@ -393,7 +393,7 @@
 
 <style lang="postcss">
 	main {
-		@apply max-h-screen w-full flex items-center justify-center overflow-y-hidden bg-primary/10;
+		@apply max-h-screen w-full flex items-center justify-center overflow-y-auto bg-primary/10;
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FFFFFF", endColorstr="#EEEEFA", GradientType=1 );
 	}
     label input {

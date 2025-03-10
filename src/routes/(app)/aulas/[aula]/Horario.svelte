@@ -42,7 +42,7 @@
     }
 </script>
 
-<div class="w-full h-max
+<div class="w-full h-max bg-base-200 p-2 rounded-lg
             flex flex-col lg:flex-row items-center lg:items-start justify-start
             join">
     {#each week as dia} 
@@ -83,7 +83,8 @@
 <style lang="postcss">
     .dia-col {
         @apply lg:join-item w-full lg:w-auto
-        border border-base-content/40 
+        border border-base-content/60
+        bg-base-100
         h-full flex-1 rounded-md 
         my-4 lg:my-0
         grid auto-cols-fr auto-rows-max
@@ -92,9 +93,9 @@
     }
 
     .dia-col .dia-head {
-        @apply text-center font-bold
-        bg-primary/20
-        border-r lg:border-r-0 border-b border-base-content/40
+        @apply text-center font-bold rounded-none
+        bg-primary/50
+        border-r lg:border-r-0 border-b border-base-content/80
         w-auto lg:h-fit 
         flex-1
         relative
