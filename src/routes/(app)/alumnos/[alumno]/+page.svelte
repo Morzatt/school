@@ -235,7 +235,7 @@
                     <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                         <div class="flex items-center justify-between gap-2">
                             <img src="{field.icon}" alt="" class="icon">
-                            <p class="font-semibold text-base-content/80">{field.title}</p> 
+                            <p class="font-semibold text-base-content/80 ">{field.title}</p> 
                         </div>
 
                         {#if edicion && field.updateable}
@@ -246,7 +246,7 @@
                                 class="input input-bordered input-sm max-w-xs"
                                 value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
                         {:else}
-                            <b>{field.value}</b> 
+                            <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.value}</b> 
                         {/if}
                     </div>
                 {/each}
@@ -270,7 +270,9 @@
             </div>
 
             <div class="mt-3 w-full">
-                <div class="p-1 border-base-content/40 mb-1 font-bold bg-base-content text-base-100
+                <div class="p-1 border-base-content/40 mb-1 font-bold
+                            pb-1
+                            bg-base-content rounded-md px-2 text-base-100
                             w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
                     <p>Cedula</p>
                     <p>Nombre</p>

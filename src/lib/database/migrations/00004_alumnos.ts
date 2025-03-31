@@ -28,7 +28,6 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
     .addColumn('direccion', 'text', (col) => col.notNull())
     .addColumn('correo_electronico', 'text', (col) => col.notNull())
-    .addColumn('grado_instruccion', 'text', (col) => col.notNull())
     .addColumn('ocupacion', 'text', (col) => col.notNull())
     .execute()
 

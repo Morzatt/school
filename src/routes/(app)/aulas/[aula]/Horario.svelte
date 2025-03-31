@@ -100,7 +100,7 @@
         flex-1
         relative
         col-span-2 lg:col-span-full
-        flex items-center justify-center p-3;
+        flex items-center justify-center px-3 py-2;
         button {
             @apply hover:bg-base-content active:bg-base-200 active:scale-95 transition-all duration-200 ease-in-out;
         }
@@ -127,7 +127,7 @@
         @apply p-1 w-full;
 
         .materia-card {
-            @apply p-2 border-l-[4px] border-l-primary border border-primary-content/40
+            @apply px-2 py-1 border-l-[4px] border-l-primary border border-primary-content/40
             rounded-l-md font-bold text-base-content/90
             bg-primary/10;
         }

@@ -15,9 +15,10 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-body, main {
+body,
+main {
     overflow-x: hidden;
-    scroll-behavior: smooth; 
+    scroll-behavior: smooth;
     /* font-family: "Open Sans", serif; */
     /* font-family: "Open Sans", serif; */
 }
@@ -30,14 +31,202 @@ body, main {
 }
 
 
+
 @layer components {
     .bb {
         @apply border border-black;
     }
-    
-    :root:has(input.theme-controller[value=dark]:checked) img.icon, .dark-invert{
+
+    :root:has(input.theme-controller[value=dark]:checked) img.icon,
+    .dark-invert {
         @apply filter invert;
     }
 
-    
+    @media (prefers-reduced-motion: no-preference) {
+        .animate-pop {
+            animation: button-pop var(--animation-btn, 0.25s)ease-out;
+        }
+    }
+
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .animate-pop-delayed {
+        --delay: 0ms;
+        opacity: 0;
+        animation: fade 0.1s ease-in-out forwards, button-pop var(--animation-btn, 0.25s) ease-out;
+        animation-delay: var(--delay);
+    }
+
+    @keyframes slideX {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+            /* Start 20px below */
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+            /* End at original position */
+        }
+    }
+
+    @keyframes slide-X {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+            /* Start 20px below */
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+            /* End at original position */
+        }
+    }
+
+    /* Apply the animation to the items */
+    .animate-x {
+        --delay: 0ms;
+        opacity: 0;
+        /* Start invisible */
+        animation: slideX 0.3s ease-in-out forwards;
+        /* Animation properties */
+        animation-delay: var(--delay);
+    }
+
+    /* Apply the animation to the items */
+    .animate--x {
+        --delay: 0ms;
+        opacity: 0;
+        /* Start invisible */
+        animation: slide-X 0.3s ease-in-out forwards;
+        /* Animation properties */
+        animation-delay: var(--delay);
+    }
+
+    @keyframes slideY {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+            /* Start 20px below */
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            /* End at original position */
+        }
+    }
+
+    @keyframes slide-Y {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+            /* Start 20px below */
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            /* End at original position */
+        }
+    }
+
+    /* Apply the animation to the items */
+    .animate-y {
+        --delay: 0ms;
+        opacity: 0;
+        /* Start invisible */
+        animation: slideY 0.3s ease-in-out forwards;
+        /* Animation properties */
+        animation-delay: var(--delay);
+    }
+
+    /* Apply the animation to the items */
+    .animate--y {
+        --delay: 0ms;
+        opacity: 0;
+        /* Start invisible */
+        animation: slide-Y 0.3s ease-in-out forwards;
+        /* Animation properties */
+        animation-delay: var(--delay);
+    }
+
+    @-webkit-keyframes scale-up-hor-right {
+        0% {
+            -webkit-transform: scaleX(.4);
+            transform: scaleX(.4);
+            -webkit-transform-origin: 100% 100%;
+            transform-origin: 100% 100%
+        }
+
+        100% {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+            -webkit-transform-origin: 100% 100%;
+            transform-origin: 100% 100%
+        }
+    }
+
+    @keyframes scale-up-hor-right {
+        0% {
+            -webkit-transform: scaleX(.4);
+            transform: scaleX(.4);
+            -webkit-transform-origin: 100% 100%;
+            transform-origin: 100% 100%
+        }
+
+        100% {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+            -webkit-transform-origin: 100% 100%;
+            transform-origin: 100% 100%
+        }
+    }
+
+    .scale-up-hor-right {
+        --easing: cubic-bezier(.86, 0.000, .07, 1.000);
+        -webkit-animation: scale-up-hor-right .4s var(--easing) both;
+        animation: scale-up-hor-right .4s var(--easing) both
+    }
+
+    @-webkit-keyframes scale-up-center {
+        0% {
+            -webkit-transform: scale(.5);
+            transform: scale(.5)
+        }
+
+        100% {
+            -webkit-transform: scale(1);
+            transform: scale(1)
+        }
+    }
+
+    @keyframes scale-up-center {
+        0% {
+            -webkit-transform: scale(.5);
+            transform: scale(.5)
+        }
+
+        100% {
+            -webkit-transform: scale(1);
+            transform: scale(1)
+        }
+    }
+
+    .scale-up-center {
+        --easing: cubic-bezier(.86, 0.000, .07, 1.000);
+        -webkit-animation: scale-up-center .4s var(--easing) both;
+        animation: scale-up-center .4s var(--easing) both
+    }
+
 }

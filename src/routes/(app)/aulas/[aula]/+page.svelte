@@ -114,18 +114,27 @@
 
             <div class="w-full mt-3 max-h-[25rem]
                          overflow-x-hidden overflow-y-auto 
-                         border border-base-content/40 p-3 rounded-md" style="scrollbar-width: thin;">
+                         border border-base-content/40 px-3 pt-2 rounded-md" style="scrollbar-width: thin;">
                 {#if alumnos && alumnos.length > 0}
                     {#each alumnos as alumno, i}
                         <div class="w-full flex items-center justify-between">
                             <div class="flex items-center">
                                 <b class="mr-3">{i+1}</b>
                                 <div class="border-l border-base-content/40 pl-3">
-                                    <p>{alumno.primer_nombre} {alumno.primer_apellido}</p>
-                                    <span>
+                                    <b>{alumno.primer_nombre} {alumno.primer_apellido}</b>
+                                    <div>
                                         <span class="text-sm">Cedula: </span>
-                                        <span class="text-base-content/60 text-xs font-semibold">{alumno.cedula_escolar}</span>
-                                    </span> 
+                                        <span class="text-sm font-semibold">{alumno.cedula_escolar}</span>
+                                    </div> 
+
+                                    <div>
+                                        <span class="text-xs">Edad: </span>
+                                        <span class="text-base-content/60 text-xs font-semibold">{alumno.edad} Años</span>
+                                        <span>-</span>
+                                        <span class="text-xs font-semibold {alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">
+                                            {alumno.sexo}
+                                        </span>
+                                    </div> 
                                 </div>
                             </div>
 
@@ -133,7 +142,7 @@
                                 <img src="{ver_icon}" alt="" class="icon">
                             </a>
                         </div> 
-                        <div class="bg-base-content/30 h-px my-1 py-0"></div>
+                        <div class="bg-base-content/30 h-px my-2 py-0"></div>
                     {/each}                   
                 {/if}
             </div>

@@ -38,27 +38,27 @@
 
     async function handleSearch() {
         await invalidateAll()
-        goto(url)
+        await goto(url, {  keepFocus: true })
     }
 
     let paginas = $derived(Math.floor(data.total_alumnos/15)) 
 </script>
 
-{#snippet stat(title:string, stat: any, ten: string)}
-<div class="h-28 w-[calc(50%-0.25rem)] lg:w-1/4">
-    <div class="border border-base-content/40 h-2/6
-                px-2 flex items-center justify-start
-                text-sm font-bold bg-primary text-base-100
-                rounded-md rounded-bl-none rounded-br-none border-b-0">
-        <span>{title}</span>
+{#snippet stat(title:string, stat: any, ten: string, animation?: { animation: string, easing: string })}
+    <div class="h-28 w-[calc(50%-0.25rem)] lg:w-1/4 {animation?.animation ? animation?.animation : ""}" style="--easing: {animation?.easing ? animation?.easing : ""}">
+        <div class="border border-base-content/40 h-2/6
+                    px-2 flex items-center justify-start
+                    text-sm font-bold bg-primary text-base-100
+                    rounded-md rounded-bl-none rounded-br-none border-b-0">
+            <span>{title}</span>
+        </div>
+        <div class="border border-base-content/40 h-4/6
+                    px-2 flex items-center justify-start 
+                    rounded-md rounded-tl-none rounded-tr-none bg-base-100 border-t-0">
+            <span class="text-4xl font-bold pr-4 border-r border-base-content/40">{stat}</span>
+            <span class="bg-success rounded-lg text-xs ml-2 p-1 px-2 text-success-content">{ten}</span>
+        </div>
     </div>
-    <div class="border border-base-content/40 h-4/6
-                px-2 flex items-center justify-start 
-                rounded-md rounded-tl-none rounded-tr-none bg-base-100 border-t-0">
-        <span class="text-4xl font-bold pr-4 border-r border-base-content/40">{stat}</span>
-        <span class="bg-success rounded-lg text-xs ml-2 p-1 px-2 text-success-content">{ten}</span>
-    </div>
-</div>
 {/snippet}
 
 <div class="w-full h-full relative">
@@ -75,21 +75,21 @@
                     <div class="card-body p-0">
 
                         <!-- STATS -->
-                        <div class="flex items-center justify-between max-lg:flex-wrap lg:px-5 pt-5 lg:gap-5 gap-1">
+                        <div class="flex items-center justify-between max-lg:flex-wrap lg:px-5 pt-5 lg:gap-5 gap-1 animate-y">
                             {@render stat("Matricula Total", matriculas.matricula!.alumnos, '+230')}
                             {@render stat("Matricula Mañana", matriculas.matricula_manana!.alumnos, '+230')}
                             {@render stat("Matricula Tarde", matriculas.matricula_tarde!.alumnos, '+230')}
                         </div>                        
 
                         <!-- SEARCH, SORT, ADD -->
-                        <div class="flex items-center justify-between px-5 pt-5">
+                        <div class="flex items-center justify-between px-5 pt-5 animate-y" style="--delay: 50ms">
                             <div class="inline-flex items-center gap-3"> 
                                 <div class="join">
                                     <label class="form-control flex flex-row items-center 
                                     rounded-xl rounded-r-none border border-base-content/20
                                      py-1 px-3
                                      bg-base-100">
-                                        <input bind:value={search} placeholder="Buscar Alumnos"
+                                        <input bind:value={search} placeholder="Buscar Alumnos" oninput="{handleSearch}"
                                             class="input w-full focus:bg-transparent focus:border-transparent focus:outline-0 transition-all input-sm focus:outline-offset-0">
                                     </label>
                                     <button class="rounded-xl px-2 tooltip rounded-l-none border border-base-content/20 bg-base-200" data-tip="Buscar"
@@ -121,7 +121,7 @@
                         </div>
                         
                         <!-- FILTER -->
-                        <div class="flex items-end mt-1 justify-between px-5 h-16 mb-4">
+                        <div class="flex items-end mt-1 justify-between px-5 h-16 mb-4 animate-y" style="--delay: 100ms">
                             <div class="flex items-center justify-between gap-4">
                                 <div class="join gap-4 flex items-end justify-between tooltip
                                 [&_.label-text]:font-bold" data-tip="Seleccionar Filtro">
@@ -197,10 +197,10 @@
                         <div class="divider"></div>
 
                         <!-- TABLE -->
-                        <div class="overflow-auto">
-                            <table class="table mt-2 text-center flex">
-                                <thead class="bg-base-content [&_span]:font-bold">
-                                    <tr>
+                        <div class="overflow-auto animate-y bg-base-100 rounded-md p-2" style="--delay: 150ms">
+                            <table class="table mt-2 text-center flex rounded-md">
+                                <thead class="bg-base-content [&_span]:font-bold rounded-md">
+                                    <tr class="rounded-md">
                                         <th><span class="text-sm font-medium text-base-100">#</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Cédula</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Nombre</span></th>
@@ -215,7 +215,7 @@
                                 <tbody>
                                     {#if alumnos}
                                         {#each alumnos as alumno, i(alumno)}
-                                            <tr class="border-0 border-base-content/30 shadow-sm">
+                                            <tr class="border-0 border-base-content/30 shadow-sm animate-y *:border *:border-base-content/20" style="--delay: {(i*100)+50}ms">
                                                 <th>{(i+1)+index}</th>
                                                 <th>{alumno.cedula_escolar}</th>
                                                 <th>{alumno.primer_nombre}</th>

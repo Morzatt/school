@@ -50,7 +50,7 @@
 <div class="">
     <h3 class="text-xl font-bold">{type === 'all' ? 'Todos los Empleados' : capitalizeFirstLetter(type)}</h3>
 
-    <div class="w-full h-12 mt-4 flex items-center justify-between gap-4 px-5">
+    <div class="w-full h-12 mt-4 flex items-center justify-between gap-4 px-5 animate-y" style="--delay: 100ms">
         <div class="flex items-center justify-start gap-4">
             <div class="join">
                 <label class="form-control flex flex-row items-center 
@@ -81,7 +81,7 @@
         </button>
     </div>
 
-    <div class="w-full h-12 mt-10 flex items-end justify-between gap-6 px-5">
+    <div class="w-full h-12 mt-10 flex items-end justify-between gap-6 px-5 animate-y" style="--delay: 250ms">
         <div class="flex items-end justify-between gap-4">
             <div class="select-none bg-base-100 border border-base-content/40 rounded-md btn-square btn-sm flex items-center justify-center">
                 <img src="{filter_icon}" alt="" class="icon">
@@ -153,7 +153,7 @@
 
     <div class="divider"></div>
 
-    <div class="overflow-auto">
+    <div class="overflow-auto animate-y p-2 bg-base-100 rounded-md" style="--delay: 300ms">
         <table class="table mt-2 text-center flex">
             <thead class="bg-base-content [&_span]:font-bold">
                 <tr>
@@ -170,8 +170,8 @@
             </thead>
             <tbody>
                 {#if empleados && empleados.length > 0}
-                    {#each empleados as empleado, i}
-                        <tr class="border-none">
+                    {#each empleados as empleado, i(empleado)}
+                        <tr class="border-none animate-y space-y-2 bg-base-300" style="--delay: {(i*100)+300}ms">
                             <th>{(i+1)+index}</th>
                             <th>V-{formatStringWithDots(empleado.cedula)}</th>
                             <th>{empleado.primer_nombre}</th>

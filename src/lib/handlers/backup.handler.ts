@@ -55,3 +55,67 @@ export async function uploadBackupHandler(
 
     return { success: true, type: "Success", message: "Solicitud procesada con éxito!" };
 }
+
+const { spawn } = require('child_process');
+const fs = require('fs');
+
+/**
+ * Creates a PostgreSQL database dump.
+ * @param {string} outputPath - Path to save the dump file.
+ * @param {object} dbConfig - Database connection details.
+ * @param {string} [pgDumpPath='pg_dump'] - Path to pg_dump executable.
+ */
+function createPgDump(outputPath, dbConfig, pgDumpPath = 'pg_dump') {
+  const { host, port, user, password, database } = dbConfig;
+
+  // Configure pg_dump arguments
+  const args = [
+    '-h', host,
+    '-p', port.toString(),
+    '-U', user,
+    '-d', database,
+    // Add other options (e.g., '-Fc' for custom format)
+  ];
+
+  // Set environment variables (including password)
+  const env = {
+    ...process.env,
+    PGPASSWORD: password, // Pass password non-interactively
+  };
+
+  // Create write stream for the output
+  const outputStream = fs.createWriteStream(outputPath);
+
+  // Spawn pg_dump process
+  const pgDumpProcess = spawn(pgDumpPath, args, { env });
+
+  // Pipe stdout to the output file
+  pgDumpProcess.stdout.pipe(outputStream);
+
+  // Handle errors and process exit
+  pgDumpProcess.stderr.on('data', (data) => {
+    console.error(`pg_dump error: ${data}`);
+  });
+
+  pgDumpProcess.on('close', (code) => {
+    if (code !== 0) {
+      console.error(`pg_dump exited with code ${code}`);
+    } else {
+      console.log('Dump created successfully at', outputPath);
+    }
+  });
+
+  // Handle stream errors
+  outputStream.on('error', (err) => {
+    console.error('File write error:', err);
+  });
+}
+
+// Example configuration
+createPgDump('./backup.sql', {
+  host: 'localhost',
+  port: 5432,
+  user: 'postgres',
+  password: 'your_password',
+  database: 'your_database'
+});
