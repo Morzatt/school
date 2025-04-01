@@ -8,6 +8,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('segundo_nombre', 'text', (col) => col.notNull())
     .addColumn('primer_apellido', 'text', (col) => col.notNull())
     .addColumn('segundo_apellido', 'text', (col) => col.notNull())
+
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
     .addColumn('fecha_nacimiento', 'date', (col) => col.notNull())
     .addColumn('edad', 'text', (col) => col.notNull())

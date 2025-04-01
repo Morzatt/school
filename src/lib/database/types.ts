@@ -126,6 +126,7 @@ export type AlumnosTable = {
     segundo_nombre: string,
     primer_apellido: string,
     segundo_apellido:string,
+    nacionalidad: "Venezolano" | "Extranjero",
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
     edad: string

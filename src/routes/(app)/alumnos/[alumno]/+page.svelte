@@ -272,17 +272,17 @@
             <div class="mt-3 w-full">
                 <div class="p-1 border-base-content/40 mb-1 font-bold
                             pb-1
-                            bg-base-content rounded-md px-2 text-base-100
+                            px-2
                             w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
-                    <p>Cedula</p>
+                    <!-- <p>Cedula</p>
                     <p>Nombre</p>
                     <p>Relación</p>
                     <p>Ver</p>
-                    <p>Eliminar</p>
+                    <p>Eliminar</p> -->
                 </div>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
-                        <div class="p-1 w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
+                        <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
                             <p>V-{formatStringWithDots(representante.cedula)}</p>
                             <p>{representante.nombre} {representante.apellido}</p>
                             <p>{representante.relacion}</p>

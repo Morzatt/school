@@ -6,10 +6,16 @@
     import chevron_left from "$lib/images/icons/chevron_left.svg"
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import chevron_right from "$lib/images/icons/chevron_right.svg"
+
+    import turno_all from "$lib/images/icons/turno_all.svg"
+    import turno_mañana from "$lib/images/icons/turno_manana.svg"
+    import turno_tarde from "$lib/images/icons/turno_tarde.svg"
+
     import { basePath } from '$lib';
     import Alert from '$lib/components/Messages/Alert.svelte';
     import { enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
+    import type { Niveles, Numeros, Secciones } from '$lib/database/types';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
     let { alumnos, matriculas } = $derived(data)
@@ -42,6 +48,23 @@
     }
 
     let paginas = $derived(Math.floor(data.total_alumnos/15)) 
+
+    function formatNumero(nm: Numeros | null) {
+        switch (nm) {
+            case "1":
+                return "1er"
+            case "2" :
+                return "2do"
+            case "3":
+                return "3er"
+            default:
+                return `${nm}to`
+        }
+    }
+
+    function filterGrado(numero: Numeros | null, nivel: Niveles | null, seccion: Secciones | null) {
+        return (numero) && (nivel) && (seccion) ? true : false
+    }
 </script>
 
 {#snippet stat(title:string, stat: any, ten: string, animation?: { animation: string, easing: string })}
@@ -75,10 +98,35 @@
                     <div class="card-body p-0">
 
                         <!-- STATS -->
-                        <div class="flex items-center justify-between max-lg:flex-wrap lg:px-5 pt-5 lg:gap-5 gap-1 animate-y">
-                            {@render stat("Matricula Total", matriculas.matricula!.alumnos, '+230')}
-                            {@render stat("Matricula Mañana", matriculas.matricula_manana!.alumnos, '+230')}
-                            {@render stat("Matricula Tarde", matriculas.matricula_tarde!.alumnos, '+230')}
+                        <div class="flex items-center justify-end max-lg:flex-wrap lg:px-5 pt-5 lg:gap-5 gap-1 animate-y">
+                            <div class="stats shadow">
+                                <div class="stat">
+                                    <div class="stat-figure text-primary">
+                                        <img src="{turno_all}" alt=""  class="inline-block h-8 w-8 stroke-current icon">
+                                    </div>
+                                    <div class="stat-value">{matriculas.matricula?.alumnos}</div>
+                                    <div class="stat-title">Total de Alumnos</div>
+                                    <div class="stat-desc text-secondary">31 tasks remaining</div>
+                                </div>
+
+                                <div class="stat">
+                                    <div class="stat-figure text-secondary">
+                                        <img src="{turno_mañana}" alt="" class="inline-block h-8 w-8 stroke-current icon">
+                                    </div>
+                                    <div class="stat-title">Turno de la Mañana</div>
+                                    <div class="stat-value text-primary">{matriculas.matricula_manana?.alumnos}</div>
+                                    <div class="stat-desc">21% more than last month</div>
+                                </div>
+
+                                <div class="stat">
+                                    <div class="stat-figure text-secondary">
+                                        <img src="{turno_tarde}" alt="" class="inline-block h-8 w-8 stroke-current icon">
+                                    </div>
+                                    <div class="stat-title">Turno de la Tarde</div>
+                                    <div class="stat-value text-secondary">{matriculas.matricula_tarde?.alumnos}</div>
+                                    <div class="stat-desc">21% more than last month</div>
+                                </div>
+                            </div>
                         </div>                        
 
                         <!-- SEARCH, SORT, ADD -->
@@ -203,10 +251,11 @@
                                     <tr class="rounded-md">
                                         <th><span class="text-sm font-medium text-base-100">#</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Cédula</span></th>
-                                        <th><span class="text-sm font-medium text-base-100">Nombre</span></th>
-                                        <th><span class="text-sm font-medium text-base-100">Apellido</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Nombres</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Apellidos</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
-                                        <th><span class="text-sm font-medium text-base-100">Fecha de Nacimiento</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Aula</span></th>
+                                        <th><span class="text-sm font-medium text-base-100">Turno</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Edad</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Estado</span></th>
                                         <th><span class="text-sm font-medium text-base-100">Ver</span></th>
@@ -215,18 +264,44 @@
                                 <tbody>
                                     {#if alumnos}
                                         {#each alumnos as alumno, i(alumno)}
-                                            <tr class="border-0 border-base-content/30 shadow-sm animate-y *:border *:border-base-content/20" style="--delay: {(i*100)+50}ms">
+                                            {@const grado = filterGrado(alumno.numero, alumno.nivel, alumno.seccion)}
+
+                                            <tr class="bg-base-200" style="--delay: {(i*100)+150}ms">
                                                 <th>{(i+1)+index}</th>
-                                                <th>{alumno.cedula_escolar}</th>
-                                                <th>{alumno.primer_nombre}</th>
-                                                <th>{alumno.primer_apellido}</th>
-                                                <th>{alumno.sexo}</th>
-                                                <th>{new Date(alumno.fecha_nacimiento).toLocaleDateString()}</th>
-                                                <th>{alumno.edad}</th>
-                                                <th>{alumno.estado}</th>
                                                 <th>
-                                                    <a class="btn btn-sm btn-square" href="{basePath}/alumnos/{alumno.cedula_escolar}">
-                                                        <img src="{ver_icon}" alt="" class="icon">
+                                                    <span>
+                                                        {alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}
+                                                        {alumno.cedula_escolar}
+                                                    </span>
+                                                </th>
+                                                <th>
+                                                    <div>{alumno.primer_nombre}</div>
+                                                    <div class="text-base-content/40">{alumno.segundo_nombre}</div>
+                                                </th>
+                                                <th>
+                                                    <div>{alumno.primer_apellido}</div>
+                                                    <div class="text-base-content/40">{alumno.segundo_apellido}</div>
+                                                </th>
+                                                <th class="{ alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{alumno.sexo}</th>
+                                                <th class="{grado ? "" : "text-error"}">
+                                                    {
+                                                        grado ? 
+                                                            `${formatNumero(alumno.numero)} ${alumno.nivel === "Inicial" ? "Nivel" : "Grado"} ${(alumno.seccion)}`
+                                                        : "No Asignado"
+                                                    }
+                                                </th>
+                                                <th class="{ alumno.turno ? alumno.turno === "Mañana" ? "text-orange-500" : "text-purple-600" : "text-error" }">
+                                                    {alumno.turno ? alumno.turno : "No asignado"}
+                                                </th>
+                                                <th>{alumno.edad}</th>
+                                                <th>
+                                                    <div class="{alumno.estado === "Retirado" ? "bg-error" : "bg-success"} p-2 rounded-sm">
+                                                        {alumno.estado}
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <a class="btn btn-sm btn-square btn-accent rounded-md" href="{basePath}/alumnos/{alumno.cedula_escolar}">
+                                                        <img src="{ver_icon}" alt="" class="icon filter invert">
                                                     </a>
                                                 </th>
                                             </tr>

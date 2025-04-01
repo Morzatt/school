@@ -171,15 +171,21 @@
             <tbody>
                 {#if empleados && empleados.length > 0}
                     {#each empleados as empleado, i(empleado)}
-                        <tr class="border-none animate-y space-y-2 bg-base-300" style="--delay: {(i*100)+300}ms">
+                        <tr class="border-none animate-y space-y-2 bg-base-200" style="--delay: {(i*100)+300}ms">
                             <th>{(i+1)+index}</th>
                             <th>V-{formatStringWithDots(empleado.cedula)}</th>
-                            <th>{empleado.primer_nombre}</th>
-                            <th>{empleado.primer_apellido}</th>
-                            <th>{empleado.sexo}</th>
+                            <th>
+                                <div>{empleado.primer_nombre}</div>
+                                <div class="text-base-content/40">{empleado.segundo_nombre}</div>
+                            </th>
+                            <th>
+                                <div>{empleado.primer_apellido}</div>
+                                <div class="text-base-content/40">{empleado.segundo_apellido}</div>
+                            </th>
+                            <th class="{ empleado.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{empleado.sexo}</th>
                             <th>{empleado.area}</th>
                             <th>{empleado.cargo}</th>
-                            <th>{empleado.turno}</th>
+                            <th class="{ empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
                             <th>
                                 <a class="btn btn-sm btn-square" href="{basePath}/empleado/{empleado.cedula}">
                                     <img src="{ver_icon}" alt="" class="icon">

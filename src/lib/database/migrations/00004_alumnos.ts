@@ -13,9 +13,22 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('direccion', 'text', (col) => col.notNull())
     .addColumn('edad', 'text', (col) => col.notNull())
     .addColumn('estado', 'text', (col) => col.notNull().check(sql`estado IN  ('Activo', 'Retirado', 'Expulsado')`))
+    .addColumn('nacionalidad', 'text', (col) => col.notNull())
+
     .addColumn('created_at', "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
+
     .addColumn('madre', 'text', (col) => col.notNull())
     .addColumn('padre', 'text')
+
+    .addColumn('lateralidad', 'text', (col) => col.notNull())
+    .addColumn('peso', 'text', (col) => col.notNull())
+    .addColumn('estatura', 'text', (col) => col.notNull())
+
+    .addColumn('calzado', 'text', (col) => col.notNull())
+    .addColumn('camisa', 'text', (col) => col.notNull())
+    .addColumn('pantalon', 'text', (col) => col.notNull())
+
+    .addColumn('estatura', 'text', (col) => col.notNull())
     .addForeignKeyConstraint("fk_madre", ["madre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .addForeignKeyConstraint("fk_padre", ["padre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
@@ -23,12 +36,18 @@ export async function up(db: Kysely<any>):  Promise<void> {
   await db.schema
     .createTable("representantes")
     .addColumn('cedula', 'text', (col) => col.notNull().primaryKey())
+    .addColumn('estado_civil', 'text', (col) => col.notNull())
+    .addColumn('nacionalidad', 'text', (col) => col.notNull())
     .addColumn('nombre', 'text', (col) => col.notNull())
     .addColumn('apellido', 'text', (col) => col.notNull())
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
+    .addColumn('fecha_nacimiento', 'text', (col) => col.notNull())
+    .addColumn('edad', 'text', (col) => col.notNull())
+
     .addColumn('direccion', 'text', (col) => col.notNull())
     .addColumn('correo_electronico', 'text', (col) => col.notNull())
     .addColumn('ocupacion', 'text', (col) => col.notNull())
+    .addColumn('grado_instruccion', 'text', (col) => col.notNull())
     .execute()
 
   await db.schema
@@ -52,11 +71,22 @@ export async function up(db: Kysely<any>):  Promise<void> {
   await db.schema 
     .createTable("grados_cursados")
     .addColumn('', 'text')
+    .execute()
+
+  await db.schema 
+    .createTable("documentos_alumnos")
+    .addColumn('alumno', 'text')
+    .addColumn('tipo_documento', 'text')
+    .addColumn('path', 'text')
+    .addForeignKeyConstraint("fk_alumno", ["alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .execute()
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('alumnos').execute()
   await db.schema.dropTable('representantes').execute()
+  await db.schema.dropTable('telefonos_representantes').execute()
   await db.schema.dropTable('representantes_alumnos').execute()
   await db.schema.dropTable('grados_cursados').execute()
+  await db.schema.dropTable('documentos_alumnos').execute()
 }

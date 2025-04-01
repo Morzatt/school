@@ -10,10 +10,12 @@ export const load = (async ({ locals, url }) => {
     let filter = url.searchParams.get("filter") as string
     let search = url.searchParams.get("search") as string
 
-    let alumnos: Alumno[] | undefined;
+    let alumnos;
     let total_alumnos: { records: number };
 
     let query = db.selectFrom("alumnos")
+            .leftJoin('grados_alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
+            .leftJoin('grados', 'grados_alumnos.id_grado', 'grados.id_grado')
             .selectAll()
             .limit(15)
             .offset(index ? index : 0)

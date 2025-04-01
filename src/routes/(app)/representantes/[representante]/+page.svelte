@@ -3,7 +3,7 @@
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
-    import camera_icon from "$lib/images/icons/camara_icon.svg"   
+    import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import { enhance } from '$app/forms';
     import ver_icon from "$lib/images/icons/details_icon.svg"
@@ -142,8 +142,17 @@
             </div>
 
             <div class="w-full gap-5 py-5 px-4 rounded-md bg-base-200 shadow-lg">
-                <h2 class="text-lg font-semibold">Alumnos Representados</h2>
+                <div class="flex w-full items-center justify-between">
+                    <h2 class="text-lg font-semibold">Alumnos Representados</h2>
+                    <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group flex items-center justify-center tooltip tooltip-top"
+                    data-tip="Añadir Alumno"
+                    onclick="{() => openModal(`create_representante_modal`)}">
+                        <img src="{add_icon}" alt="" class="group-active:invert filter icon">
+                    </button>
+                </div>
+
                 <div class="divider p-0 m-0"></div>
+
                 <div class="w-full mt-3 max-h-[25rem]
                             overflow-x-hidden overflow-y-auto" style="scrollbar-width: thin;">
                     {#if alumnos && alumnos.length > 0}
