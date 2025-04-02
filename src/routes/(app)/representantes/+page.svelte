@@ -12,6 +12,7 @@
     import Alert from '$lib/components/Messages/Alert.svelte';
     import { goto } from '$app/navigation';
     import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
+    import CreateRepresentanteModal from './CreateRepresentanteModal.svelte';
 
 
     let { representantes } = $derived(data)
@@ -45,6 +46,8 @@
     let paginas = $state(2)
 </script>
 
+<CreateRepresentanteModal form={null}/>
+
 <div class="">
     <h3 class="text-xl font-bold">{type === 'all' ? 'Todos los Representantes' : capitalizeFirstLetter(type)}</h3>
 
@@ -73,7 +76,7 @@
         </div>
 
         <button class="btn btn-outline btn-sm px-5"
-        onclick={() => {document.getElementById('create_empleado_modal')!.showModal()!}}>
+        onclick={() => {document.getElementById('create_representante_modal')!.showModal()!}}>
             <span>+</span>
             <span>Añadir</span>
         </button>
@@ -151,7 +154,7 @@
 
     <div class="divider"></div>
 
-    <div class="overflow-auto animate-y p-2 bg-base-100 rounded-md" style="--delay: 300ms">
+    <div class="overflow-x-auto overflow-y-hidden animate-y p-2 bg-base-100 rounded-md" style="--delay: 300ms">
         <table class="table mt-2 text-center flex ">
             <thead class="bg-base-content [&_span]:font-bold">
                 <tr>
@@ -160,21 +163,28 @@
                     <th><span class="text-sm font-medium text-base-100">Nombre</span></th>
                     <th><span class="text-sm font-medium text-base-100">Apellido</span></th>
                     <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
+                    <th><span class="text-sm font-medium text-base-100">Edad</span></th>
+                    <th><span class="text-sm font-medium text-base-100">Teléfono</span></th>
                     <th><span class="text-sm font-medium text-base-100">Ver</span></th>
                 </tr>
             </thead>
             <tbody>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante, i(representante)}
-                        <tr class="border-none animate-y" style="--delay: {(i*100)+300}ms">
+                        <tr class="border-none animate-y bg-base-200" style="--delay: {(i*100)+300}ms">
                             <th>{(i+1)+index}</th>
-                            <th>V-{formatStringWithDots(representante.cedula)}</th>
+                            <th>
+                                {representante.nacionalidad === "Venezolano" ? "V-" : "E-"}
+                                {formatStringWithDots(representante.cedula)}
+                            </th>
                             <th>{representante.nombre}</th>
                             <th>{representante.apellido}</th>
-                            <th>{representante.sexo}</th>
+                            <th class="{ representante.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{representante.sexo}</th>
+                            <th>{representante.edad}</th>
+                            <th>{representante.telefono}</th>
                             <th>
-                                <a class="btn btn-sm btn-square" href="{basePath}/representantes/{representante.cedula}">
-                                    <img src="{ver_icon}" alt="" class="icon">
+                                <a class="btn btn-sm btn-square btn-accent text-base-100" href="{basePath}/representantes/{representante.cedula}">
+                                    <img src="{ver_icon}" alt="" class="filter invert">
                                 </a>
                             </th>
                         </tr>

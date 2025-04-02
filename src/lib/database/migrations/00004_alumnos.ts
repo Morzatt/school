@@ -20,7 +20,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('madre', 'text', (col) => col.notNull())
     .addColumn('padre', 'text')
 
-    .addColumn('lateralidad', 'text', (col) => col.notNull())
+    .addColumn('lateralidad', 'text', (col) => col.notNull().check(sql`lateralidad IN ('Diestro', 'Zurdo')`))
     .addColumn('peso', 'text', (col) => col.notNull())
     .addColumn('estatura', 'text', (col) => col.notNull())
 
@@ -28,7 +28,6 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('camisa', 'text', (col) => col.notNull())
     .addColumn('pantalon', 'text', (col) => col.notNull())
 
-    .addColumn('estatura', 'text', (col) => col.notNull())
     .addForeignKeyConstraint("fk_madre", ["madre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .addForeignKeyConstraint("fk_padre", ["padre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()

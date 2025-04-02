@@ -17,13 +17,12 @@
     }
 </script>
 
-<div class="min-h-[10rem] bg-base-content/[0.03] rounded-lg p-1.5 shadow-lg">
-    <div class="h-8 px-1
-    bg-primary text-base-100 
+<div class="min-h-[10rem] bg-base-200 shadow-[7px_7px] shadow-base-content/60 rounded-md ">
+    <div class="h-8 px-2 pt-2
+    text-base-content
     rounded-md rounded-b-none
     text-sm 
-    flex items-center justify-between
-    border border-base-content/40 border-b-0">
+    flex items-center justify-between">
         <div class="flex items-center justify-between gap-2">
             <div class="size-4 rounded-full {grado.turno == "Mañana" ? "bg-accent":"bg-secondary"}"></div>
             <span><b>Turno:</b> {grado.turno}</span>
@@ -31,8 +30,7 @@
         <button class="btn btn-xs btn-square bg-transparent border-none hover:btn-error hover:text-white flex items-center justify-center">✕</button>
     </div>
 
-    <div class="bg-base-200 shadow-lg p-2 rounded-md rounded-t-none text-sm
-    border border-base-content/40 border-t-0">
+    <div class="shadow-lg p-2 rounded-md rounded-t-none text-sm">
         <div class="w-full rounded-md border-0 border-base-content/30 h-32">
             <div class="text-xs border-base-content/30 rounded-md px-2">
                 <div><b>Docente de Aula:</b> {grado.nombre_profesor} {grado.apellido_profesor}</div>
@@ -83,3 +81,17 @@
         </div>
     </div>
 </div>
+<!-- 
+<div class="min-h-[10rem] bg-base-content/[0.03]">
+    <div class="h-8 px-1
+    bg-transparent text-base-100 
+    rounded-md rounded-b-none
+    text-sm 
+    flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2">
+            <div class="size-4 rounded-full {grado.turno == "Mañana" ? "bg-accent":"bg-secondary"}"></div>
+            <span><b>Turno:</b> {grado.turno}</span>
+        </div>
+        <button class="btn btn-xs btn-square bg-transparent border-none hover:btn-error hover:text-white flex items-center justify-center">✕</button>
+    </div>
+</div> -->

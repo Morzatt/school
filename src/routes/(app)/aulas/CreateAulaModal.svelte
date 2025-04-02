@@ -99,6 +99,7 @@
 </dialog>
 
 <style lang="postcss">
+
     .create-section {
         @apply w-full h-max
             my-4 p-2

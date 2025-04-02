@@ -126,12 +126,21 @@ export type AlumnosTable = {
     segundo_nombre: string,
     primer_apellido: string,
     segundo_apellido:string,
+
     nacionalidad: "Venezolano" | "Extranjero",
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
     edad: string
     estado: ColumnType<'Activo' | 'Retirado', never, "Activo" | "Retirado">
     created_at: ColumnType<Date, never>,
+    direccion:string,
+
+    lateralidad: "Diestro" | "Zurdo",
+    peso: string,
+    estatura: string,
+    calzado: string,
+    camisa: string,
+    pantalon: string,
 }
 
 export type Alumno = Selectable<AlumnosTable>
@@ -153,11 +162,17 @@ export type AlumnoUpdateable = Updateable<AlumnosTable>
 // Representantes
 export type RepresentantesTable = {
     cedula: ColumnType<string, string, never>,
+    estado_civil: string,
+    nacionalidad: string,
     nombre: string,
     apellido: string,
     sexo: ColumnType<"Masculino" | "Femenino", "Masculino" | "Femenino", never>,
+    fecha_nacimiento: ColumnType<Date, string, never>
+    edad: string,
     direccion: string,
     correo_electronico: string,
+    ocupacion: string,
+    grado_instruccion: string
 }
 
 export type Representante = Selectable<RepresentantesTable>

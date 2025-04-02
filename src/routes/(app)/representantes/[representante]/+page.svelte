@@ -31,6 +31,7 @@
     import turnos from "$lib/images/icons/turnos_icon.svg"
     import seccion from "$lib/images/icons/seccion.svg"
     import Alert from '$lib/components/Messages/Alert.svelte';
+    import CreateAlumnoModal from './CreateAlumnoModal.svelte';
 
     let personalData: Data[] = $derived([
         {
@@ -46,6 +47,27 @@
             icon: representante.sexo === "Masculino" ? male_icon : female_icon,
             title: "Género",
             value: `${representante.sexo}`
+        },
+        {
+            name: "fecha_nacimiento",
+            updateable: false,
+            icon: birhtday_icon,
+            title: "Fecha de Nacimiento",
+            value: new Date(representante.fecha_nacimiento).toLocaleDateString()
+        },
+        {
+            name: "edad",
+            updateable: false,
+            icon: edad_icon,
+            title: "Edad",
+            value: `${representante.edad}`
+        },
+        {
+            name: "grado_instruccion",
+            updateable: false,
+            icon: representante.sexo === "Masculino" ? male_icon : female_icon,
+            title: "Grado de Instruccion",
+            value: `${representante.grado_instruccion}`
         },
         {
             name: "ocupacion",
@@ -146,10 +168,12 @@
                     <h2 class="text-lg font-semibold">Alumnos Representados</h2>
                     <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group flex items-center justify-center tooltip tooltip-top"
                     data-tip="Añadir Alumno"
-                    onclick="{() => openModal(`create_representante_modal`)}">
+                    onclick="{() => document.getElementById(`create_alumno_modal`).showModal()}">
                         <img src="{add_icon}" alt="" class="group-active:invert filter icon">
                     </button>
                 </div>
+
+                <CreateAlumnoModal form={null} representante={representante}/>
 
                 <div class="divider p-0 m-0"></div>
 
@@ -195,7 +219,7 @@
 
         <div class="w-full min-h-60 flex flex-col items-center justify-start gap-4 ">
             <div class="w-full gap-5 p-5 flex flex-col items-center justify-center rounded-md bg-base-200 shadow-lg">
-                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md">
+                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 border border-base-content/40 bg-base-200 shadow-md">
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles del Representante</h3>
 
@@ -231,7 +255,7 @@
                     </div>
                 </form>
 
-                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md">
+                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 border border-base-content/40 bg-base-200 shadow-md">
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles del Contacto</h3>
 

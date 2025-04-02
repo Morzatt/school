@@ -1,10 +1,13 @@
-import async from '$lib/utils/asyncHandler';
-import { db } from '$lib/database';
-import type { Empleado, Representante } from '$lib/database/types';
-import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
+import type { Representante, TelefonosRepresentanteInsertable } from '$lib/database/types';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { createEmpleadoHandler } from '$lib/handlers/empleados.handlers';
+import type { RepresentanteInsertable } from '$lib/database/types';
+import async from '$lib/utils/asyncHandler';
+import { representantesRepository } from '$lib/database/repositories/alumnos.repository';
+import { db } from '$lib/database';
+import { getAge } from '$lib/utils/getAge';
+
+
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -14,14 +17,17 @@ export const load = (async ({ locals, url }) => {
     let search = url.searchParams.get("search") as string
     let turno= url.searchParams.get("turno") as string
 
-    let representantes: Representante[] | undefined;
-    let total_empleados: { records: number };
+    let representantes;
 
     let query = db.selectFrom("representantes")
             .selectAll()
             .limit(15)
             .offset(index ? index : 0)
+            .select((eb) => [
+                eb.selectFrom('telefonos_representantes').whereRef('telefonos_representantes.representante', '=', 'representantes.cedula').select(['numero_telefono']).limit(1).as('telefono')
+            ])
             .orderBy("representantes.apellido asc")
+    
     
     if (filter && search) {
         let q1 = query.where(`representantes.${filter}`, "ilike", `%${search}%`)
@@ -34,5 +40,64 @@ export const load = (async ({ locals, url }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    createEmpleado: createEmpleadoHandler
+    create: async ({locals, request}) => {
+        let { log, response } = locals
+        let data = await request.formData()
+
+        let rep = {
+            cedula: data.get("cedula") as string,
+            estado_civil: data.get("estado_civil") as string,
+            nacionalidad: data.get("nacionalidad") as string,
+            nombre: data.get("nombre") as string,
+            apellido: data.get("apellido") as string,
+            sexo: data.get("sexo") as "Masculino" | "Femenino",
+            fecha_nacimiento: data.get("fecha_nacimiento") as string,
+            direccion: data.get("direccion") as string,
+            correo_electronico: data.get("correo_electronico") as string,
+            ocupacion: data.get("ocupacion") as string,
+            grado_instruccion: data.get("grado_instruccion") as string,
+        } satisfies Omit<RepresentanteInsertable, "edad">;
+
+        let telefonos = [data.get('telefono_1') as string, data.get('telefono_2') as string]
+
+        let representante = await async(representantesRepository.getById(rep.cedula), log)
+        if (representante !== undefined) {
+            return response.error("El representante ya se encuentra registrado")
+        }
+
+        db.transaction().execute(async (trx) => {
+            await async(representantesRepository.create({
+                ...rep,
+                edad: getAge(rep.fecha_nacimiento)
+            }, trx), log)
+
+            if (typeof telefonos === "string") {
+                await async(
+                    trx
+                    .insertInto("telefonos_representantes")
+                    .values({
+                        representante: rep.cedula,
+                        numero_telefono: telefonos
+                    })
+                    .execute()
+                , log)
+                return
+            } else {
+                for (let i of telefonos) {
+                    await async(
+                        trx
+                        .insertInto("telefonos_representantes")
+                        .values({
+                            representante: rep.cedula,
+                            numero_telefono: i 
+                        })
+                        .execute()
+                    , log)
+                }
+                return
+            }
+        })
+
+        return response.success('Representante creado correctamente.')
+    },
 } satisfies Actions

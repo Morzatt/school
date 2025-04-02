@@ -153,8 +153,8 @@
 
     <div class="divider"></div>
 
-    <div class="overflow-auto animate-y p-2 bg-base-100 rounded-md" style="--delay: 300ms">
-        <table class="table mt-2 text-center flex">
+    <div class="overflow-x-auto overflow-y-hidden animate-y p-2 bg-base-100 rounded-md" style="--delay: 300ms">
+        <table class="table mt-2 text-center">
             <thead class="bg-base-content [&_span]:font-bold">
                 <tr>
                     <th><span class="text-sm font-medium text-base-100">#</span></th>
@@ -173,7 +173,9 @@
                     {#each empleados as empleado, i(empleado)}
                         <tr class="border-none animate-y space-y-2 bg-base-200" style="--delay: {(i*100)+300}ms">
                             <th>{(i+1)+index}</th>
-                            <th>V-{formatStringWithDots(empleado.cedula)}</th>
+                            <th>
+                                V-{formatStringWithDots(empleado.cedula)}
+                            </th>
                             <th>
                                 <div>{empleado.primer_nombre}</div>
                                 <div class="text-base-content/40">{empleado.segundo_nombre}</div>
@@ -187,8 +189,8 @@
                             <th>{empleado.cargo}</th>
                             <th class="{ empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
                             <th>
-                                <a class="btn btn-sm btn-square" href="{basePath}/empleado/{empleado.cedula}">
-                                    <img src="{ver_icon}" alt="" class="icon">
+                                <a class="btn btn-sm btn-square bg-accent" href="{basePath}/empleado/{empleado.cedula}">
+                                    <img src="{ver_icon}" alt="" class="filter invert">
                                 </a>
                             </th>
                         </tr>

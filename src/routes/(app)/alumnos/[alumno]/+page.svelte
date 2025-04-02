@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100">
+        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100 shadow-md">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Detalles del Alumno</h3>
 
@@ -253,13 +253,13 @@
             </div>
         </form>
 
-        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100">
+        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100 shadow-md">
 
         </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-center justify-start gap-4">
-        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Representantes</h3>
 
@@ -301,7 +301,7 @@
             </div>
         </div>
 
-        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 shadow-md order-base-content/30 rounded-md p-4 bg-base-100">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Datos Escolares</h3>
 
@@ -412,7 +412,7 @@
     </div>
 
     <div class="w-full mt-4 flex items-center justify-start gap-4">
-        <div class="w-full min-h-60 order-base-content/30 rounded-md p-4 bg-base-100">
+        <div class="w-full min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Grados Cursados</h3>
 

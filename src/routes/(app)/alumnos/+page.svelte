@@ -245,7 +245,7 @@
                         <div class="divider"></div>
 
                         <!-- TABLE -->
-                        <div class="overflow-auto animate-y bg-base-100 rounded-md p-2" style="--delay: 150ms">
+                        <div class="overflow-x-auto overflow-y-hidden animate-y bg-base-100 rounded-md p-2" style="--delay: 150ms">
                             <table class="table mt-2 text-center flex rounded-md">
                                 <thead class="bg-base-content [&_span]:font-bold rounded-md">
                                     <tr class="rounded-md">
@@ -266,7 +266,7 @@
                                         {#each alumnos as alumno, i(alumno)}
                                             {@const grado = filterGrado(alumno.numero, alumno.nivel, alumno.seccion)}
 
-                                            <tr class="bg-base-200" style="--delay: {(i*100)+150}ms">
+                                            <tr class="bg-base-200 animate-y" style="--delay: {(i*100)+150}ms">
                                                 <th>{(i+1)+index}</th>
                                                 <th>
                                                     <span>
