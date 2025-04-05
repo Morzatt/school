@@ -121,14 +121,14 @@
 
 {#snippet items()}
     <ul class="items hidden lg:flex flex-col">
-        <li class="mt-4">
+        <li class="mt-4 bg-base-100/80 border border-base-content/40">
             <img src="{home_icon}" alt="" class="icon">
             <a href="/">Inicio</a>
         </li>
         
         <div class="join join-vertical w-full mt-4">
             {#each routes as group}
-                <div tabindex="0" role="button" class="collapse collapse-arrow join-item border-base-content/40 border bg-transparent ">
+                <div tabindex="0" role="button" class="collapse bg-base-100/80 shadow-md collapse-arrow join-item border-base-content/40 border">
                     <input type="radio" name="my-accordion-3" checked="{false}"/>
                     <div class="collapse-title text-sm font-medium">{group.name}</div>
 
@@ -147,7 +147,7 @@
         {#if data.role.toLowerCase() === "administrador" || data.role.toLowerCase() === "admin" || data.role.toLocaleLowerCase() == "superadmin"}
             <div class="join join-vertical w-full mt-4">
                 {#each adminRoutes as group}
-                    <div tabindex="0" role="button" class="collapse collapse-arrow join-item border-base-content/40 border bg-transparent ">
+                    <div tabindex="0" role="button" class="collapse collapse-arrow join-item border-base-content/40 border bg-base-100/80">
                         <input type="radio" name="my-accordion-3" checked="{false}"/>
                         <div class="collapse-title text-sm font-medium">{group.name}</div>
 

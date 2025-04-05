@@ -25,8 +25,9 @@
     let search = $state("")
     let nivel = $state("all")
     let estado = $state("all")
+    let turno = $state("all")
 
-    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro"?"":filter}&search=${search}&nivel=${nivel}&estado=${estado}`) 
+    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro"?"":filter}&search=${search}&nivel=${nivel}&estado=${estado}&turno=${turno}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -215,6 +216,26 @@
                                             <button class="{estado === "retirado" ? "bg-error" : "text-base-content/50"}" 
                                                 onclick={() => {estado = 'retirado'; index=0; handleSearch()}}>
                                                 Retirado 
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-control">
+                                        <div class="label">
+                                            <b class="label-text">Turno</b>
+                                        </div>
+                                        <div class="join grado-content rounded-md
+                                        bg-base-content/10 p-1 gap-1 group">
+                                            <button class="{turno === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {turno = 'all'; index=0; handleSearch()}}>
+                                                Todo
+                                            </button>
+                                            <button class="{turno === "mañana" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {turno = "mañana"; index=0;handleSearch();}}>
+                                                Mañana
+                                            </button>
+                                            <button class="{turno === "tarde" ? "bg-base-100" : "text-base-content/50"}" 
+                                                onclick={() => {turno = "tarde"; index=0;handleSearch();}}>
+                                                Tarde
                                             </button>
                                         </div>
                                     </div>

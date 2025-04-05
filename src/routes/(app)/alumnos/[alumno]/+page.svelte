@@ -190,8 +190,8 @@
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
-        <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center">
-            <div class="w-max p-5 flex items-center justify-center flex-col rounded-md bg-base-200 shadow-lg">
+        <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
+            <div class="w-max p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
                     <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
@@ -208,7 +208,7 @@
                             : "Nivel no asignado"
                         : "Alumno Retirado"} 
                 </h3>
-                <div class="w-full h-max shadow-md mt-4 rounded-md bg-base-100 flex items-center justify-between gap-3 px-4 py-2">
+                <div class="w-full h-max shadow-md mt-4 rounded-md bg-base-300 flex items-center justify-between gap-3 px-4 py-2">
                     {#each [1,2,3,4] as i}
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
                             <img src="{camera_icon}" alt="" class="filter invert icon">
@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100 shadow-md">
+        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100 shadow-md animate-y" style="--delay: 100ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Detalles del Alumno</h3>
 
@@ -253,13 +253,13 @@
             </div>
         </form>
 
-        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100 shadow-md">
+        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100 shadow-md animate--x" style="--delay:150ms">
 
         </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-center justify-start gap-4">
-        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md">
+        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate--x" style="--delay:250ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Representantes</h3>
 
@@ -301,7 +301,7 @@
             </div>
         </div>
 
-        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 shadow-md order-base-content/30 rounded-md p-4 bg-base-100">
+        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 shadow-md order-base-content/30 rounded-md p-4 bg-base-100 animate-x" style="--delay:250ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Datos Escolares</h3>
 
@@ -412,7 +412,7 @@
     </div>
 
     <div class="w-full mt-4 flex items-center justify-start gap-4">
-        <div class="w-full min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md">
+        <div class="w-full min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate-y">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Grados Cursados</h3>
 

@@ -283,19 +283,19 @@
 {#snippet preview()}
     <h3 class="text-lg font-semibold mt-2">Previsualización</h3>
     <div class="overflow-x-auto rounded-md border border-base-content/30 bg-base-100 mt-2">
-        <table class="table">
+        <table class="table table-zebra">
             <!-- head -->
             <thead>
-                <tr class="border-b border-base-content/30 bg-primary/50">
+                <tr class="bg-primary/10">
                     <th>Campo</th>
                     <th>Valor</th>
                 </tr>
             </thead>
             <tbody>
                 {#each keys as k}
-                    <tr class="border-y border-base-content/30">
+                    <tr class="py-0 my-0 text-xs">
                         <td>{k.key}</td>
-                        <td class="border-l border-base-content/30 {!k.value || k.value === "Elegir" ? "text-error" : ""}">{!k.value || k.value === "Elegir" ? "No especificado" : k.value}</td>
+                        <td class=" {!k.value || k.value === "Elegir" ? "text-error" : ""}">{!k.value || k.value === "Elegir" ? "No especificado" : k.value}</td>
                     </tr>                   
                 {/each}
             </tbody>
@@ -332,7 +332,7 @@
         <p class="text-sm text-base-content/60">Ingrese los datos correspondientes para registrar al nuevo representante.</p>
 
         <div class="w-full flex items-center border border-base-content/30 justify-center mt-4 p-2 rounded-md shadow-sm">
-            <ul class="steps text-sm">
+            <ul class="steps text-sm w-full">
                 <li class="step step-primary">Datos Personales</li>
                 <li class="step {content == "contact" || content == "preview" ? "step-primary" : ""}">Datos de Contacto</li>
                 <li class="step {content == "preview" ? "step-primary" : ""}">Finalizar</li>

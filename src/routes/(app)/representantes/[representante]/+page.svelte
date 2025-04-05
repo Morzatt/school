@@ -151,7 +151,7 @@
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4 ">
         <div class="w-full lg:max-w-xs min-h-60 flex flex-col items-center justify-center lg:items-start gap-4 ">
-            <div class="w-max gap-5 p-5 flex items-center justify-center rounded-md bg-base-200 shadow-lg">
+            <div class="w-max gap-5 p-5 flex items-center justify-center rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-28 icon">
                 </div>
@@ -163,7 +163,7 @@
                 </div>
             </div>
 
-            <div class="w-full gap-5 py-5 px-4 rounded-md bg-base-200 shadow-lg">
+            <div class="w-full gap-5 py-5 px-4 rounded-md bg-base-100 shadow-lg">
                 <div class="flex w-full items-center justify-between">
                     <h2 class="text-lg font-semibold">Alumnos Representados</h2>
                     <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group flex items-center justify-center tooltip tooltip-top"
@@ -212,14 +212,16 @@
                             </div> 
                             <div class="bg-base-content/30 h-px my-2 py-0"></div>
                         {/each}                   
+                    {:else}
+                        <h2 class="text-sm text-base-content/70">El representante aún no tiene alumnos asociados.</h2>
                     {/if}
                 </div>
             </div>
         </div>
 
         <div class="w-full min-h-60 flex flex-col items-center justify-start gap-4 ">
-            <div class="w-full gap-5 p-5 flex flex-col items-center justify-center rounded-md bg-base-200 shadow-lg">
-                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 border border-base-content/40 bg-base-200 shadow-md">
+            <div class="w-full gap-5 flex flex-col items-center justify-center">
+                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 bg-base-100 shadow-md">
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles del Representante</h3>
 
@@ -255,7 +257,7 @@
                     </div>
                 </form>
 
-                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 border border-base-content/40 bg-base-200 shadow-md">
+                <form use:enhance action="?/edit" method="POST" class="w-full rounded-md p-4 bg-base-100 shadow-md">
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles del Contacto</h3>
 
