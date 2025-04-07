@@ -235,11 +235,11 @@
 
 {#snippet registerForm()}
     <form action="?/register" method="POST" use:enhance
-    class="w-full flex flex-col gap-2 items-center mt-4 p-2" transition:slide={{axis: "y", duration: 150, easing: sineInOut}}>
+    class="w-full flex flex-col gap-2 items-center p-2" transition:slide={{axis: "y", duration: 150, easing: sineInOut}}>
         <h1 class="text-3xl font-bold">Registrarse</h1>
         <p class="text-xs text-center mb-3">Cree un usuario con sus datos personales para comenzar a hacer uso del sistema.</p>
 
-        <div class="w-full flex items-center justify-around gap-2 mt-5">
+        <div class="w-full flex items-center justify-around gap-2 mt-3">
             <label class="input input-md rounded-none input-bordered flex items-center gap-2 w-2/4">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -300,6 +300,28 @@
             <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("registerPwd")}}">
                 <img src="{pwdIcon}" alt="" class="icon">
             </button>
+        </label>
+
+        <label class="form-control w-full">
+            <div class="label">
+                <span class="label-text">Vuelva a Introducir su Contraseña</span>
+            </div>
+            <label class="input input-md rounded-none input-bordered flex items-center gap-2 w-full mt-1">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="h-4 w-4 opacity-70">
+                    <path
+                    fill-rule="evenodd"
+                    d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <input type="password" class="w-full grow shrink" placeholder="Contraseña" id="registerPwd2" name="vericontraseña" />
+                <button class="tooltip" data-tip="Mostrar Contraseña" type="button" onclick="{() => {showPwd("registerPwd2")}}">
+                    <img src="{pwdIcon}" alt="">
+                </button>
+            </label>
         </label>
 
         <button class="btn btn-wide mt-4 bg-red-300 text-orange-950" type="submit">Registrarse</button>

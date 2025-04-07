@@ -13,6 +13,7 @@ export async function registerHandler(
     repository = usuarioRepository,
 ) {
     let { response, log } = locals
+    let data = await request.formData()
 
     let newUsuario = {
         nombre: "",
@@ -21,8 +22,19 @@ export async function registerHandler(
         contraseña: "",
     } satisfies NewUsuario;
 
-    await getFormData<NewUsuario>(newUsuario, request, mock)
-    
+    let rcontraseña = data.get('vericontraseña') as string
+    await getFormData<NewUsuario>(newUsuario, request, mock, data)
+
+    if (!rcontraseña || rcontraseña === "") {
+        return fail(400, response.error('Error: debe proveer una verificacion de contraseña.'))
+    }
+
+    console.log(newUsuario.contraseña, rcontraseña)
+
+    if (newUsuario.contraseña !== rcontraseña) {
+        return fail(400, response.error('Error: Las contraseñas no coinciden.'))
+    }
+
     let result = validateObject(newUsuario, registerUserSchema);
     if (!result.success) return newValidationFailObject(result.error, log);
     
