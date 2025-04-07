@@ -2,10 +2,16 @@ export async function getFormData<T extends Record<string, any>>(
     c: T,
     request: Request,
     mock: { formData: T } | undefined | null,
+    data?: FormData
 ) {
     if (!mock) {
-        let data = await request.formData()
-        for (let i in c) { c[i] = data.get(`${i}`)?.toString()! }
+        if (data) {
+            for (let i in c) { c[i] = data.get(`${i}`)?.toString()! }
+        } else {
+            let data = await request.formData()
+            for (let i in c) { c[i] = data.get(`${i}`)?.toString()! }
+        }
+
         return
     } 
 

@@ -355,7 +355,7 @@
     </form>
 {/snippet}
 
-<main transition:slide={{ duration: 200, easing: sineInOut, axis: "y" }}>
+<main transition:slide={{ duration: 200, easing: sineInOut, axis: "y" }} data-theme="winter">
     <Alert form={ form } styles="absolute left-10 top-6 max-w-[25rem]"/>
 
 	<div class="h-screen w-full lg:w-[85%] xl:w-3/4 border-0 border-red-500 flex items-center justify-center">
@@ -393,8 +393,7 @@
 
 <style lang="postcss">
 	main {
-		@apply max-h-screen w-full flex items-center justify-center overflow-y-auto bg-primary/10;
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#FFFFFF", endColorstr="#EEEEFA", GradientType=1 );
+		@apply max-h-screen w-full flex items-center justify-center overflow-y-auto bg-info/60;
 	}
     label input {
         @apply w-full grow shrink;

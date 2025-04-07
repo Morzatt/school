@@ -40,7 +40,11 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
             .execute()
         , log)
 
-    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery };
+    let familiares = await async(
+        db.selectFrom('familiares_alumnos').selectAll().where('id_alumno', "=", cedula).execute()
+    , log)
+
+    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares };
 });
 
 function getId(url: string): string {

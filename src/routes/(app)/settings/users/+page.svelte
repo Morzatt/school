@@ -39,6 +39,8 @@
                 return 1
             case "superadmin":
                 return 2
+            case "superadministrador":
+                return 2;
             default: 
                 return 0    
         }

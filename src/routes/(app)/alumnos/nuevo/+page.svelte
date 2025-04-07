@@ -49,7 +49,23 @@
        formState[content] = formData
     }
 
-    $inspect(formState)
+    function sendFormValues() {
+        let container = document.getElementById('input_container') as HTMLDivElement
+        for (let el in formState)  {
+            formState[el]!.forEach(i => {
+                let input = document.createElement('input')
+                input.type = "hidden"
+                input.name = i.key
+                input.value = i.value
+                container.appendChild(input)
+            })
+        }
+
+    }
+    function deleteData() {
+        let container = document.getElementById('input_container') as HTMLDivElement
+        container.innerHTML = ""
+    }
 </script>
 
 <div id="top">
@@ -63,8 +79,8 @@
             <li data-content="{asignStep('personal') ? "✓" : "?"}" class="step {asignStep("personal") ? "step-primary" : ""}">Información Personal</li>               
             <li data-content="{asignStep('escolar') ? "✓" : "?"}" class="step {asignStep("escolar") ? "step-primary" : ""}">Información Escolar</li>               
             <li data-content="{asignStep('familiar') ? "✓" : "?"}" class="step {asignStep("familiar") ? "step-primary" : ""}">Información Familiar</li>               
-            <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">Documentos</li>               
-            <li data-content="{asignStep('preview') ? "✓" : "?"}" class="step {asignStep("preview") ? "step-primary" : ""}">Preview</li>               
+            <!-- <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">Documentos</li>               
+            <li data-content="{asignStep('preview') ? "✓" : "?"}" class="step {asignStep("preview") ? "step-primary" : ""}">Preview</li>                -->
         </ul>
     </div>
 
@@ -74,9 +90,16 @@
         {:else if content === "escolar"}
             <EscolarData setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
         {:else if content === "familiar"}
-            <FamiliarData setFormValues={setFormValues} changeContent={changeContent}/>
-        {:else if content === "documentos"}
-            <DocumentosData setFormValues={setFormValues} changeContent={changeContent}/>
+            <FamiliarData setFormValues={setFormValues} changeContent={changeContent} sendFormValues={sendFormValues}/>
+        <!-- {:else if content === "documentos"} -->
+            <!-- <DocumentosData setFormValues={setFormValues} changeContent={changeContent}/> -->
         {/if}
+
+        <input type="hidden" name="representante" value={rep.cedula}>
+        <input type="hidden" name="hasCedula" value={hasCedula}>
+        <input type="hidden" name="relacion" value={relacion}>
+
+        <div id="input_container"></div>
+
     </form>
 </div>

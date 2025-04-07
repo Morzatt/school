@@ -51,7 +51,15 @@ export const load = (async ({ locals, url }) => {
         .execute()
     , log)
 
-    return { grado, horarios, materias, alumnos };
+    let profesor = await async( 
+        db.selectFrom('empleados')
+        .selectAll()
+        .innerJoin('grados', 'grados.profesor', 'empleados.cedula')
+        .where('grados.id_grado', "=", id)
+        .executeTakeFirst()
+    ,log)
+
+    return { grado, horarios, materias, alumnos, profesor };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {

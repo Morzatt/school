@@ -12,6 +12,7 @@ export interface Database {
     sessions: SessionsTable,
 
     alumnos: AlumnosTable,
+    familiares_alumnos: FamiliaresAlumnosTable
     representantes: RepresentantesTable
     telefonos_representantes: TelefonosRepresentantesTable
     representantes_alumnos: RepresentantesAlumnosTable
@@ -133,7 +134,7 @@ export type AlumnosTable = {
     edad: string
     estado: ColumnType<'Activo' | 'Retirado', never, "Activo" | "Retirado">
     created_at: ColumnType<Date, never>,
-    direccion:string,
+    // direccion:string,
 
     lateralidad: "Diestro" | "Zurdo",
     peso: string,
@@ -146,6 +147,19 @@ export type AlumnosTable = {
 export type Alumno = Selectable<AlumnosTable>
 export type AlumnoInsertable = Insertable<AlumnosTable>
 export type AlumnoUpdateable = Updateable<AlumnosTable>
+
+export type FamiliaresAlumnosTable = {
+    cedula: string,
+    nombre: string,
+    apellido: string, 
+    sexo: string,
+    id_alumno: string
+    type: "Entrega" | "Salida" | "Adicional"
+}
+
+export type FamiliaresAlumno = Selectable<FamiliaresAlumnosTable>
+export type FamiliaresAlumnoInsertable = Insertable<FamiliaresAlumnosTable>
+export type FamiliaresAlumnoUpdateable = Updateable<FamiliaresAlumnosTable>
 
 // 
 // 

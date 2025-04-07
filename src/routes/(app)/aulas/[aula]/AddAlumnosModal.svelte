@@ -15,11 +15,11 @@
             id="add_alumno_close">✕</button>
         </form>
 
-        <h2 class="font-bold text-xl">Crear Bloque de Horario</h2>
+        <!-- <h2 class="font-bold text-xl">Crear Bloque de Horario</h2>
 
         <div class="w-full text-start text-sm">
             <span>ss</span>
-        </div>
+        </div> -->
 
         <div class="modal-container">
 

@@ -1,8 +1,80 @@
-
 <script lang="ts">
-    let { changeContent, setFormValues }: { setFormValues: (content: any, values: any) => void, changeContent: (newContent: any) => void } = $props()
+    let { changeContent, setFormValues, sendFormValues }: { sendFormValues: () => void, setFormValues: (content: any, values: any) => void, changeContent: (newContent: any) => void } = $props()
 
     import icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+
+    let entrega_cedula: string = $state("")
+    let entrega_nombre: string = $state("")
+    let entrega_apellido: string = $state("")
+    let entrega_sexo: string = $state("")
+
+    let salida_cedula: string = $state("")
+    let salida_nombre: string = $state("")
+    let salida_apellido: string = $state("")
+    let salida_sexo: string = $state("")
+
+    let adicional_cedula: string = $state("")
+    let adicional_nombre: string = $state("")
+    let adicional_apellido: string = $state("")
+    let adicional_sexo: string = $state("")
+
+
+    function up() {
+        setFormValues('familiar', [
+            {
+                key: "entrega_cedula",
+                value: entrega_cedula
+            },
+            {
+                key: "entrega_nombre",
+                value: entrega_nombre
+            },
+            {
+                key: "entrega_apellido",
+                value: entrega_apellido
+            },
+            {
+                key: "entrega_sexo",
+                value: entrega_sexo
+            },
+            {
+                key: "salida_cedula",
+                value: salida_cedula
+            },
+            {
+                key: "salida_nombre",
+                value: salida_nombre
+            },
+            {
+                key: "salida_apellido",
+                value: salida_apellido
+            },
+            {
+                key: "salida_sexo",
+                value: salida_sexo
+            },
+            {
+                key: "adicional_cedula",
+                value: adicional_cedula
+            },
+            {
+                key: "adicional_nombre",
+                value: adicional_nombre
+            },
+            {
+                key: "adicional_apellido",
+                value: adicional_apellido
+            },
+            {
+                key: "adicional_sexo",
+                value: adicional_sexo
+            },
+        ])
+    }
+
+    function down() {
+        setFormValues('familiar', [])
+    }
 </script>
 
 
@@ -31,24 +103,25 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Cédula de Identidad</b>
                     </div>
-                    <input type="text" name="cedula" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={entrega_cedula}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Nombre</b>
                     </div>
-                    <input type="text" name="nombre_familiar_entrega" class="input input-sm input-bordered bg-base-200">
-                </div>                           <div class="form-control">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={entrega_nombre}>
+                </div>                           
+                <div class="form-control">
                     <div class="label">
                         <b class="label-text">Apellido</b>
                     </div>
-                    <input type="text" name="apellido_familiar_entrega" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={entrega_apellido}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Sexo</b>
                     </div>
-                    <select class="btn btn-sm border border-base-content/40" name="sexo_familiar_entrega">
+                    <select class="btn btn-sm border border-base-content/40" bind:value={entrega_sexo}>
                         <option disabled selected>Elegir</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
@@ -73,24 +146,25 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Cédula de Identidad</b>
                     </div>
-                    <input type="text" name="cedula" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={salida_cedula}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Nombre</b>
                     </div>
-                    <input type="text" name="nombre_familiar_entrega" class="input input-sm input-bordered bg-base-200">
-                </div>                           <div class="form-control">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={salida_nombre}>
+                </div>                           
+                <div class="form-control">
                     <div class="label">
                         <b class="label-text">Apellido</b>
                     </div>
-                    <input type="text" name="apellido_familiar_entrega" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={salida_apellido}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Sexo</b>
                     </div>
-                    <select class="btn btn-sm border border-base-content/40" name="sexo_familiar_entrega">
+                    <select class="btn btn-sm border border-base-content/40" bind:value={salida_sexo}>
                         <option disabled selected>Elegir</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
@@ -112,24 +186,25 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Cédula de Identidad</b>
                     </div>
-                    <input type="text" name="cedula" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={adicional_cedula}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Nombre</b>
                     </div>
-                    <input type="text" name="nombre_familiar_entrega" class="input input-sm input-bordered bg-base-200">
-                </div>                           <div class="form-control">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={adicional_nombre}>
+                </div>                           
+                <div class="form-control">
                     <div class="label">
                         <b class="label-text">Apellido</b>
                     </div>
-                    <input type="text" name="apellido_familiar_entrega" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" class="input input-sm input-bordered bg-base-200" bind:value={adicional_apellido}>
                 </div>           
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Sexo</b>
                     </div>
-                    <select class="btn btn-sm border border-base-content/40" name="sexo_familiar_entrega">
+                    <select class="btn btn-sm border border-base-content/40" bind:value={adicional_sexo}>
                         <option disabled selected>Elegir</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
@@ -142,8 +217,9 @@ border border-base-content/30" style="--delay: 100ms">
     <div class="divider pb-0 mb-2"></div>
 
     <div class="w-full flex items-start justify-between">
-        <button type="button" onclick={() => { changeContent("escolar") }} class="btn btn-sm btn-primary">Atrás</button>
-        <button type="button" onclick={() => { changeContent("documentos") }} class="btn btn-sm btn-primary">Siguiente</button>
+        <button type="button" onclick={() => { down(); changeContent("escolar") }} class="btn btn-sm btn-primary">Atrás</button>
+        <!-- <button type="button" onclick={() => { changeContent("documentos") }} class="btn btn-sm btn-primary">Siguiente</button> -->
+        <button type="submit" onclick={() => { up(); sendFormValues() }} class="btn btn-sm btn-success">Enviar</button>
     </div>
 </div>
 

@@ -26,7 +26,7 @@
         return form?.form === name ? form : null
     }
 
-    let { alumno, representantes, telefonos } = $derived(data)
+    let { alumno, representantes, telefonos, familiares } = $derived(data)
 
     type Data = {
         name: string,
@@ -271,14 +271,14 @@
 
             <div class="mt-3 w-full">
                 <div class="p-1 border-base-content/40 mb-1 font-bold
-                            pb-1
+                            pb-1 bg-base-content text-base-100
                             px-2
                             w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
-                    <!-- <p>Cedula</p>
+                    <p>Cedula</p>
                     <p>Nombre</p>
                     <p>Relación</p>
                     <p>Ver</p>
-                    <p>Eliminar</p> -->
+                    <p>Eliminar</p>
                 </div>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
@@ -298,6 +298,13 @@
                         <RepresentanteModal representante={ representante } form={null} tel={filterCellphoneNumber(representante.cedula)}/>                           
                     {/each}
                 {/if}
+            </div>
+
+            <div class="w-full h-max flex justify-between items-center mt-2">
+                <h3 class="text-lg font-bold">Familiares</h3>
+            </div>
+
+            <div class="mt-2 w-full flex gap-2">
             </div>
         </div>
 
@@ -422,23 +429,7 @@
             </div>
 
             <div class="mt-2">
-                {#each personalData as field}
-                    <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
-                        <div class="flex items-center justify-between gap-2">
-                            <img src="{field.icon}" alt="" class="icon">
-                            <p class="font-semibold text-base-content/80">{field.title}</p> 
-                        </div>
 
-                        {#if edicion}
-                            <input type="text" 
-                                placeholder="{field.title}..."
-                                class="input input-bordered input-sm max-w-xs"
-                                value="{field.value}">
-                        {:else}
-                            <b>{field.value}</b> 
-                        {/if}
-                    </div>
-                {/each}
             </div>
         </div>  
     </div>
@@ -476,10 +467,6 @@
         <h3 class="text-lg mt-2 font-bold">Introduzca el número de cédula del Representante</h3>
         <p class="text-wrap text-sm">Para asociar un nuevo representante al alumno, introduzca su número de cédula y su relación o parentesco con el alumno</p>
         <p class="text-wrap text-xs mt-3"> <b>IMPORTANTE: </b> El representante debe estar registrado de antemano con sus datos dentro del sistema. En caso de no encontrarse registrado dirigirse a <b>Registrar Representante</b></p>
-
-        <div class="h-max w-full mt-4 text-end">
-            <a href="/representantes/create" class="btn btn-xs btn-info">Registrar Representante</a>
-        </div>
 
         <div class="modal-container">
             <form action="?/asociarRepresentante" method="POST" use:enhance class="h-auto w-full">

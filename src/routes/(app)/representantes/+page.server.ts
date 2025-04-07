@@ -6,16 +6,16 @@ import async from '$lib/utils/asyncHandler';
 import { representantesRepository } from '$lib/database/repositories/alumnos.repository';
 import { db } from '$lib/database';
 import { getAge } from '$lib/utils/getAge';
+import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
 
 
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
     let index = parseInt(url.searchParams.get("index") as string) 
-    let type = url.searchParams.get("type") as string
     let filter = url.searchParams.get("filter") as string
     let search = url.searchParams.get("search") as string
-    let turno= url.searchParams.get("turno") as string
+    let sexo = capitalizeFirstLetter(url.searchParams.get("sexo") as string) as "Masculino" | "Femenino" | "All"
 
     let representantes;
 
@@ -27,8 +27,10 @@ export const load = (async ({ locals, url }) => {
                 eb.selectFrom('telefonos_representantes').whereRef('telefonos_representantes.representante', '=', 'representantes.cedula').select(['numero_telefono']).limit(1).as('telefono')
             ])
             .orderBy("representantes.apellido asc")
-    
-    
+
+    if (sexo && sexo !== "All") {
+        query = query.where('sexo', "=", sexo)
+    }
     if (filter && search) {
         let q1 = query.where(`representantes.${filter}`, "ilike", `%${search}%`)
         representantes = await async(q1.execute(), log)

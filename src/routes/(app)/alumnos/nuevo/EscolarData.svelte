@@ -3,55 +3,56 @@
 
     import icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 
+    let lateralidad: string = $state("")
+    let peso: string = $state("")
+    let estatura: string = $state("")
+
     let condicion = $state(false)
-    let cedula : string = $state("")
-    let nacionalidad : string = $state("")
-    let primer_nombre : string = $state("")
-    let segundo_nombre : string = $state("")
-    let primer_apellido : string = $state("")
-    let segundo_apellido : string = $state("")
-    let fecha_nacimiento : string = $state("")
-    let sexo : string = $state("")
+    let detalles_condicion = $state("")
+
+    let calzado: string = $state("")
+    let camisa: string = $state("")
+    let pantalon: string = $state("")
 
     function up() {
-        setFormValues('personal', [
+        setFormValues('escolar', [
             {
-                key: "cedula",
-                value: cedula
+                key: "lateralidad",
+                value: lateralidad
             },
             {
-                key: "nacionalidad",
-                value: nacionalidad 
+                key: "peso",
+                value: peso 
             },
             {
-                key: "primer_nombre",
-                value: primer_nombre 
+                key: "estatura",
+                value: estatura
             },
             {
-                key: "segundo_nombre",
-                value: segundo_nombre
+                key: "condicion",
+                value: condicion
             },
             {
-                key: "primer_apellido",
-                value: primer_apellido
+                key: "detalles_condicion",
+                value: detalles_condicion
             },
             {
-                key: "segundo_apellido",
-                value: segundo_apellido
+                key: "calzado",
+                value: calzado
             },
             {
-                key: "fecha_nacimiento",
-                value: fecha_nacimiento
+                key: "camisa",
+                value: camisa
             },
             {
-                key: "sexo",
-                value: sexo
+                key: "pantalon",
+                value: pantalon
             },
         ])
     }
 
     function down() {
-        setFormValues('personal', [])
+        setFormValues('escolar', [])
     }
 </script>
 
@@ -78,22 +79,42 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Lateralidad</b>
                     </div>
-                    <input type="text" name="lateralidad" class="input input-sm input-bordered bg-base-200">
+                    <select name="lateralidad" class="btn btn-bordered btn-sm border border-base-content/20 bg-base-200" bind:value={lateralidad}>
+                        <option selected disabled>Elegir</option>
+                        <option value="Diestro">Diestro</option>
+                        <option value="Zurdo">Zurdo</option>
+                    </select>
                 </div>           
 
-                <div class="form-control">
+                <div class="form-control focus:outline-0">
                     <div class="label">
                         <b class="label-text">Peso</b>
                     </div>
-                    <input type="text" name="peso" class="input input-sm input-bordered bg-base-200">
-                </div>           
 
-                <div class="form-control">
+                    <label class="flex items-center justify-start 
+                    input input-sm input-bordered focus:outline-0 bg-base-200
+                    rounded-md max-w-[7rem]">
+                        <input type="number" name="peso" bind:value={peso}
+                        placeholder="..."
+                        class="max-w-[3rem] focus:outline-0" required>
+                        <p class="select-none">Kilos</p>
+                    </label>
+                </div>
+
+                <div class="form-control focus:outline-0">
                     <div class="label">
                         <b class="label-text">Estatura</b>
                     </div>
-                    <input type="text" name="estatura" class="input input-sm input-bordered bg-base-200">
-                </div>  
+
+                    <label class="flex items-center justify-start 
+                    input input-sm input-bordered focus:outline-0 bg-base-200
+                    rounded-md max-w-[7rem]">
+                        <input type="number" name="estatura"  bind:value={estatura}
+                        placeholder="..."
+                        class="max-w-[3rem] focus:outline-0" required>
+                        <p class="select-none">Métros</p>
+                    </label>
+                </div>
             </div>
         </div> 
 
@@ -132,7 +153,7 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Indicar condicion <b>*</b></b>
                     </div>
-                    <input type="text" name="condicion" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" name="detalles_condicion" class="input input-sm input-bordered bg-base-200" bind:value={detalles_condicion}>
                 </div>           
             </div>
         </div> 
@@ -153,21 +174,21 @@ border border-base-content/30" style="--delay: 100ms">
                     <div class="label">
                         <b class="label-text">Calzado</b>
                     </div>
-                    <input type="number" name="calzado" class="input input-sm input-bordered bg-base-200">
+                    <input type="number" name="calzado" class="input input-sm input-bordered bg-base-200" bind:value={calzado}>
                 </div>           
 
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Camisa</b>
                     </div>
-                    <input type="text" name="camisa" class="input input-sm input-bordered bg-base-200">
+                    <input type="text" name="camisa" class="input input-sm input-bordered bg-base-200" bind:value={camisa}>
                 </div>           
 
                 <div class="form-control">
                     <div class="label">
                         <b class="label-text">Pantalon</b>
                     </div>
-                    <input type="number" name="pantalon" class="input input-sm input-bordered bg-base-200">
+                    <input type="number" name="pantalon" class="input input-sm input-bordered bg-base-200" bind:value={pantalon}>
                 </div>   
             </div>
         </div> 
@@ -177,7 +198,7 @@ border border-base-content/30" style="--delay: 100ms">
 
     <div class="w-full flex items-start justify-between">
         <button type="button" onclick={() => { down(); changeContent("personal") }} class="btn btn-sm btn-primary">Atrás</button>
-        <button type="button" onclick={() => { changeContent("familiar") }} class="btn btn-sm btn-primary">Siguiente</button>
+        <button type="button" onclick={() => { up(); changeContent("familiar") }} class="btn btn-sm btn-primary">Siguiente</button>
     </div>
 </div>
 

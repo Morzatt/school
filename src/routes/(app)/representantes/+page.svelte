@@ -18,11 +18,10 @@
     let { representantes } = $derived(data)
     let index = $state(data.index ? data.index : 0)
     let filter = $state("Filtro")
-    let type = $state('all')
-    let turno = $state('all')
+    let sexo = $state('all')
     let search = $state("")
 
-    let url = $derived(`${basePath}/representantes?type=${type}&index=${index}&filter=${filter === "Filtro" ? "" : filter}&search=${search}&turno=${turno}`) 
+    let url = $derived(`${basePath}/representantes?index=${index}&filter=${filter === "Filtro" ? "" : filter}&search=${search}&sexo=${sexo}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -49,7 +48,7 @@
 <CreateRepresentanteModal form={null}/>
 
 <div class="">
-    <h3 class="text-xl font-bold">{type === 'all' ? 'Todos los Representantes' : capitalizeFirstLetter(type)}</h3>
+    <h3 class="text-xl font-bold">Representantes</h3>
 
     <div class="w-full h-12 mt-4 flex items-center justify-between gap-4 px-5 animate-y" style="--delay: 100ms">
         <div class="flex items-center justify-start gap-4">
@@ -89,46 +88,21 @@
             </div>
             <div class="form-control">
                 <div class="label">
-                    <b class="label-text">Área del Empleado</b>
+                    <b class="label-text">Género</b>
                 </div>
                 <div class="join grado-content rounded-md
                 bg-base-content/10 p-1 gap-1 group">
-                    <button class="{type === "all" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {type = 'all'; index=0; handleSearch()}}>
+                    <button class="{sexo === "all" ? "bg-base-100" : "text-base-content/50"}" 
+                        onclick={() => {sexo = 'all'; index=0; handleSearch()}}>
                         Todo
                     </button>
-                    <button class="{type === "docente" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {type = "docente"; index=0;handleSearch();}}>
-                        Docentes
+                    <button class="{sexo === "masculino" ? "bg-base-100" : "text-base-content/50"}" 
+                        onclick={() => {sexo = "masculino"; index=0;handleSearch();}}>
+                        Masculino
                     </button>
-                    <button class="{type === "administrativo" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {type = "administrativo"; index=0;handleSearch();}}>
-                        Administrativo
-                    </button>
-                    <button class="{type === "obrero" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {type = "obrero"; index=0;handleSearch();}}>
-                        Obrero 
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-control">
-                <div class="label">
-                    <b class="label-text">Turno</b>
-                </div>
-                <div class="join grado-content rounded-md
-                bg-base-content/10 p-1 gap-1 group">
-                    <button class="{turno === "all" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {turno = 'all'; index=0; handleSearch()}}>
-                        Todo
-                    </button>
-                    <button class="{turno === "mañana" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {turno = "mañana"; index=0;handleSearch();}}>
-                        Mañana
-                    </button>
-                    <button class="{turno === "tarde" ? "bg-base-100" : "text-base-content/50"}" 
-                        onclick={() => {turno = "tarde"; index=0;handleSearch();}}>
-                        Tarde
+                    <button class="{sexo === "femenino" ? "bg-base-100" : "text-base-content/50"}" 
+                        onclick={() => {sexo = "femenino"; index=0;handleSearch();}}>
+                        Femenino
                     </button>
                 </div>
             </div>

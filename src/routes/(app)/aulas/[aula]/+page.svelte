@@ -18,7 +18,7 @@
     import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { grado, materias, alumnos } = $derived(data)
+    let { grado, materias, alumnos, profesor } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
 
@@ -28,6 +28,37 @@
     function closeModal(id: string) {
         document!.getElementById(id)!.click()
     }
+    let personalData = $derived([
+        {
+            name: "cedula_escolar",
+            updateable: true,
+            icon: cedula_escolar_icon,
+            title: "Docente de Aula",
+            value: `${profesor.primer_nombre} ${profesor?.primer_apellido}` 
+        },
+        {
+            name: "sexo",
+            updateable: false,
+            icon: female_icon,
+            title: "Total de Alumnos",
+            value: alumnos?.length
+        },
+        {
+            name: "fecha_nacimiento",
+            updateable: false,
+            icon: birhtday_icon,
+            title: "Total de Materias",
+            value: materias?.length
+        },
+        {
+            name: "edad",
+            updateable: false,
+            icon: edad_icon,
+            title: "Turno",
+            value: grado.turno
+        }
+    ])
+    let edicion = $state(false)
 </script>
 
 <main class="w-full h-full relative">
@@ -85,14 +116,32 @@
                 <div class="w-full h-max flex justify-between items-center ">
                     <h3 class="text-xl font-bold">Detalles del Aula</h3>
 
-                    <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                    <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" type="button"
                         onclick="{() =>{ setTimeout(() => {},100) }}">
                         <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
                     </button>
                 </div>
 
-                <div class="mt-2 bb">
+                <div class="mt-2">
+                    {#each personalData as field}
+                        <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                            <div class="flex items-center justify-between gap-2">
+                                <img src="{field.icon}" alt="" class="icon">
+                                <p class="font-semibold text-base-content/80 ">{field.title}</p> 
+                            </div>
 
+                            {#if edicion && field.updateable}
+                                <input type="text" 
+                                    min="3"
+                                    name="{field.name}"
+                                    placeholder="{field.title}..."
+                                    class="input input-bordered input-sm max-w-xs"
+                                    value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
+                            {:else}
+                                <b class="">{field.value}</b> 
+                            {/if}
+                        </div>
+                    {/each}
                 </div>
             </form>
 

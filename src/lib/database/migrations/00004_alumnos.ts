@@ -35,6 +35,17 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .execute()
 
   await db.schema
+    .createTable("familiares_alumnos")
+    .addColumn('cedula', 'text', (col) => col.notNull().primaryKey())
+    .addColumn('nombre', 'text', (col) => col.notNull())
+    .addColumn('apellido', 'text', (col) => col.notNull())
+    .addColumn('type', 'text', (col) => col.notNull())
+    .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
+    .addColumn('id_alumno','text', (col) => col.notNull())
+    .addForeignKeyConstraint("fk_alumno", ["id_alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .execute()
+
+  await db.schema
     .createTable("representantes")
     .addColumn('cedula', 'text', (col) => col.notNull().primaryKey())
     .addColumn('estado_civil', 'text', (col) => col.notNull())
