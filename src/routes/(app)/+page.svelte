@@ -187,6 +187,15 @@
                     <b>34.20%</b>
                 </div>
             </div>          
+            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
+                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
+                    <img src="{stat_icon}" alt="" class="size-full icon">
+                </div>
+                <div class="w-3/4 h-full">
+                    <p class="text-base-content/80 text-sm">Tasa de Aprobración</p>
+                    <b>34.20%</b>
+                </div>
+            </div> 
         </div>
 
         <div class="w-full min-h-20 mt-3 flex items-start justify-start gap-4 animate-x" style="--delay: 500ms;">

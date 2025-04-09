@@ -83,8 +83,7 @@
             min-h-screen 
             flex flex-col lg:flex-row items-center justify-center
             overflow-y-hidden bg-base-300"
-         transition:slide={{ duration: 200, easing: sineInOut, axis: "x" }}
-         data-theme="winter">
+         transition:slide={{ duration: 200, easing: sineInOut, axis: "x" }}>
 
     <Navbar data={ usuario }/>
 

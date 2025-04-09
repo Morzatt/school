@@ -9,9 +9,7 @@
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import chevron_right from "$lib/images/icons/chevron_right.svg"
     import { basePath, formatStringWithDots } from '$lib';
-    import Alert from '$lib/components/Messages/Alert.svelte';
     import { goto } from '$app/navigation';
-    import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
     import CreateRepresentanteModal from './CreateRepresentanteModal.svelte';
 
 
@@ -118,7 +116,7 @@
             <button onclick="{indexHandler.incrementIndex}" aria-label="pagination-next" class="btn join-item gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Siguiente">
                 <img src="{chevron_right}" alt="" class="size-[1.4em] group-active:invert filter icon">
             </button>
-            <button onclick="{() => {index=0; filter="Filtro"; search=""; type="all";turno="all"; handleSearch()}}"
+            <button onclick="{() => {index=0; filter="Filtro"; search=""; handleSearch()}}"
                 aria-label="pagination-next"
                 class="btn mx-4 gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Limpiar Busqueda">
                 <img src="{clear_icon}" alt="" class="size-[1.4em] group-active:invert filter icon">
@@ -154,7 +152,7 @@
                             <th>{representante.nombre}</th>
                             <th>{representante.apellido}</th>
                             <th class="{ representante.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{representante.sexo}</th>
-                            <th>{representante.edad}</th>
+                            <th>{representante.edad} Años</th>
                             <th>{representante.telefono}</th>
                             <th>
                                 <a class="btn btn-sm btn-square btn-accent text-base-100" href="{basePath}/representantes/{representante.cedula}">

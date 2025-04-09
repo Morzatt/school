@@ -48,10 +48,13 @@ export function getAge(dateString: string): string {
   const monthsPassed = differenceInMonths(now, inputDate);
 
   if (yearsPassed >= 1) {
-    return `${yearsPassed} ${yearsPassed === 1 ? 'año' : 'años'}`;
-  } else if (monthsPassed >= 1) {
-    return `${monthsPassed} ${monthsPassed === 1 ? 'mes' : 'meses'}`;
-  } else {
-    return "Menos de un mes";
+    // return `${yearsPassed} ${yearsPassed === 1 ? 'año' : 'años'}`;
+    return `${yearsPassed}`;
+  }
+  //  else if (monthsPassed >= 1) {
+  //   return `${monthsPassed} ${monthsPassed === 1 ? 'mes' : 'meses'}`;
+  // }
+  else {
+    return "Menos de un Año";
   }
 }

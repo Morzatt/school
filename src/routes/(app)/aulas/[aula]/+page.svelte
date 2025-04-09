@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { basePath } from '$lib';
+    import { basePath, formatStringWithDots } from '$lib';
     import type { PageData } from './$types';
     import cedula_escolar_icon from "$lib/images/icons/personalizar_icon.svg"
     import female_icon from "$lib/images/icons/female_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-    import male_icon from "$lib/images/icons/male_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-    import birhtday_icon from "$lib/images/icons/cake_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
-    import user_icon from "$lib/images/icons/username_icon.svg"
-    import camera_icon from "$lib/images/icons/camara_icon.svg"   
+    import curso_actual from "$lib/images/icons/curso_actual.svg"
+    import turnos from "$lib/images/icons/turnos_icon.svg"
+    import seccion from "$lib/images/icons/seccion.svg"
+    import inscripcion_icon from "$lib/images/icons/face_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import ver_icon from "$lib/images/icons/details_icon.svg"
@@ -18,47 +18,64 @@
     import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { grado, materias, alumnos, profesor } = $derived(data)
+    let { grado, materias, alumnos, profesor, bloques } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
 
     function openModal(id: string) {
         document!.getElementById(id)!.showModal()
     }
+
     function closeModal(id: string) {
         document!.getElementById(id)!.click()
     }
     let personalData = $derived([
         {
-            name: "cedula_escolar",
+            name: "profesor",
             updateable: true,
             icon: cedula_escolar_icon,
             title: "Docente de Aula",
-            value: `${profesor.primer_nombre} ${profesor?.primer_apellido}` 
+            value: `<div class="text-end">
+                        <b>${profesor?.primer_nombre ? profesor.primer_nombre : "No"} ${profesor?.primer_apellido ? profesor.primer_apellido : "Asignado"}</b>
+                        <p class="text-base-content/60 text-sm">V-${formatStringWithDots(profesor?.cedula)}</p>
+                    </div>` 
         },
         {
-            name: "sexo",
+            name: "alumnos",
             updateable: false,
-            icon: female_icon,
+            icon: inscripcion_icon,
             title: "Total de Alumnos",
-            value: alumnos?.length
+            value: `${alumnos?.length} Alumnos`
         },
         {
-            name: "fecha_nacimiento",
+            name: "materias",
             updateable: false,
-            icon: birhtday_icon,
+            icon: curso_actual,
             title: "Total de Materias",
-            value: materias?.length
+            value: `${materias?.length} Materias`
         },
         {
-            name: "edad",
+            name: "turno",
             updateable: false,
-            icon: edad_icon,
+            icon: turnos,
             title: "Turno",
             value: grado.turno
         }
     ])
     let edicion = $state(false)
+
+    function formatNumero(nm: Numeros) {
+        switch (nm) {
+            case "1":
+                return "1er"
+            case "2" :
+                return "2do"
+            case "3":
+                return "3er"
+            default:
+                return `${nm}to`
+        }
+    }
 </script>
 
 <main class="w-full h-full relative">
@@ -73,7 +90,7 @@
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            class="h-4 w-4 stroke-current">
+                            class="h-4 w-4 stroke-current icon">
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -89,7 +106,7 @@
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            class="h-4 w-4 stroke-current">
+                            class="h-4 w-4 stroke-current icon">
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -112,9 +129,16 @@
     <div class="w-full mt-4 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
         <!-- LEFT -->
         <div class="grid grid-cols-1 gap-2">
-            <form use:enhance action="" method="POST" class="rounded-md p-4 bg-base-100">
+            <form use:enhance action="" method="POST" class="rounded-md p-4 bg-base-100 animate--y">
                 <div class="w-full h-max flex justify-between items-center ">
-                    <h3 class="text-xl font-bold">Detalles del Aula</h3>
+                    <div>
+                        <h3 class="text-xl font-bold">Detalles del Aula</h3>
+                        <h2 class="text-lg font-semibold">
+                            {formatNumero(grado.numero)} 
+                            {grado.nivel == "Inicial" ? "Nivel" : grado.nivel === "Primaria" ? "Grado" : "Año"} 
+                            "{grado.seccion}"
+                        </h2>
+                    </div>
 
                     <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" type="button"
                         onclick="{() =>{ setTimeout(() => {},100) }}">
@@ -136,22 +160,26 @@
                                     name="{field.name}"
                                     placeholder="{field.title}..."
                                     class="input input-bordered input-sm max-w-xs"
-                                    value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
+                                    value="{field.value}">
                             {:else}
-                                <b class="">{field.value}</b> 
+                                {#if field.name === "profesor"}
+                                    {@html field.value} 
+                                {:else}
+                                    <b class="{field.name === "turno" ? field.value === "Mañana" ? "text-orange-500" : "text-purple-600" : ""}">{field.value}</b> 
+                                {/if}
                             {/if}
                         </div>
                     {/each}
                 </div>
             </form>
 
-            <div class="rounded-md p-4 bg-base-100 h-32">
+            <div class="rounded-md p-4 bg-base-100 h-32 animate--y" style="--delay:200ms">
 
             </div>
         </div>
 
         <!-- RIGHT / ALUMNOS -->
-        <div class="rounded-md p-4 bg-base-100 min-h-[30rem]">
+        <div class="rounded-md p-4 bg-base-100 min-h-[30rem] animate-x" style="--delay:100ms">
             <div class="w-full flex items-center justify-between">
                 <h3 class="text-xl font-bold">Lista de Alumnos</h3>
 
@@ -173,7 +201,7 @@
                                     <b>{alumno.primer_nombre} {alumno.primer_apellido}</b>
                                     <div>
                                         <span class="text-sm">Cedula: </span>
-                                        <span class="text-sm font-semibold">{alumno.cedula_escolar}</span>
+                                        <span class="text-sm font-semibold">{alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}{formatStringWithDots(alumno.cedula_escolar)}</span>
                                     </div> 
 
                                     <div>
@@ -193,17 +221,20 @@
                         </div> 
                         <div class="bg-base-content/30 h-px my-2 py-0"></div>
                     {/each}                   
+                {:else}
+                   <h1 class="text-xl text-base-content/90 px-2">Aula vacia.</h1> 
+                   <h1 class="text-sm text-base-content/70 px-2 pb-4">Actualmente no existen alumnos asociados a esta aula.</h1> 
                 {/if}
             </div>
         </div>
     </div>
 
     <!-- HORARIO -->
-    <div class="w-full mt-4 bg-base-100 rounded-md p-4 h-max">
+    <div class="w-full mt-4 bg-base-100 rounded-md p-4 h-max animate-y" style="--delay:300ms">
         <h3 class="text-xl font-bold">Horario</h3>
         <div class="mt-2 w-full">
             <Horario form={form} lunes={lunes} martes={martes} miercoles={miercoles} jueves={jueves} viernes={viernes}
-            grado={grado?.id_grado} materias={materias}/>
+            grado={grado?.id_grado} materias={materias} bloques={bloques}/>
         </div>
     </div>
 </main>
@@ -227,6 +258,6 @@
     </div>
 </dialog>
 
-<style>
+<style lang="postcss">
 
 </style>

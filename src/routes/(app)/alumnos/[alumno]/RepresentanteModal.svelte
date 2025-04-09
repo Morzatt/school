@@ -1,9 +1,10 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import { formatStringWithDots } from "$lib";
+    import { basePath, formatStringWithDots } from "$lib";
     import Alert from "$lib/components/Messages/Alert.svelte";
     import type { RepresentantesByAlumnosResult } from "$lib/database/repositories/alumnos.repository";
     import edit_icon from "$lib/images/icons/edit_icon.svg"
+    import ver_icon from "$lib/images/icons/details_icon.svg"
 
     let { representante, form, tel }: {
         representante: RepresentantesByAlumnosResult,
@@ -60,7 +61,13 @@
             id="representante_{representante.cedula}_close">✕</button>
         </form>
 
-        <h2 class="font-bold text-xl">Representante</h2>
+        <div class="font-bold text-xl flex items-center justify-start gap-8">
+            <span>Representante</span>
+
+            <a href="{basePath}/representantes/{representante.cedula}" class="btn btn-xs btn-square">
+                <img src="{ver_icon}" alt="" class="icon">
+            </a>
+        </div>
 
         <div class="modal-container">
             <div class="mt-4">
@@ -96,7 +103,7 @@
 
                 <form action="?/editRepresentante" method="POST" class="mt-6" use:enhance>
                     <div class="flex items-center justify-between">
-                        <h3 class="font-semibold">Información del Representante</h3>
+                        <h3 class="font-semibold">Información de Contacto</h3>
                         
                         <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
                         onclick="{() => { setTimeout(() => {infoEdit = !infoEdit}, 100) }}" type="{infoEdit ? "submit" : "button"}">

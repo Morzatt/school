@@ -377,7 +377,7 @@
     </form>
 {/snippet}
 
-<main transition:slide={{ duration: 200, easing: sineInOut, axis: "y" }} data-theme="winter">
+<main transition:slide={{ duration: 200, easing: sineInOut, axis: "y" }}>
     <Alert form={ form } styles="absolute left-10 top-6 max-w-[25rem]"/>
 
 	<div class="h-screen w-full lg:w-[85%] xl:w-3/4 border-0 border-red-500 flex items-center justify-center">

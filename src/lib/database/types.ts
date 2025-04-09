@@ -131,7 +131,7 @@ export type AlumnosTable = {
     nacionalidad: "Venezolano" | "Extranjero",
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
-    edad: string
+    edad: number
     estado: ColumnType<'Activo' | 'Retirado', never, "Activo" | "Retirado">
     created_at: ColumnType<Date, never>,
     // direccion:string,
@@ -245,7 +245,7 @@ export type EmpleadosTable = {
     area: string,
     fecha_ingreso: string
     tiempo_servicio: string,
-    turno: string
+    turno: Turnos
 }
 
 export type Empleado = Selectable<EmpleadosTable>
@@ -320,14 +320,14 @@ export type MateriaUpdateable = Updateable<MateriasTable>
 export type DiasSemana = "Lunes" | 'Martes' | 'Miercoles' | 'Jueves' | 'Viernes'
 type FirstTwoLetters<T extends string> = T extends `${infer A}${infer B}${infer _}` ? `${A}${B}` : never;
 
-export type BloqueID = `${FirstTwoLetters<DiasSemana>}-${number}${'A' | 't'}-${number}${'A' | 'T'}` 
+export type BloqueID = `${number}${'A' | 't'}-${number}${'A' | 'T'}` 
 export type TimeString = `${number}${number}:${number}${number} ${'AM' | 'PM'}`
 
 export type BloquesHorariosTable = {
     id_bloque: ColumnType<BloqueID, BloqueID, never>,
-    dia_semana: DiasSemana,
     hora_inicio: TimeString,
     hora_fin: TimeString,
+    turno: Turnos
 }
 
 export type BloqueHorario = Selectable<BloquesHorariosTable>

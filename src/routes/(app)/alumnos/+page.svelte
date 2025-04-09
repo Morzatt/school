@@ -314,7 +314,7 @@
                                                 <th class="{ alumno.turno ? alumno.turno === "Mañana" ? "text-orange-500" : "text-purple-600" : "text-error" }">
                                                     {alumno.turno ? alumno.turno : "No asignado"}
                                                 </th>
-                                                <th>{alumno.edad}</th>
+                                                <th>{alumno.edad} Años</th>
                                                 <th>
                                                     <div class="{alumno.estado === "Retirado" ? "bg-error" : "bg-success"} p-2 rounded-sm">
                                                         {alumno.estado}

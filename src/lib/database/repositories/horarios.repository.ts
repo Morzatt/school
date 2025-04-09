@@ -1,5 +1,6 @@
+import type { Transaction } from "kysely";
 import { db } from "../";
-import type { BloqueHorario, BloqueHorarioInsertable, BloqueHorarioUpdateable, BloqueID, GradoID, HorarioGrado, HorarioGradoAlt, HorarioGradoAltInsertable, HorarioGradoInsertable, HorarioID } from "../types";
+import type { BloqueHorario, BloqueHorarioInsertable, BloqueHorarioUpdateable, BloqueID, Database, GradoID, HorarioGrado, HorarioGradoAlt, HorarioGradoAltInsertable, HorarioGradoInsertable, HorarioID } from "../types";
 
 export interface BloquesHorariosRepositoryInterface{
     create(bloque: BloqueHorarioInsertable): Promise<void>
@@ -85,14 +86,18 @@ export let horariosGradosRepository: HorariosGradosRepositoryInterface = {
 }
 
 export interface HorariosGradosAltRepositoryInterface {
-    createBloque(bloque: HorarioGradoAltInsertable): Promise<void>
+    createBloque(bloque: HorarioGradoAltInsertable, trx?: Transaction<Database>,): Promise<void>
     getHorarioByGrado(id: HorarioID): Promise<HorarioGradoAlt[] | undefined>
 }
 
 export let horariosGradosAltRepository: HorariosGradosAltRepositoryInterface = {
-    createBloque: async (bloque) => {
+    createBloque: async (bloque, trx) => {
         try {
-            await db.insertInto("horarios_grados_alt").values(bloque).execute()
+            if (!trx) {
+                await db.insertInto("horarios_grados_alt").values(bloque).execute()
+            } else {
+                await trx.insertInto("horarios_grados_alt").values(bloque).execute()               
+            }
         } catch (error) {
             throw error
         }

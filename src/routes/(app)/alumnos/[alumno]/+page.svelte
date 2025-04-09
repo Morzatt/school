@@ -70,7 +70,7 @@
             updateable: false,
             icon: edad_icon,
             title: "Edad",
-            value: `${alumno.edad}`
+            value: `${alumno.edad} Años`
         }
     ])
     let edicion = $state(false)
@@ -93,28 +93,6 @@
                 return `${nm}to`
         }
     }
-                
-    let escolarData = $derived([
-        {
-            name: "",
-            icon: curso_actual,
-            title: "Curso Actual",
-            value: `${formatNumero(alumno.numero)} 
-                ${alumno.nivel == "Inicial" ? "Nivel" : alumno.nivel === "Primaria" ? "Grado" : "Año"}`,
-        },
-        {
-            name: "",
-            icon: seccion,
-            title: "Sección",
-            value: `"${alumno.seccion}"`
-        },
-        {
-            name: "",
-            icon: turnos,
-            title: "Turno",
-            value: `"${alumno.turno}"`
-        },
-    ]);
 
     function openModal(id: string) {
         document!.getElementById(id)!.showModal()

@@ -14,7 +14,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
     .addColumn('fecha_nacimiento', 'date', (col) => col.notNull())
     .addColumn('direccion', 'text', (col) => col.notNull())
-    .addColumn('edad', 'text', (col) => col.notNull())
+    .addColumn('edad', 'integer', (col) => col.notNull())
 
     .addColumn('estado', 'text', (col) => col.notNull().check(sql`estado IN  ('Activo', 'Retirado', 'Expulsado')`))
     .addColumn('created_at', "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
@@ -56,7 +56,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('fecha_nacimiento', 'text', (col) => col.notNull())
     .addColumn('edad', 'text', (col) => col.notNull())
 
-    .addColumn('direccion', 'text', (col) => col.notNull())
+    .addColumn('direccion_habitacion', 'text', (col) => col.notNull())
     .addColumn('correo_electronico', 'text', (col) => col.notNull())
     .addColumn('ocupacion', 'text', (col) => col.notNull())
     .addColumn('grado_instruccion', 'text', (col) => col.notNull())
@@ -82,7 +82,11 @@ export async function up(db: Kysely<any>):  Promise<void> {
 
   await db.schema 
     .createTable("grados_cursados")
-    .addColumn('', 'text')
+    .addColumn('id_alumno', 'text')
+    .addColumn('grado', 'text')
+    .addColumn('fecha', 'text')
+    .addColumn('estado', 'text')
+    .addForeignKeyConstraint("fk_alumno", ["id_alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 
   await db.schema 

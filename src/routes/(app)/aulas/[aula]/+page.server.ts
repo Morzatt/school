@@ -1,17 +1,21 @@
 import { db } from '$lib/database';
 import { gradosRepository, materiasRepository } from '$lib/database/repositories/grados.repository';
-import { horariosGradosAltRepository } from '$lib/database/repositories/horarios.repository';
-import type { DiasSemana, GradoID, HorarioGradoAltInsertable, HorarioID, TimeString } from '$lib/database/types';
+import { bloquesHorariosRepository, horariosGradosAltRepository } from '$lib/database/repositories/horarios.repository';
+import type { BloqueID, DiasSemana, GradoID, HorarioGradoAltInsertable, HorarioID, TimeString } from '$lib/database/types';
 import async from '$lib/utils/asyncHandler';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
     let id = getId(url.pathname) as GradoID
     let grado = await async(gradosRepository.getById(id), log)
+
+    if (!grado) {
+        return error(404, "El aula/grado no existe.")
+    }
 
     let horarioResult = await async(
         db
@@ -52,14 +56,17 @@ export const load = (async ({ locals, url }) => {
     , log)
 
     let profesor = await async( 
-        db.selectFrom('empleados')
+        db
+        .selectFrom('empleados')
         .selectAll()
         .innerJoin('grados', 'grados.profesor', 'empleados.cedula')
         .where('grados.id_grado', "=", id)
         .executeTakeFirst()
     ,log)
 
-    return { grado, horarios, materias, alumnos, profesor };
+    let bloques = await db.selectFrom('bloques_horarios').selectAll().orderBy("hora_inicio asc").execute()
+
+    return { grado, horarios, materias, alumnos, profesor, bloques };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {
@@ -79,6 +86,8 @@ export const actions = {
             hora_inicio: data.get("hora_inicio") as TimeString,
             hora_fin: data.get("hora_fin") as TimeString,
         } satisfies Omit<HorarioGradoAltInsertable, "id_horario">
+
+        let guardar = data.get('guardar') as 'on' | null
 
         let inicio = parseInt(bloque.hora_inicio.replace(':', ""))
         let final = parseInt(bloque.hora_fin.replace(':', ""))
@@ -102,14 +111,20 @@ export const actions = {
             return fail(401, response.error(`El profesor ${profesor.primer_nombre} ${profesor.primer_apellido} pertenece al turno de la ${profesor.turno}`))           
         }
 
-        if (grado.turno == "Mañana") {
-            if (inicio > 1259 && final > 1259) {
+        if (grado.turno === "Mañana") {
+            if (inicio > 1259) {
+                return fail(402, response.error('El horario que está intentando registrar pertenece al turno de la Tarde'))
+            }
+            if (final > 1259) {
                 return fail(402, response.error('El horario que está intentando registrar pertenece al turno de la Tarde'))
             }
         }
 
-        if (grado.turno == "Tarde") {
+        if (grado.turno === "Tarde") {
             if (inicio < 1200 && final < 1200) {
+                return fail(402, response.error('El horario que está intentando registrar pertenece al turno de la Mañana'))
+            }
+            if (final < 1200) {
                 return fail(402, response.error('El horario que está intentando registrar pertenece al turno de la Mañana'))
             }
         }
@@ -202,11 +217,50 @@ export const actions = {
             return `${b.id_grado}:${b.dia_semana[0]}${b.dia_semana[1]}-${i[0]}${i[1]}${i[2]}${i[3]}${AB1}-${f[0]}${f[1]}${f[2]}${f[3]}${AB2}`
         }
 
-        await async(horariosGradosAltRepository.createBloque({
-            ...bloque,
-            id_horario: createHorarioID(bloque) as HorarioID
-        }), log)
+        function createBloqueID(b: typeof bloque) {
+            let i = b.hora_inicio.replace(':', '')
+            let f = b.hora_fin.replace(':', '')
+            let AB1 = parseInt(i) < 1200 ? "A" : "T"
+            let AB2 = parseInt(f) < 1200 ? "A" : "T"
+            return `${i[0]}${i[1]}${i[2]}${i[3]}${AB1}-${f[0]}${f[1]}${f[2]}${f[3]}${AB2}`
+        }
+
+        let bloqueID = createBloqueID(bloque) as BloqueID
+        
+        let bloqueDB = await async(bloquesHorariosRepository.getById(bloqueID), log)
+
+        await async (
+            db.transaction().execute(async (trx) => {
+                await horariosGradosAltRepository.createBloque({
+                    ...bloque,
+                    id_horario: createHorarioID(bloque) as HorarioID
+                }, trx)
+
+                if (guardar === "on" && !bloqueDB) {
+                    await trx.insertInto('bloques_horarios').values({
+                        id_bloque: bloqueID,
+                        hora_inicio: bloque.hora_inicio,
+                        hora_fin: bloque.hora_fin,
+                        turno: grado.turno
+                    }).execute()
+                }
+            })
+        , log)
 
         return response.success('Horario creado exitosamente.')
+    },
+
+    deleteBloque: async ({locals, request}) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        let bloque_id = data.get('bloque_id') as BloqueID
+
+        let bloqueDB = await async(bloquesHorariosRepository.getById(bloque_id), log)
+        if (!bloqueDB) {
+            return fail(401, response.error('El bloque no existe.'))
+        }
+
+        await async(bloquesHorariosRepository.delete(bloque_id), log)
+        return response.success('Bloque eliminado con éxito')
     }
 } satisfies Actions

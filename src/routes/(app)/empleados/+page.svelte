@@ -164,6 +164,7 @@
                     <th><span class="text-sm font-medium text-base-100">Sexo</span></th>
                     <th><span class="text-sm font-medium text-base-100">Area</span></th>
                     <th><span class="text-sm font-medium text-base-100">Cargo</span></th>
+                    <th><span class="text-sm font-medium text-base-100">Edad</span></th>
                     <th><span class="text-sm font-medium text-base-100">Turno</span></th>
                     <th><span class="text-sm font-medium text-base-100">Ver</span></th>
                 </tr>
@@ -187,7 +188,8 @@
                             <th class="{ empleado.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{empleado.sexo}</th>
                             <th>{empleado.area}</th>
                             <th>{empleado.cargo}</th>
-                            <th class="{ empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
+                            <th>{empleado.edad} Años</th>
+                            <th class="{empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
                             <th>
                                 <a class="btn btn-sm btn-square bg-accent" href="{basePath}/empleado/{empleado.cedula}">
                                     <img src="{ver_icon}" alt="" class="filter invert">

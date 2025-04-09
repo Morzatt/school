@@ -21,4 +21,10 @@ export function formatDateYYMMDDHHMMSS(date: Date): string {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`;
 }
 
-export function formatStringWithDots(input: string) { return input.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") }
+export function formatStringWithDots(input: string | null | undefined) {
+    if (!input) {
+        return ""
+    }
+
+    return input.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.") 
+}

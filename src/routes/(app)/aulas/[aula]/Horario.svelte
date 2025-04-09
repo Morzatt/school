@@ -5,7 +5,7 @@
     }
 
 
-    let { lunes, martes, miercoles, jueves, viernes, grado, materias, form } = $props()
+    let { lunes, martes, miercoles, jueves, viernes, grado, materias, form, bloques } = $props()
 
     let week: Week[] = $derived([
         {
@@ -49,10 +49,10 @@
         <div class="dia-col">
             <div class="dia-head">
                 <b>{dia.dia}</b>
-                <CreateBloqueModal dia={dia.dia} form={form} grado={grado} materias={materias}/>
+                <CreateBloqueModal dia={dia.dia} form={form} grado={grado} materias={materias} bloques={bloques}/>
                 <button class="group rounded-md bg-base-100 absolute top-1 right-1"
                         onclick={ () => { document.getElementById(`create_bloque_${dia.dia}_modal`)!.showModal() } }>
-                    <img src="{add_icon}" alt="" class="icon group-hover:invert size-5">
+                    <img src="{add_icon}" alt="" class="icon group-hover:invert size-5 icon">
                 </button>
             </div>
             {#each dia.horario as i}
@@ -60,7 +60,7 @@
                     <div class="dia-cell-header">
                         <div>
                             <button class="group">
-                                <img src="{editar_icon}" alt="" class="icon group-hover:invert">
+                                <img src="{editar_icon}" alt="" class="icon group-hover:invert icon">
                             </button>
                         </div>
 
