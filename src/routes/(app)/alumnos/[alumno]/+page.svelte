@@ -410,9 +410,9 @@
                 </button>
             </div>
 
-            <div class="mt-4 flex items-center justify-start w-full">
+            <!-- <div class="mt-4 flex items-center justify-start w-full">
                 {#if grados_cursados && grados_cursados.length > 0}
-                    <ul class="timeline timeline-vertical w-full m-0 p-5 px-12 max-h-80 overflow-x-auto
+                    <ul class="timeline timeline-vertical w-full m-0 p-5 px-12 
                     timeline-snap-icon max-md:timeline-compact">
                         {#each grados_cursados as gradoCursado, i}
                             {#if i % 2}
@@ -481,12 +481,12 @@
                 {:else}
                     <h1 class="text-2xl text-base-content/80">No existen grados cursados</h1>
                 {/if}
-            </div>
+            </div> -->
 
-            <!-- <div class="mt-4 max-h-80 overflow-y-auto">
+            <div class="mt-4 max-h-80 overflow-y-auto">
                 {#if grados_cursados && grados_cursados.length > 0}
                     {#each grados_cursados as gradoCursado}
-                        <div class="w-full my-2 {gradoCursado.grado.includes('Nivel') ? "bg-primary/10" : "bg-accent/10"}
+                        <div class="w-full mb-6 {gradoCursado.grado.includes('Nivel') ? "bg-primary/10" : "bg-accent/10"}
                         min-h-16 rounded-xl py-3 px-6
                         flex items-center justify-between">
                             <div>
@@ -503,7 +503,7 @@
                 {:else}
                     <h1 class="text-2xl text-base-content/80">No existen grados cursados</h1>
                 {/if}
-            </div> -->
+            </div>
         </div>  
     </div>
 </main>

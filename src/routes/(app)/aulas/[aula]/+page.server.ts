@@ -28,7 +28,7 @@ export const load = (async ({ locals, url }) => {
         .innerJoin('empleados', 'empleados.cedula', 'horarios_grados_alt.cedula_profesor')
         .select(['primer_nombre as nombre_profesor', 'primer_apellido as apellido_profesor'])
         .innerJoin('materias', 'materias.id_materia', 'horarios_grados_alt.id_materia')
-        .select(['materias.nombre_materia'])
+        .select(['materias.nombre_materia', 'materias.color'])
         .orderBy('horarios_grados_alt.hora_inicio')
         .execute()
     , log)

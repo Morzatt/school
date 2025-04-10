@@ -308,7 +308,8 @@ export type GradoAlumnoUpdateable = Updateable<GradosAlumnosTable>
 
 export type MateriasTable = {
     id_materia: ColumnType<string, never, never>,
-    nombre_materia: string
+    nombre_materia: string,
+    color: string,
 }
 
 export type Materia = Selectable<MateriasTable>

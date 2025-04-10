@@ -38,10 +38,10 @@ export async function up(db: Kysely<any>):  Promise<void> {
 
     await db.schema
     .createTable('materias')
-    
     .addColumn('id_materia', 'uuid', (col) => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
     // Matemáticas
     .addColumn('nombre_materia', 'text', (col) => col.notNull())
+    .addColumn('color', 'text', (col) => col.notNull())
     .execute()
 }
 

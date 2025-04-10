@@ -2,11 +2,10 @@
     import { basePath, formatStringWithDots } from '$lib';
     import type { PageData } from './$types';
     import cedula_escolar_icon from "$lib/images/icons/personalizar_icon.svg"
-    import female_icon from "$lib/images/icons/female_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-    import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import curso_actual from "$lib/images/icons/curso_actual.svg"
     import turnos from "$lib/images/icons/turnos_icon.svg"
+    import print from "$lib/images/icons/print.svg"
     import seccion from "$lib/images/icons/seccion.svg"
     import inscripcion_icon from "$lib/images/icons/face_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
@@ -55,7 +54,7 @@
         {
             name: "materias",
             updateable: false,
-            icon: curso_actual,
+            icon: seccion,
             title: "Total de Materias",
             value: `${materiasAula?.length} Materias`
         },
@@ -243,7 +242,15 @@
 
     <!-- HORARIO -->
     <div class="w-full mt-4 bg-base-100 rounded-md p-4 h-max animate-y" style="--delay:300ms">
-        <h3 class="text-xl font-bold">Horario</h3>
+        <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold">Horario</h3>
+
+            <button class="btn btn-sm btn-primary">
+                <img src="{print}" alt="" class="icon filter invert">
+                <span>Imprimir Horario</span>
+            </button>
+        </div>
+
         <div class="mt-2 w-full">
             <Horario form={form} lunes={lunes} martes={martes} miercoles={miercoles} jueves={jueves} viernes={viernes}
             grado={grado?.id_grado} materias={materias} bloques={bloques}/>

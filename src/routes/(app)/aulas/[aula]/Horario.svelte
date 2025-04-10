@@ -34,6 +34,7 @@
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import type { DiasSemana } from "$lib/database/types";
     import CreateBloqueModal from "./CreateBloqueModal.svelte";
+    import { onMount } from "svelte";
 
     function formatTime(time: string): string {
         let n = parseInt(time.slice(0, time.lastIndexOf(":")).replace(':', ""))
@@ -67,7 +68,7 @@
                         <div>{formatTime(i.hora_inicio)} - {formatTime(i.hora_fin)}</div>
                     </div>
                     <div class="dia-content">
-                        <div class="materia-card">
+                        <div class="materia-card" style="background-color: rgb(from {i.color} r g b / 40%); border-color: {i.color};">
                             {i.nombre_materia}
                         </div>
                         <div class="profesor">
@@ -128,8 +129,7 @@
 
         .materia-card {
             @apply px-2 py-1 border-l-[4px] border-l-primary border border-primary-content/40
-            rounded-l-md font-bold text-base-content/90
-            bg-primary/10;
+            rounded-l-md font-bold text-base-content/90;
         }
 
         .profesor {
