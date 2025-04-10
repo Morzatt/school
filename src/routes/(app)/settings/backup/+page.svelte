@@ -1,11 +1,21 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import type { PageData } from './$types';
+    import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
 
-    let { data }: { data: PageData } = $props();
+    let { data, form }: { data: PageData, form: ActionData } = $props();
     let { puntos } = $derived(data)
 
+    $effect(() => {
+        if (form?.success && form?.form === "createBackup") {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = `/backups/backup_${form.timestamp}.sql`;
+                link.download = `backup_${form.timestamp}.sql`; // Set the desired filename
+                link.click(); 
+            }, 1000)
+        }
+    })
 </script>
 
 <div class="size-full">
