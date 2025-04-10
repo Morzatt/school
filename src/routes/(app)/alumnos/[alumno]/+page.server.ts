@@ -6,7 +6,7 @@ import { basePath } from '$lib';
 import { db } from '$lib/database';
 import type { AlumnoUpdateable, GradoID, GradoInsertable, Niveles, Numeros, RepresentantesAlumnosInsertable, RepresentanteUpdateable, Secciones, Turnos } from '$lib/database/types';
 import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/utils/validators';
-import { createGradoId } from '$lib/utils/createGradoId';
+import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
 
@@ -44,7 +44,15 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         db.selectFrom('familiares_alumnos').selectAll().where('id_alumno', "=", cedula).execute()
     , log)
 
-    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares };
+    let grados_cursados = await async(
+        db
+        .selectFrom('grados_cursados')
+        .selectAll()
+        .where('grados_cursados.id_alumno', '=', cedula)
+        .execute()
+    , log)
+
+    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares, grados_cursados };
 });
 
 function getId(url: string): string {
@@ -72,23 +80,70 @@ export const actions = {
             turno: data.get('turno') as Turnos,
         } satisfies Omit<Omit<GradoInsertable, "id_grado">, "profesor"> 
 
+        let idAlumno = data.get("cedula_escolar") as string
+
+
         let validation = validateObject(aula, insertAulaSchema.omit({ profesor: true }))
         if (!validation.success) {
             return newValidationFailObject(validation.error, log)
         }
 
         let gradoID = createGradoId(aula) as GradoID
-        console.log(gradoID)
 
         let gradoFromDB = await async(gradosRepository.getById(gradoID), log)
         if (!gradoFromDB) {
             return fail(403, response.error('El aula no existe'))
         }
 
-        await async(gradosAlumnosRepository.create({
-            id_alumno: data.get("cedula_escolar") as string,
-            id_grado: gradoID
-        }), log)
+        let gradoAlumno = await async(
+            db.selectFrom('grados')
+                .leftJoin('grados_alumnos', 'grados_alumnos.id_grado', 'grados.id_grado')
+                .selectAll()
+                .where('grados_alumnos.id_alumno', '=', idAlumno)
+                .executeTakeFirst()
+        , log)
+        
+        if (gradoAlumno) {
+            if (gradoAlumno.nivel === "Primaria" && gradoFromDB.nivel === "Inicial") {
+                return fail(403, response.error('No se puede asignar al alumno a un nivel inferior al actual'))
+            }
+
+            if ((gradoAlumno.nivel === "Inicial" && gradoFromDB.nivel === "Inicial") && (parseInt(gradoAlumno.numero) > parseInt(gradoFromDB.numero))) {
+                return fail(403, response.error('No se puede asignar al alumno a un grado inferior al actual'))
+            }
+
+            if ((gradoAlumno.nivel === "Primaria" && gradoFromDB.nivel === "Primaria") && (parseInt(gradoAlumno.numero) > parseInt(gradoFromDB.numero))) {
+                return fail(403, response.error('No se puede asignar al alumno a un grado inferior al actual'))
+            }
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                let assc = await trx.selectFrom('grados_alumnos').selectAll().where('grados_alumnos.id_alumno', '=', idAlumno).executeTakeFirst()
+
+                if (assc) {
+                    await trx.deleteFrom('grados_alumnos').where('grados_alumnos.id_alumno', '=', idAlumno).execute()
+                }
+
+                await trx.insertInto("grados_alumnos").values({
+                    id_alumno: idAlumno,
+                    id_grado: gradoID
+                }).returningAll().executeTakeFirst()
+
+                await trx.updateTable('grados_cursados')
+                    .set({ estado: "Finalizado" })
+                    .where('grados_cursados.id_alumno', '=', idAlumno)
+                    .execute()
+
+                await trx.insertInto('grados_cursados').values({
+                    id_alumno: idAlumno,
+                    fecha: new Date().toLocaleDateString(),
+                    grado: formatGrado(gradoFromDB),
+                    estado: "En Curso"
+                }).execute()
+            })
+        , log)
+
 
         return response.success('Alumno añadido al aula correctamente.')
     },

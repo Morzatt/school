@@ -85,8 +85,10 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('id_alumno', 'text')
     .addColumn('grado', 'text')
     .addColumn('fecha', 'text')
+    // CULMINADO, EN PROCESO, 
     .addColumn('estado', 'text')
     .addForeignKeyConstraint("fk_alumno", ["id_alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .addPrimaryKeyConstraint('grados_cursados_pk', ['id_alumno', 'grado', 'fecha'])
     .execute()
 
   await db.schema 

@@ -44,6 +44,25 @@ export const load = (async ({ locals, url }) => {
 
     let materias = await async(db.selectFrom('materias').selectAll().execute(), log)
 
+    let materiasAula = await async(
+        db
+        .selectFrom('materias')
+        .innerJoin('horarios_grados_alt', 'materias.id_materia', 'horarios_grados_alt.id_materia')
+        .select(['materias.nombre_materia', 'materias.id_materia'])
+        .where('horarios_grados_alt.id_grado', '=', id)
+        .groupBy('materias.id_materia')
+        .execute()
+    , log)
+
+    let clasesSemanales = await async(
+        db
+        .selectFrom('materias')
+        .innerJoin('horarios_grados_alt', 'materias.id_materia', 'horarios_grados_alt.id_materia')
+        .select(['materias.id_materia'])
+        .where('horarios_grados_alt.id_grado', '=', id)
+        .execute()
+    , log)
+
     let alumnos = await async(
         db
         .selectFrom('alumnos')
@@ -66,7 +85,7 @@ export const load = (async ({ locals, url }) => {
 
     let bloques = await db.selectFrom('bloques_horarios').selectAll().orderBy("hora_inicio asc").execute()
 
-    return { grado, horarios, materias, alumnos, profesor, bloques };
+    return { grado, horarios, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {

@@ -1,5 +1,6 @@
+import type { Transaction } from "kysely";
 import { db } from "../";
-import type { Alumno, Grado, GradoAlumnoInsertable, GradoID, GradoInsertable, GradoUpdateable, MateriaInsertable } from "../types";
+import type { Alumno, Database, Grado, GradoAlumnoInsertable, GradoID, GradoInsertable, GradoUpdateable, MateriaInsertable } from "../types";
 
 export interface GradosRepositoryInterface {
     create(grado: GradoInsertable): Promise<void>
@@ -59,16 +60,20 @@ export let gradosRepository: GradosRepositoryInterface = {
 // GRADOS+ALUMNOS
 
 export interface GradosAlumnosRepositoryInterface {
-    create(grado: GradoAlumnoInsertable): Promise<void>
+    create(grado: GradoAlumnoInsertable, trx?: Transaction<Database>): Promise<void>
     getAllAlumnosByGrado(id: GradoID): Promise<Alumno[] | undefined>
     deleteAlumnoFromGrado(id_alumno: string): Promise<void>
     update(grado: GradoUpdateable, id: GradoID): Promise<void>
 }
 
 export let gradosAlumnosRepository: GradosAlumnosRepositoryInterface = {
-    create: async (ga) => {
+    create: async (ga, trx) => {
         try {
-            await db.insertInto("grados_alumnos").values(ga).execute()
+            if (trx) {
+                await trx.insertInto("grados_alumnos").values(ga).execute()
+            } else {
+                await db.insertInto("grados_alumnos").values(ga).execute()
+            }
         } catch (error) {
             throw error
         }

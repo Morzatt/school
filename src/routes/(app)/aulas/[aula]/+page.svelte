@@ -18,7 +18,7 @@
     import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { grado, materias, alumnos, profesor, bloques } = $derived(data)
+    let { grado, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
 
@@ -35,9 +35,14 @@
             updateable: true,
             icon: cedula_escolar_icon,
             title: "Docente de Aula",
-            value: `<div class="text-end">
-                        <b>${profesor?.primer_nombre ? profesor.primer_nombre : "No"} ${profesor?.primer_apellido ? profesor.primer_apellido : "Asignado"}</b>
-                        <p class="text-base-content/60 text-sm">V-${formatStringWithDots(profesor?.cedula)}</p>
+            value: `<div class="text-end flex items-center justify-end gap-4">
+                        <div>
+                            <b>${profesor?.primer_nombre ? profesor.primer_nombre : "No"} ${profesor?.primer_apellido ? profesor.primer_apellido : "Asignado"}</b>
+                            <p class="text-base-content/60 text-sm">V-${formatStringWithDots(profesor?.cedula)}</p>
+                        </div>
+                        <a href="${basePath}/empleados/${profesor?.cedula}" class="btn btn-xs btn-square">
+                            <img src="${ver_icon}" alt="" class="icon">
+                        </a>
                     </div>` 
         },
         {
@@ -52,7 +57,14 @@
             updateable: false,
             icon: curso_actual,
             title: "Total de Materias",
-            value: `${materias?.length} Materias`
+            value: `${materiasAula?.length} Materias`
+        },
+        {
+            name: "clases",
+            updateable: false,
+            icon: curso_actual,
+            title: "Total de Clases Semanales",
+            value: `${clasesSemanales?.length} Clases`
         },
         {
             name: "turno",

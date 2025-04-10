@@ -16,6 +16,7 @@ export interface Database {
     representantes: RepresentantesTable
     telefonos_representantes: TelefonosRepresentantesTable
     representantes_alumnos: RepresentantesAlumnosTable
+    grados_cursados: GradosCursadosTable
 
     empleados: EmpleadosTable 
 
@@ -24,7 +25,6 @@ export interface Database {
     materias: MateriasTable
 
     bloques_horarios: BloquesHorariosTable
-    horarios_grados: HorariosGradosTable
     horarios_grados_alt: HorariosGradosAltTable
 }
 
@@ -160,6 +160,17 @@ export type FamiliaresAlumnosTable = {
 export type FamiliaresAlumno = Selectable<FamiliaresAlumnosTable>
 export type FamiliaresAlumnoInsertable = Insertable<FamiliaresAlumnosTable>
 export type FamiliaresAlumnoUpdateable = Updateable<FamiliaresAlumnosTable>
+
+export type GradosCursadosTable = {
+    id_alumno: string,
+    grado: string,
+    fecha: ColumnType<Date, string, never>,
+    estado: string,
+}
+
+export type GradoCursado = Selectable<GradosCursadosTable>
+export type GradoCursadoInsertable = Insertable<GradosCursadosTable>
+export type GradoCursadoUpdateable = Updateable<GradosCursadosTable>
 
 // 
 // 
