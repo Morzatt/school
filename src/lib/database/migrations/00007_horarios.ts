@@ -42,3 +42,13 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('bloques_horarios').execute()
   await db.schema.dropTable('horarios_grados_alt').execute()
 }
+ 
+[{
+  hora_entrada: '9:00 AM',
+  hora_salida: '10:00 AM',
+  lunes: 'Matematicas',
+  martes: 'Biologia',
+  miercoles: 'Geologia',
+  jueves: 'Biologia',
+  viernes: 'Matematicas'
+}]

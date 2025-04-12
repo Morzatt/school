@@ -34,7 +34,6 @@
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import type { DiasSemana } from "$lib/database/types";
     import CreateBloqueModal from "./CreateBloqueModal.svelte";
-    import { onMount } from "svelte";
 
     function formatTime(time: string): string {
         let n = parseInt(time.slice(0, time.lastIndexOf(":")).replace(':', ""))

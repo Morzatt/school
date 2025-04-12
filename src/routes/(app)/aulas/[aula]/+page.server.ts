@@ -7,6 +7,7 @@ import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
 import { error, fail } from '@sveltejs/kit';
+import { printHorarioGrado } from '$lib/handlers/print.handlers';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -281,5 +282,7 @@ export const actions = {
 
         await async(bloquesHorariosRepository.delete(bloque_id), log)
         return response.success('Bloque eliminado con éxito')
-    }
+    },
+
+    printHorario: printHorarioGrado
 } satisfies Actions

@@ -16,7 +16,7 @@
     import type { ActionData } from '../$types';
     import AddAlumnosModal from './AddAlumnosModal.svelte';
 
-    let { data, form }: { data: PageData, form: ActionData } = $props();
+    let { data, form }: { data: PageData, form: ActionData & { horarioId: string } } = $props();
     let { grado, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
@@ -87,6 +87,16 @@
                 return `${nm}to`
         }
     }
+    $effect(() => {
+        if (form?.success && form?.form === "printHorario") {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = `/horarios/temporal/horario_${form.horarioId}.pdf`;
+                link.download = `horario_${form.horarioId}.pdf`; // Set the desired filename
+                link.click(); 
+            }, 1000)
+        }
+    })
 </script>
 
 <main class="w-full h-full relative">
@@ -205,10 +215,14 @@
                          border border-base-content/40 px-3 pt-2 rounded-md" style="scrollbar-width: thin;">
                 {#if alumnos && alumnos.length > 0}
                     {#each alumnos as alumno, i}
-                        <div class="w-full flex items-center justify-between">
-                            <div class="flex items-center">
-                                <b class="mr-3">{i+1}</b>
-                                <div class="border-l border-base-content/40 pl-3">
+                        <div class="w-full h-max flex items-center justify-between">
+                            <div class="flex h-20 items-center gap-2">
+                                <b class="h-full w-8 flex items-center justify-center text-base-100 rounded-lg
+                                {alumno.sexo === "Masculino" ? "bg-blue-600/80" : "bg-pink-600/80"}">
+                                    {alumno.sexo[0]}
+                                </b>
+
+                                <div class="">
                                     <b>{alumno.primer_nombre} {alumno.primer_apellido}</b>
                                     <div>
                                         <span class="text-sm">Cedula: </span>
@@ -219,9 +233,9 @@
                                         <span class="text-xs">Edad: </span>
                                         <span class="text-base-content/60 text-xs font-semibold">{alumno.edad} Años</span>
                                         <span>-</span>
-                                        <span class="text-xs font-semibold {alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">
+                                        <!-- <span class="text-xs font-semibold {alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">
                                             {alumno.sexo}
-                                        </span>
+                                        </span> -->
                                     </div> 
                                 </div>
                             </div>
@@ -245,10 +259,13 @@
         <div class="flex items-center justify-between">
             <h3 class="text-xl font-bold">Horario</h3>
 
-            <button class="btn btn-sm btn-primary">
-                <img src="{print}" alt="" class="icon filter invert">
-                <span>Imprimir Horario</span>
-            </button>
+            <form method="post" use:enhance action="?/printHorario">
+                <input type="hidden" name="id_grado" value={grado.id_grado}>
+                <button class="btn btn-sm btn-primary">
+                    <img src="{print}" alt="" class="icon filter invert">
+                    <span>Imprimir Horario</span>
+                </button>           
+            </form>
         </div>
 
         <div class="mt-2 w-full">

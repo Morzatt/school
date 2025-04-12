@@ -20,7 +20,7 @@
 
 <div class="relative flex flex-col justify-between min-h-[14rem] overflow-hidden transition-all duration-300 
     {grado.nivel === 'Inicial' ? 'bg-primary/10' : 'bg-accent/10'} 
-    hover:shadow-xl shadow-md hover:scale-[1.02] p-5 rounded-xl border border-base-content/15 group">
+    hover:shadow-xl shadow-md hover:scale-[1.02] p-5 rounded-xl border border-base-content/15 group animate-y">
     
     <div> <!-- Content wrapper -->
         <!-- Header: Nivel Badge and Turno Indicator -->

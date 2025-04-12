@@ -187,12 +187,10 @@
                             : "Nivel no asignado"
                         : "Alumno Retirado"} 
                 </h3>
-                <div class="w-full h-max shadow-md mt-4 rounded-md bg-base-300 flex items-center justify-between gap-3 px-4 py-2">
-                    {#each [1,2,3,4] as i}
-                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
-                        </button> 
-                    {/each}
+                <div class="w-full h-max mt-4 rounded-md flex items-center justify-between gap-2">
+                    <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                        <img src="{camera_icon}" alt="" class="filter invert icon">
+                    </button> 
                 </div>
             </div>
         </div>
