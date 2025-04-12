@@ -26,6 +26,8 @@ export interface Database {
 
     bloques_horarios: BloquesHorariosTable
     horarios_grados_alt: HorariosGradosAltTable
+
+    puntos_restauracion: PuntosRestauracionTable
 }
 
 // 
@@ -371,3 +373,14 @@ export type HorariosGradosAltTable = {
 export type HorarioGradoAlt = Selectable<HorariosGradosAltTable>
 export type HorarioGradoAltInsertable = Insertable<HorariosGradosAltTable>
 export type HorarioGradoAltUpdateable = Updateable<HorariosGradosAltTable>
+
+export type PuntosRestauracionTable = {
+    backup_id: ColumnType<string, string, never>,
+    nombre: string,
+    path: string,
+    fecha: ColumnType<Date, string, never>
+}
+
+export type PuntoRestauracion = Selectable<PuntosRestauracionTable>
+export type PuntoRestauracionInsertable = Insertable<PuntosRestauracionTable>
+export type PuntoRestauracionUpdateable = Updateable<PuntosRestauracionTable>

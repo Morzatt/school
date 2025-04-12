@@ -1,104 +1,178 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import fs, { unlinkSync } from 'fs'
+import fs, { unlinkSync, writeFileSync } from 'fs'
 import { spawn, spawnSync } from "child_process"
 import path from 'path';
+import async from '$lib/utils/asyncHandler';
+import { db } from '$lib/database';
+import { fail } from '@sveltejs/kit';
 
-export const load = (async () => {
-    return { puntos: [1, 2] };
+export const load = (async ({ locals, url }) => {
+  let { log } = locals;
+  let puntos = await async(db.selectFrom('puntos_restauracion').selectAll().orderBy('fecha desc').execute(), log)
+
+  return { puntos };
 }) satisfies PageServerLoad;
 
-
-
-
+function createBackupId(date: Date) {
+  return date.toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+}
 
 export const actions = {
-    createBackup: async ({ locals, request }) => {
-        let { log, response } = locals;
+  createBackup: async ({ locals, request }) => {
+    let { response } = locals;
+    let backupId = createBackupId(new Date())
+    let backupPath = path.join(process.cwd(), `/static/backups/temporal/backup_${backupId}.dump`)
+    createBackup(backupPath)
+    setTimeout(() => {
+      unlinkSync(backupPath)
+    }, 5000)
+    return response.success('Copia de Seguridad creada correctamente.', { timestamp: backupId })
+  },
 
-        // Configure psql arguments
-        const args = [
-            '-h', import.meta.env.VITE_PGHOST,
-            '-p', import.meta.env.VITE_PGPORT || 5432,
-            '-U', import.meta.env.VITE_PGUSER,
-            '-d', import.meta.env.VITE_PGDATABASE,
-            // Add options like `--quiet` to suppress output
-        ];
+  uploadBackup: async ({ locals, request }) => {
+    let { response } = locals;
 
-        // Set environment variables (including password)
-        const env = {
-            ...process.env,
-            PGPASSWORD: import.meta.env.VITE_PGPASSWORD, // Pass password non-interactively
-        };
+    let data = await request.formData()
+    let backupUpload = data.get('backupUpload') as File
 
-        let backupId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
-        let backupPath =  path.join(process.cwd(), `/static/backups/backup_${backupId}.sql`)
+    if (!backupUpload || backupUpload.size <= 0) return fail(400, response.error("No ha seleccionado ningún archivo de respaldo."));
+    if (!backupUpload.name.endsWith(".dump")) return fail(400, response.error("El archivo seleccionado no es una archivo de respaldo (.dump)"));
 
-        // Spawn pg_dump process
-        const pgDumpProcess = spawnSync('pg_dump', args, {
-            env,
-            encoding: 'buffer',
-            stdio: ['ignore', 'pipe', 'pipe']
-        });
+    let backupPath = path.join(process.cwd(), `/static/backups/temporal/${backupUpload.name}`)
 
-        // Handle errors
-        if (pgDumpProcess.error) {
-            throw new Error(`Process error: ${pgDumpProcess.error.message}`);
-        }
+    writeFileSync(backupPath, Buffer.from(await backupUpload.arrayBuffer()));
+    restoreFromDump(backupPath)
 
-        if (pgDumpProcess.status !== 0) {
-            const errorOutput = pgDumpProcess.stderr.toString();
-            throw new Error(`pg_dump failed: ${errorOutput}`);
-        }
+    setTimeout(() => {
+      unlinkSync(backupPath)
+    }, 5000)
 
-        // Write backup file
-        fs.writeFileSync(backupPath, pgDumpProcess.stdout);
+    return response.success('Copia de Seguridad creada correctamente.', { backupID: backupUpload.name })
+  },
 
-        setTimeout(() => {
-            unlinkSync(backupPath)
-        }, 5000)
+  createCheckpoint: async ({ locals, request }) => {
+    let { log, response } = locals;
+    let nombre_checkpoint = (await request.formData()).get('backup_name') as string
 
-        return response.success('Copia de Seguridad creada correctamente.', { timestamp: backupId })        
-    },
+    let today = new Date()
+    let backupId = createBackupId(today)
+    let relativePath = `/static/backups/checkpoints/backup_${backupId}.dump`
+    let backupPath = path.join(process.cwd(), relativePath)
+    createBackup(backupPath)
 
-    uploadBackup: async ({locals, request}) => {
-        let { log, response } = locals;
+    await async(
+      db
+        .insertInto('puntos_restauracion')
+        .values({
+          nombre: nombre_checkpoint,
+          path: relativePath,
+          fecha: today.toLocaleDateString('es'),
+          backup_id: backupId
+        })
+        .execute()
+    , log)
+
+    return response.success('Punto de Restauración creada correctamente.', { timestamp: backupId })
+  },
+
+  selectPunto: async ({ locals, request }) => {
+    let { log, response } = locals;
+    let backup_id = (await request.formData()).get('backup_id')
+    let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${backup_id}.dump`)
+    restoreFromDump(backupPath)
+    unlinkSync(backupPath)
+
+    return response.success('Copia de Seguridad creada correctamente.', { backupID: backup_id })
+  },
+
+  deletePunto: async ({ locals, request }) => {
+    let { log, response } = locals;
+    let backup_id = (await request.formData()).get('backup_id') as string
+    if (!backup_id || backup_id === "") {
+      return
     }
+
+    let relativePath = `/static/backups/checkpoints/backup_${backup_id}.dump`
+    let backupPath = path.join(process.cwd(), relativePath)
+    unlinkSync(backupPath)
+
+    await async(
+      db.deleteFrom('puntos_restauracion').where('backup_id', '=', backup_id).execute()
+    , log)
+  },
 } satisfies Actions
 
-function restoreFromCustomDump(dumpPath, dbConfig, pgRestorePath = 'pg_restore') {
-  const { host, port, user, password, database } = dbConfig;
-
-  // Configure pg_restore arguments
+async function createBackup(backupPath: string) {
+  // Configure psql arguments
   const args = [
-    '-h', host,
-    '-p', port.toString(),
-    '-U', user,
-    '-d', database,
-    '--clean', // Drop objects before recreating (optional)
-    '--create', // Create the database (optional)
-    dumpPath, // Path to the dump file
+    '-h', import.meta.env.VITE_PGHOST,
+    '-p', import.meta.env.VITE_PGPORT || 5432,
+    '-U', import.meta.env.VITE_PGUSER,
+    '-d', import.meta.env.VITE_PGDATABASE,
+    '-Fc',
+    '-T', `puntos_restauracion`
+    // Add options like `--quiet` to suppress output
   ];
 
-  // Set environment variables
+  // Set environment variables (including password)
   const env = {
     ...process.env,
-    PGPASSWORD: password,
+    PGPASSWORD: import.meta.env.VITE_PGPASSWORD, // Pass password non-interactively
+  };
+
+  // Spawn pg_dump process
+  const pgDumpProcess = spawnSync('pg_dump', args, {
+    env,
+    encoding: 'buffer',
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+
+  // Handle errors
+  if (pgDumpProcess.error) {
+    throw new Error(`Process error: ${pgDumpProcess.error.message}`);
+  }
+
+  if (pgDumpProcess.status !== 0) {
+    const errorOutput = pgDumpProcess.stderr.toString();
+    throw new Error(`pg_dump failed: ${errorOutput}`);
+  }
+
+  // Write backup file
+  fs.writeFileSync(backupPath, pgDumpProcess.stdout);
+}
+
+function restoreFromDump(dumpPath: string) {
+  // Configure psql arguments
+  const args = [
+    '-h', import.meta.env.VITE_PGHOST,
+    '-p', import.meta.env.VITE_PGPORT || 5432,
+    '-U', import.meta.env.VITE_PGUSER,
+    '-d', import.meta.env.VITE_PGDATABASE,
+    '--clean', // Drop objects before recreating (optional)
+    dumpPath,  // Path to the dump file
+  ];
+
+  // Set environment variables (including password)
+  const env = {
+    ...process.env,
+    PGPASSWORD: import.meta.env.VITE_PGPASSWORD, // Pass password non-interactively
   };
 
   // Spawn pg_restore process
-  const pgRestoreProcess = spawn(pgRestorePath, args, { env });
-
-  // Handle output
-  pgRestoreProcess.stderr.on('data', (data) => {
-    console.error(`pg_restore error: ${data}`);
+  const pgRestoreProcess = spawnSync('pg_restore', args, {
+    env,
+    encoding: 'buffer',
+    stdio: ['ignore', 'pipe', 'pipe']
   });
 
-  pgRestoreProcess.on('close', (code) => {
-    if (code !== 0) {
-      console.error(`pg_restore exited with code ${code}`);
-    } else {
-      console.log('Restoration completed!');
-    }
-  });
+  // Handle errors
+  if (pgRestoreProcess.error) {
+    throw new Error(`Process error: ${pgRestoreProcess.error.message}`);
+  }
+
+  if (pgRestoreProcess.status !== 0) {
+    const errorOutput = pgRestoreProcess.stderr.toString();
+    throw new Error(`pg_restore failed: ${errorOutput}`);
+  }
 }
