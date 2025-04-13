@@ -67,7 +67,7 @@ export const actions = {
         .values({
           nombre: nombre_checkpoint,
           path: relativePath,
-          fecha: today.toLocaleDateString('es'),
+          fecha: today.toLocaleDateString('en'),
           backup_id: backupId
         })
         .execute()
@@ -80,10 +80,10 @@ export const actions = {
     let { log, response } = locals;
     let backup_id = (await request.formData()).get('backup_id')
     let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${backup_id}.dump`)
-    restoreFromDump(backupPath)
-    unlinkSync(backupPath)
 
-    return response.success('Copia de Seguridad creada correctamente.', { backupID: backup_id })
+    restoreFromDump(backupPath)
+
+    return response.success('Punto de restauracion correctamente restaurado.', { backupID: backup_id })
   },
 
   deletePunto: async ({ locals, request }) => {
@@ -100,6 +100,8 @@ export const actions = {
     await async(
       db.deleteFrom('puntos_restauracion').where('backup_id', '=', backup_id).execute()
     , log)
+
+    return response.success('Punto de Restauración correctamente eliminado.')
   },
 } satisfies Actions
 

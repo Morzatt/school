@@ -4,9 +4,10 @@
     import type { ActionData, PageData } from './$types';
     import AulaCard from './AulaCard.svelte';
     import CreateAulaModal from './CreateAulaModal.svelte';
+    import MateriasModal from './MateriasModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { grados } = $derived(data)
+    let { grados, materias } = $derived(data)
 
     let type = $state('all')
     let turno = $state("all")
@@ -16,9 +17,9 @@
         // await invalidateAll()
         goto(url)
     }
-
-    let materias = $state()
 </script>
+
+<MateriasModal form={null} materias={materias}/>
 
 <div class="">
     <h1 class="font-bold text-2xl">Aulas</h1>
@@ -73,6 +74,10 @@
                 <span>Añadir</span>
             </button>
         </div>
+        <button class="btn btn-sm btn-accent"
+        onclick="{() => {document.getElementById('manage_materias_modal')!.showModal()}}">
+            <span>Materias</span>
+        </button>
     </div>
 
     <div class="divider"></div>

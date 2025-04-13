@@ -39,11 +39,11 @@
 
     <div class="w-full h-auto 
                  flex flex-col lg:flex-row 
-                 items-center justify-between gap-8 lg:gap-2 
+                 items-start justify-between gap-8 lg:gap-2 
                  {deleteConfirmation ? "blur-md" : ""}">
         <div class="w-full lg:w-1/4 h-full
          flex flex-col items-center justify-start 
-         bg-base-200/50 border border-base-content/30 rounded-md">
+         bg-base-100 shadow-md rounded-md p-4 animate--x">
             <div class="w-full h-fit rounded-md">
                 <div class="w-full flex items-center justify-center flex-col">
                     <div class="size-fit relative">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div class="w-full lg:w-3/4 h-full bg-base-200/50 rounded-md border border-base-content/30 p-6">
+        <div class="w-full lg:w-3/4 h-full bg-base-100 shadow-md rounded-md p-6 animate--x" style="--delay: 150ms;">
             <h3 class="text-2xl font-bold">Configurar Perfil</h3>
 
             <form action="?/editUser" method="POST" use:enhance class="w-full px-3 mt-4">

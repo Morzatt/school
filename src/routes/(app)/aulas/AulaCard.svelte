@@ -32,8 +32,8 @@
                 Turno {grado.turno}
                 <div class="size-3 rounded-full {grado.turno == 'Mañana' ? 'bg-orange-500/90' : 'bg-purple-600/90'} 
                     ring-2 {grado.turno == 'Mañana' ? 'ring-orange-500/40' : 'ring-purple-600/40'}"></div>
-            </div>
-        </div>
+                    </div>
+                </div>
 
         <!-- Title -->
         <h3 class="font-bold text-2xl mb-2 text-base-content">
@@ -48,26 +48,26 @@
                 <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
             </svg>
             <span class="truncate">Docente: <span class="font-semibold {grado.nivel === 'Inicial' ? 'text-primary' : 'text-accent'}">{grado.nombre_profesor} {grado.apellido_profesor}</span></span>
-        </div>
+                </div>
 
         <!-- Stats -->
         <div class="flex justify-around items-center text-center mb-5 gap-3 p-2 bg-base-100/50 rounded-lg shadow-sm">
             <div class="stat-item px-2">
                 <div class="text-xs font-medium opacity-75 mb-1 uppercase tracking-wider">Matricula</div>
                 <div class="text-xl font-bold text-base-content">{grado.matricula_grado}</div>
-            </div>
+                    </div>
             <div class="border-x border-base-content/20 h-10 self-center"></div>
             <div class="stat-item px-2">
                 <div class="text-xs font-medium opacity-75 mb-1 uppercase tracking-wider">Niños</div>
                 <div class="text-xl font-bold text-blue-600">{grado.matricula_varones}</div>
-            </div>
+                    </div>
              <div class="border-x border-base-content/20 h-10 self-center"></div>
             <div class="stat-item px-2">
                 <div class="text-xs font-medium opacity-75 mb-1 uppercase tracking-wider">Niñas</div>
                 <div class="text-xl font-bold text-pink-600">{grado.matricula_hembras}</div>
             </div>
+            </div>
         </div>
-    </div>
 
     <!-- Action button -->
     <div class="mt-auto flex justify-end">

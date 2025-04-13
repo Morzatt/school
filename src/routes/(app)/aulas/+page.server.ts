@@ -6,7 +6,7 @@ import { fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/utils/validators';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
-import { gradosRepository } from '$lib/database/repositories/grados.repository';
+import { gradosRepository, materiasRepository } from '$lib/database/repositories/grados.repository';
 
 export const load = (async ({ locals, url }) => {
     let qParam = url.searchParams.get('type') 
@@ -43,7 +43,13 @@ export const load = (async ({ locals, url }) => {
         grados = await async(query.execute(), log)
     }
 
-    return { grados };
+    let materias = await async(
+        db.selectFrom('materias')
+        .selectAll()
+        .execute()
+    , log)
+
+    return { grados, materias };
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -92,5 +98,29 @@ export const actions = {
         }), log)
 
         return response.success('Aula creada correctamente.')
+    },
+
+    createMateria: async ({ request, locals }) => {
+        let { response, log } = locals
+        let data = await request.formData()
+
+        await async(materiasRepository.create({
+            nombre_materia: data.get('nombre_materia') as string,
+            color: data.get('color_materia') as string
+        }), log)
+
+        return response.success('Materia creada correctamente.')
+    },
+    editMateria: async ({ request, locals }) => {
+        let { response, log } = locals
+        let data = await request.formData()
+        await async(materiasRepository.changeName(data.get('nombre_materia') as string, data.get('id_materia') as string), log)
+        return response.success('Materia editada correctamente.')
+    },
+    deleteMateria: async ({ request, locals }) => {
+        let { response, log } = locals
+        let data = await request.formData()
+        await async(materiasRepository.delete(data.get('id_materia') as string), log)
+        return response.success('Materia editada correctamente.')
     }
 } satisfies Actions

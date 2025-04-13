@@ -3,8 +3,9 @@
     import { enhance } from '$app/forms';
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
-    import UploadBackupModal from './UploadBackupModal.svelte';
     import success_icon from "$lib/images/icons/success_icon.svg"
+    import UploadBackupModal from './UploadBackupModal.svelte';
+
     import Alert from '$lib/components/Messages/Alert.svelte';
 
     let { data, form }: { data: PageData, form: ActionData & { timestamp: string } } = $props();
