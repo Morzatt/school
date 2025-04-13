@@ -3,7 +3,7 @@ import type { DiasSemana, GradoID, HorarioGradoAlt, Materia } from "$lib/databas
 import async from "$lib/utils/asyncHandler";
 import type { RequestEvent } from "@sveltejs/kit";
 import path from "path"
-import { printHorario } from "./pdf";
+import { printHorario, printListadeAsistencias } from "./pdf";
 import { unlinkSync } from "fs";
 
 export type HorarioDay = HorarioGradoAlt & Omit<Materia, "id_materia"> & { nombre_profesor: string, apellido_profesor: string }
@@ -91,4 +91,37 @@ export async function printHorarioGrado({ locals, request }: RequestEvent) {
     }, 10000)
 
     return response.success("Horario impreso correctamente", { horarioId: `${id}_${timeId}` })
+}
+
+
+export async function printAlumnosGrado({ request, locals }: RequestEvent) {
+    let { log, response } = locals;
+    let id = (await request.formData()).get('id_grado') as GradoID
+
+    let alumnos = await async(
+        db
+        .selectFrom('alumnos')
+        .innerJoin('grados_alumnos', 'grados_alumnos.id_alumno', 'alumnos.cedula_escolar')
+        .where('grados_alumnos.id_grado', '=', id)
+        .selectAll()
+        .orderBy('alumnos.primer_apellido asc')
+        .orderBy('alumnos.primer_nombre asc')
+        .execute()
+    , log)
+
+    if (!alumnos) {
+        return
+    }
+
+
+    let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+    let temporalPath = path.join(process.cwd(), `/static/horarios/temporal/lista_${id}_${timeId}.pdf`)
+
+    printListadeAsistencias(alumnos, temporalPath)
+
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success("Asistencia impresa correctamente", { listaId: `${id}_${timeId}` })
 }

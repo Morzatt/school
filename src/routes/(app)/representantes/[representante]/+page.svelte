@@ -177,26 +177,27 @@
 
                 <div class="divider p-0 m-0"></div>
 
-                <div class="w-full mt-3 max-h-[25rem]
+                <div class="w-full mt-3 max-h-[25rem] border border-base-content/30 rounded-md p-3
                             overflow-x-hidden overflow-y-auto" style="scrollbar-width: thin;">
                     {#if alumnos && alumnos.length > 0}
                         {#each alumnos as alumno, i}
-                            <div class="w-full flex items-center justify-between border border-base-content/30 px-4 rounded-md">
-                                <div class="flex items-center">
+                            <div class="w-full flex items-center justify-between border-0 border-base-content/30 px-2 rounded-md">
+                                <div class="flex h-[7rem] items-center gap-2 py-2">
+                                    <b class="h-full w-8 flex items-center justify-center text-base-100 rounded-lg
+                                    {alumno.sexo === "Masculino" ? "bg-blue-600/80" : "bg-pink-600/80"}">
+                                        {alumno.sexo[0]}
+                                    </b>
+
                                     <div>
                                         <b>{alumno.primer_nombre} {alumno.primer_apellido}</b>
                                         <div>
                                             <span class="text-sm">Cedula: </span>
-                                            <span class="text-sm font-semibold">{alumno.cedula_escolar}</span>
+                                            <span class="text-sm font-semibold">{alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}{formatStringWithDots(alumno.cedula_escolar)}</span>
                                         </div> 
 
                                         <div>
                                             <span class="text-xs">Edad: </span>
                                             <span class="text-base-content/60 text-xs font-semibold">{alumno.edad} Años</span>
-                                            <span>-</span>
-                                            <span class="text-xs font-semibold {alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">
-                                                {alumno.sexo}
-                                            </span>
                                         </div> 
 
                                         <div>
@@ -206,7 +207,7 @@
                                     </div>
                                 </div>
 
-                                <a href="{basePath}/alumnos/{alumno.cedula_escolar}" class="btn btn-xs btn-square p-0 m-0 flex items-center justify-center">
+                                <a href="{basePath}/alumnos/{alumno.cedula_escolar}" class="btn btn-sm btn-square p-0 m-0 flex items-center justify-center">
                                     <img src="{ver_icon}" alt="" class="icon">
                                 </a>
                             </div> 

@@ -96,6 +96,15 @@
                 link.click(); 
             }, 1000)
         }
+
+        if (form?.success && form?.form === "printAlumnos") {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = `/horarios/temporal/lista_${form.listaId}.pdf`;
+                link.download = `lista_${form.listaId}.pdf`; // Set the desired filename
+                link.click(); 
+            }, 1000)
+        }
     })
 </script>
 
@@ -201,12 +210,22 @@
 
         <!-- RIGHT / ALUMNOS -->
         <div class="rounded-md p-4 bg-base-100 min-h-[30rem] animate-x" style="--delay:100ms">
-            <div class="w-full flex items-center justify-between">
+            <div class="w-full flex items-start justify-between">
                 <h3 class="text-xl font-bold">Lista de Alumnos</h3>
 
-                <button class="btn btn-circle btn-xs" onclick={() => {openModal('add_alumno_modal')}}>
-                    <img src="{add_icon}" alt="" class="icon">
-                </button>
+                <div class="flex flex-col items-end justify-start gap-4">
+                    <button class="btn btn-circle btn-sm" onclick={() => {openModal('add_alumno_modal')}}>
+                        <img src="{add_icon}" alt="" class="icon">
+                    </button>
+                    <form method="post" use:enhance action="?/printAlumnos">
+                        <input type="hidden" name="id_grado" value={grado.id_grado}>
+                        <button class="btn btn-sm btn-primary flex gap-2">
+                            <img src="{print}" alt="" class="icon filter invert">
+                            <span>Imprimir</span>
+                        </button>           
+                    </form>
+                </div>
+
                 <AddAlumnosModal form={null}/>
             </div>
 
@@ -232,7 +251,6 @@
                                     <div>
                                         <span class="text-xs">Edad: </span>
                                         <span class="text-base-content/60 text-xs font-semibold">{alumno.edad} Años</span>
-                                        <span>-</span>
                                         <!-- <span class="text-xs font-semibold {alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">
                                             {alumno.sexo}
                                         </span> -->

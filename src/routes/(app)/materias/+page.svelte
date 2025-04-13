@@ -2,16 +2,13 @@
     import { goto, invalidateAll } from '$app/navigation';
     import { basePath } from '$lib';
     import type { ActionData, PageData } from './$types';
-    import AulaCard from './AulaCard.svelte';
-    import CreateAulaModal from './CreateAulaModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { grados } = $derived(data)
 
     let type = $state('all')
     let turno = $state("all")
 
-    let url = $derived(`${basePath}/aulas?type=${type}&turno=${turno}`) 
+    let url = $derived(`${basePath}/materias?type=${type}&turno=${turno}`) 
     async function handleSearch() {
         // await invalidateAll()
         goto(url)
@@ -21,9 +18,9 @@
 </script>
 
 <div class="">
-    <h1 class="font-bold text-2xl">Aulas</h1>
+    <h1 class="font-bold text-2xl">Materias</h1>
 
-    <div class="w-full h-12 mt-8 flex items-end justify-between animate-y">
+    <div class="w-full h-12 mt-8 flex items-end justify-between">
         <div class="flex items-end justify-start gap-6">
             <div class="form-control">
                 <div class="label">
@@ -78,15 +75,10 @@
     <div class="divider"></div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-3">
-        {#if grados}
-            {#each grados as grado}
-                <AulaCard grado={ grado }/>
-            {/each}           
-        {/if}
+
     </div>
 </div>
 
-<CreateAulaModal form={form} />
 
 <style lang="postcss">
     .grado-content button, a {

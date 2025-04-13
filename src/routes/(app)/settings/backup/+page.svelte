@@ -1,4 +1,5 @@
 <script lang="ts">
+    import database_icon from "$lib/images/icons/database_icon.svg"
     import { enhance } from '$app/forms';
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
@@ -61,8 +62,8 @@
             </div>
 
             <div class="w-full h-max *:bg-base-100 rounded-lg *:shadow-md animate-y flex items-start justify-between
-            gap-3" >
-                <div class="w-2/4 h-full rounded-md p-4">
+            gap-3">
+                <div class="w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 100ms;">
                     <h3 class="text-xl font-bold">Punto de Restauración</h3>
                     <p class="text-base-content/70 text-sm">Cree un punto de restauración del estado actual de la aplicacion, asignándole un nombre descriptivo para identificarlo fácilmente.</p>
 
@@ -72,7 +73,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action='?/uploadBackup' enctype="multipart/form-data" use:enhance class="w-2/4 h-full rounded-md p-4">
+                <form method="POST" action='?/uploadBackup' enctype="multipart/form-data" use:enhance class="w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 200ms;">
                     <h3 class="text-xl font-bold">Subir Copia de Seguridad</h3>
                     <p class="text-base-content/70 text-sm">Restaure su base de datos a un punto anterior, subiendo una copia de seguridad creada con anterioridad.</p>
 
@@ -119,7 +120,7 @@
             </div >
         </div>
 
-        <div class="w-2/6 h-full bg-base-100 rounded-lg p-4 shadow-md animate-x " style="--delat: 200ms">
+        <div class="w-2/6 h-full bg-base-100 rounded-lg p-4 shadow-md animate-x " style="--delat: 300ms">
             <h3 class="text-xl font-bold">Puntos de Restauración Guardados.</h3>
             <p class="text-base-content/70 text-sm"><b>NOTA: </b> Los puntos de restauracion no son incluidos en las copias de seguridad, cualquier cambio de restauracion no aplicara.</p>
 
@@ -131,8 +132,8 @@
                         {#each puntos as punto}
                             <div class="w-full shadow-md min-h-20 rounded-md bg-base-300 flex px-4 py-2 items-center justify-between gap-4">
                                 <div class="flex flex-col items-center justify-center w-1/4">
-                                    <div class="rounded-md size-12 bg-base-content">
-
+                                    <div class="rounded-md size-12 bg-secondary">
+                                        <img src="{database_icon}" alt="" class="size-full filter invert icon">
                                     </div>
                                 </div>
 

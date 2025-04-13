@@ -31,10 +31,10 @@
 </script>
 
 {#snippet bloque()}
-    <div class="w-full h-auto animate-y pt-4">
+    <div class="w-full animate-y">
         <h3>Elegir Horas</h3>
 
-        <div class="w-full mt-2">
+        <div class="w-full mt-2 max-h-[19rem]">
             {#if bloques && bloques.length > 0}
                 {#each bloques as bloque}
                     <div class="w-full h-[4.2rem] mb-1 border-l-[5px] rounded-l-md {bloque.turno === "Mañana" ? "border-l-orange-500" : "border-l-purple-600"}
@@ -143,7 +143,7 @@
     </form>
 {/snippet}
 
-<dialog id="create_bloque_{dia}_modal" class="modal modal- modal-bottom sm:modal-middle">
+<dialog id="create_bloque_{dia}_modal" class="modal modal-ope modal-bottom sm:modal-middle">
     <div class="modal-box relative
                 sm:w-full sm:max-w-md overflow-hidden">
 

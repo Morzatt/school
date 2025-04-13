@@ -6,8 +6,8 @@ import async from '$lib/utils/asyncHandler';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
-import { error, fail } from '@sveltejs/kit';
-import { printHorarioGrado } from '$lib/handlers/print.handlers';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { printAlumnosGrado, printHorarioGrado } from '$lib/handlers/print.handlers';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -94,6 +94,17 @@ function getId(url: string): string {
 }
 
 export const actions = {
+    delete: async ({locals, request}) => {
+        let { log } = locals;
+        let grado_id = (await request.formData()).get('grado') as GradoID
+
+        await async(
+            gradosRepository.delete(grado_id)
+        , log)
+
+        redirect(307, '/aulas')
+    },
+
     createBloque: async ({ locals, request }) => {
         let { log, response } = locals
         let data = await request.formData()
@@ -284,5 +295,6 @@ export const actions = {
         return response.success('Bloque eliminado con éxito')
     },
 
-    printHorario: printHorarioGrado
+    printHorario: printHorarioGrado,
+    printAlumnos: printAlumnosGrado,
 } satisfies Actions
