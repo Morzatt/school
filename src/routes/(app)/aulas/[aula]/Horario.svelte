@@ -1,11 +1,25 @@
 <script lang="ts">
+    import EditMateriaModal from "./EditMateriaModal.svelte";
+    import editar_icon from "$lib/images/icons/edit_icon.svg"    
+    import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import type { DiasSemana, HorarioGradoAlt } from "$lib/database/types";
+    import CreateBloqueModal from "./CreateBloqueModal.svelte";
+
+    type HorarioDia = HorarioGradoAlt & { 
+        nombre_profesor: string,
+        apellido_profesor: string,
+        nombre_materia: string,
+        id_materia: string,
+        color: string,
+    }
+
     type Week = {
         dia: DiasSemana,
-        horario: any
+        horario: HorarioDia[]
     }
 
 
-    let { lunes, martes, miercoles, jueves, viernes, grado, materias, form, bloques } = $props()
+    let { lunes, martes, miercoles, jueves, viernes, grado, materias, form, bloques }= $props()
 
     let week: Week[] = $derived([
         {
@@ -30,11 +44,6 @@
         },
     ])
 
-    import editar_icon from "$lib/images/icons/edit_icon.svg"    
-    import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-    import type { DiasSemana } from "$lib/database/types";
-    import CreateBloqueModal from "./CreateBloqueModal.svelte";
-
     function formatTime(time: string): string {
         let n = parseInt(time.slice(0, time.lastIndexOf(":")).replace(':', ""))
         return n <= 1200 ? `${time.slice(0, time.lastIndexOf(":"))} AM` :
@@ -56,14 +65,14 @@
                 </button>
             </div>
             {#each dia.horario as i}
+                <EditMateriaModal form={null} dia={dia.dia} hora={i} materias={materias}/>
                 <div class="dia-cell">
                     <div class="dia-cell-header">
                         <div>
-                            <button class="group">
+                            <button class="group" onclick={() => { document.getElementById(i.id_horario).showModal() }}>
                                 <img src="{editar_icon}" alt="" class="icon group-hover:invert icon">
                             </button>
                         </div>
-
                         <div>{formatTime(i.hora_inicio)} - {formatTime(i.hora_fin)}</div>
                     </div>
                     <div class="dia-content">

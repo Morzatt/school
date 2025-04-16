@@ -251,11 +251,17 @@ export const actions = {
     getConstanciaRetiro: getConstanciaRetiro,
     retirar: async ({ request, locals }) => {
         let { log, response } = locals;
-        let cedula_escolar = (await request.formData()).get('cedula_escolar')
+        let cedula_escolar = (await request.formData()).get('cedula_escolar') as string
 
         // SACAR DE LOS GRADOS CURSADOS/FINALIZAR
-
         // CAMBIAR ESTATUS
+        await async(
+            db.transaction().execute(async (trx) => {
+                await trx.deleteFrom('grados_alumnos').where('grados_alumnos.id_alumno', '=', cedula_escolar).execute()
+                await trx.updateTable('grados_cursados').set({ estado: 'Finalizado' }).where('grados_cursados.id_alumno', '=', cedula_escolar).execute()
+                await trx.updateTable('alumnos').set({ estado: "Retirado" }).where('alumnos.cedula_escolar', '=', cedula_escolar).execute()
+            })
+        , log)
         // GENERAR DOCUMENTOS
     }
 } satisfies Actions

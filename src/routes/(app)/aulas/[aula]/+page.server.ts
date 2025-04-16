@@ -1,7 +1,7 @@
 import { db } from '$lib/database';
 import { gradosRepository, materiasRepository } from '$lib/database/repositories/grados.repository';
 import { bloquesHorariosRepository, horariosGradosAltRepository } from '$lib/database/repositories/horarios.repository';
-import type { BloqueID, DiasSemana, GradoID, HorarioGradoAltInsertable, HorarioID, TimeString } from '$lib/database/types';
+import type { BloqueID, DiasSemana, GradoID, HorarioGradoAlt, HorarioGradoAltInsertable, HorarioID, TimeString } from '$lib/database/types';
 import async from '$lib/utils/asyncHandler';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -29,11 +29,10 @@ export const load = (async ({ locals, url }) => {
         .innerJoin('empleados', 'empleados.cedula', 'horarios_grados_alt.cedula_profesor')
         .select(['primer_nombre as nombre_profesor', 'primer_apellido as apellido_profesor'])
         .innerJoin('materias', 'materias.id_materia', 'horarios_grados_alt.id_materia')
-        .select(['materias.nombre_materia', 'materias.color'])
+        .select(['materias.nombre_materia', 'materias.color', 'materias.id_materia'])
         .orderBy('horarios_grados_alt.hora_inicio')
         .execute()
     , log)
-
 
     let horarios = {
         lunes: horarioResult?.filter(i => { return i.dia_semana === "Lunes" ? i : undefined }),
@@ -297,4 +296,106 @@ export const actions = {
 
     printHorario: printHorarioGrado,
     printAlumnos: printAlumnosGrado,
+
+    editHorario: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        
+        let info = {
+            id_horario: data.get('id_horario') as HorarioID,
+            nueva_materia: data.get('nueva_materia') as string,
+            nuevo_profesor: data.get('nuevo_profesor') as string,
+            dia_semana: data.get('dia_semana') as DiasSemana
+        }
+
+        let id_grado = info.id_horario.slice(0, info.id_horario.lastIndexOf(":")) as GradoID
+        let horarios = await async(
+            db
+            .selectFrom('horarios_grados_alt')
+            .selectAll()
+            .where('horarios_grados_alt.id_horario', "=", info.id_horario) 
+            .executeTakeFirst()
+        , log)
+
+        if (info.nuevo_profesor) {
+            let profesor = await async(empleadosRepository.getById(info.nuevo_profesor), log)
+            if (!profesor) {
+                return fail(401, response.error('El Docente de Aula especificado no está registrado.'))
+            }
+
+            if (profesor.area !== "Docente") {
+                return fail(401, response.error('El Docente de Aula especificado no pertenece al área Docente.'))
+            }
+
+            let grado = await async(gradosRepository.getById(id_grado), log)
+
+            if (!grado) {
+                return fail(401, response.error(`El Aula no existe`))
+            }
+
+            if (profesor.turno !== grado.turno) {
+                return fail(401, response.error(`El profesor ${profesor.primer_nombre} ${profesor.primer_apellido} pertenece al turno de la ${profesor.turno}`))
+            }
+
+            let horariosProfesor = await async(
+                db
+                    .selectFrom('horarios_grados_alt')
+                    .selectAll()
+                    .where((eb) => eb.and([
+                        eb('horarios_grados_alt.dia_semana', "=", info.dia_semana),
+                        eb('horarios_grados_alt.cedula_profesor', "=", info.nuevo_profesor)
+                    ]))
+                    .execute()
+                , log)
+
+            if (horariosProfesor) {
+                let conflictedHorarioProfesor = horariosProfesor!.filter((i) => {
+                    let ini = parseInt(i.hora_inicio.replace(':', ""))
+                    let fin = parseInt(i.hora_fin.replace(':', ""))
+
+                    let inicio = parseInt(horarios!.hora_inicio.replace(":", ""))
+                    let final = parseInt(horarios!.hora_fin.replace(":", ""))
+
+                    // console.log(`Inicio: ${inicio} - Final ${final} <===> ini: ${ini}, fin: ${fin}`)
+
+                    if (inicio >= fin) {
+                        if (final >= fin) {
+                            return
+                        }
+                    }
+
+                    if (final <= ini) {
+                        if (inicio <= ini) {
+                            return
+                        }
+                    }
+
+                    console.log('Conflicto de Horario')
+                    return i
+                })
+
+                if (conflictedHorarioProfesor.length !== 0) {
+                    return fail(401, response.error('Conflicto de Horario: El profesor ya se encuentra asignado a un horario en las horas especificadas.'))
+                }
+            }
+        } else {
+            info.nuevo_profesor = horarios!.cedula_profesor
+        }
+
+        if (!info.nueva_materia) {
+            info.nueva_materia = horarios!.id_materia
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                await trx.updateTable('horarios_grados_alt')
+                    .set({
+                        id_materia: info.nueva_materia,
+                        cedula_profesor: info.nuevo_profesor
+                    })
+                    .where('horarios_grados_alt.id_horario', '=', info.id_horario)
+                    .execute()
+            })
+            , log)
+    }
 } satisfies Actions
