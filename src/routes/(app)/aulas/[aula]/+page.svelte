@@ -15,6 +15,7 @@
     import Horario from './Horario.svelte';
     import type { ActionData } from '../$types';
     import AddAlumnosModal from './AddAlumnosModal.svelte';
+    import { downloadFile } from '$lib/utils/downloadFile';
 
     let { data, form }: { data: PageData, form: ActionData & { horarioId: string } } = $props();
     let { grado, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
@@ -90,19 +91,13 @@
     $effect(() => {
         if (form?.success && form?.form === "printHorario") {
             setTimeout(() => {
-                const link = document.createElement('a');
-                link.href = `/horarios/temporal/horario_${form.horarioId}.pdf`;
-                link.download = `horario_${form.horarioId}.pdf`; // Set the desired filename
-                link.click(); 
+                downloadFile(`/horarios/temporal/horario_${form.horarioId}.pdf`, `horario_${form.horarioId}.pdf`)
             }, 1000)
         }
 
         if (form?.success && form?.form === "printAlumnos") {
             setTimeout(() => {
-                const link = document.createElement('a');
-                link.href = `/horarios/temporal/lista_${form.listaId}.pdf`;
-                link.download = `lista_${form.listaId}.pdf`; // Set the desired filename
-                link.click(); 
+                downloadFile(`/horarios/temporal/lista_${form.listaId}.pdf`,`lista_${form.listaId}.pdf`)
             }, 1000)
         }
     })

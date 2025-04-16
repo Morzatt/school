@@ -1,18 +1,38 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import fs, { unlinkSync, writeFileSync } from 'fs'
-import { spawn, spawnSync } from "child_process"
+import { access, constants } from 'fs/promises';
+import { spawnSync } from "child_process"
 import path from 'path';
-import async from '$lib/utils/asyncHandler';
+import async, { handleError } from '$lib/utils/asyncHandler';
 import { db } from '$lib/database';
 import { fail } from '@sveltejs/kit';
+import type { PuntoRestauracion } from '$lib/database/types';
+import type pino from 'pino';
+import { invalidateAll } from '$app/navigation';
 
 export const load = (async ({ locals, url }) => {
   let { log } = locals;
   let puntos = await async(db.selectFrom('puntos_restauracion').selectAll().orderBy('fecha desc').execute(), log)
+  await checkPuntos(puntos, log)
 
   return { puntos };
 }) satisfies PageServerLoad;
+
+async function checkPuntos(puntos: PuntoRestauracion[] | undefined, log: pino.Logger<never, boolean>) {
+  if (puntos) {
+    for (let i of puntos) {
+      try {
+        let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${i.backup_id}.dump`)
+        await access(backupPath, constants.F_OK)
+      } catch (error) {
+        handleError(log, error, { msg: `El archivo ${i.nombre} no existe, borrado en proceso`, ...i })
+        await async(db.deleteFrom('puntos_restauracion').where('backup_id', '=', i.backup_id).execute(), log)
+        invalidateAll()
+      }
+    }
+  }
+}
 
 function createBackupId(date: Date) {
   return date.toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
@@ -71,7 +91,7 @@ export const actions = {
           backup_id: backupId
         })
         .execute()
-    , log)
+      , log)
 
     return response.success('Punto de Restauración creada correctamente.', { timestamp: backupId })
   },
@@ -99,7 +119,7 @@ export const actions = {
 
     await async(
       db.deleteFrom('puntos_restauracion').where('backup_id', '=', backup_id).execute()
-    , log)
+      , log)
 
     return response.success('Punto de Restauración correctamente eliminado.')
   },

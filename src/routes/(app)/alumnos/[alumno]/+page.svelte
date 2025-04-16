@@ -10,7 +10,7 @@
     import success_icon from "$lib/images/icons/success_icon.svg"
     import { enhance } from '$app/forms';
 
-    let { data, form }: { data: PageData, form: ActionData } = $props();
+    let { data, form }: { data: PageData, form: ActionData & { documentId: string } } = $props();
 
     let createRepresentanteForm = $derived.by(() => {
         let f = filterForm('asociarRepresentante');
@@ -81,6 +81,7 @@
     import seccion from "$lib/images/icons/seccion.svg"
     import DeleteRepresentanteModal from './DeleteRepresentanteModal.svelte';
     import Alert from '$lib/components/Messages/Alert.svelte';
+    import { downloadFile } from '$lib/utils/downloadFile';
 
     function formatNumero(nm: Numeros) {
         switch (nm) {
@@ -117,6 +118,12 @@
     function stripDots(inputString: string) {
         return inputString.replace(/\./g, '');
     }
+
+    $effect(() => {
+        if (form && form.success && form.form === "getBuenaConducta") {
+            downloadFile(`/constancias/alumnos/temporal/buena_conducta_${form.documentId}.pdf`, `buena_conducta_${form.documentId}.pdf`)
+        }
+    })
 </script>
 
 <main class="w-full h-full relative">
@@ -187,10 +194,14 @@
                             : "Nivel no asignado"
                         : "Alumno Retirado"} 
                 </h3>
+                <!-- CONSTANCIAS -->
                 <div class="w-full h-max mt-4 rounded-md flex items-center justify-between gap-2">
-                    <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                        <img src="{camera_icon}" alt="" class="filter invert icon">
-                    </button> 
+                    <form action="?/getBuenaConducta" method="post" use:enhance>
+                        <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
                 </div>
             </div>
         </div>
@@ -391,7 +402,7 @@
                             </select>
                         </label>
                     {:else}
-                        <b>"{alumno.turno ? alumno.turno : "No Asignado"}"</b> 
+                        <b class="{alumno.turno ? alumno.turno === "Mañana" ? "text-orange-500" : "text-purple-600" : "No Asignado"}">{alumno.turno}</b> 
                     {/if}
                 </div>
             </div>

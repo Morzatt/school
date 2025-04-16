@@ -166,11 +166,11 @@ export function createHorario(horario: HorarioPrint[]) {
         for (let h of horario) {
             let fila = [
                 `${formatTime(h.hora_inicio)} - ${formatTime(h.hora_fin)}`,
-                h.lunes? h.lunes.nombre_materia : "N/H",
-                h.martes    ? h.martes.nombre_materia : "N/H",
-                h.miercoles ? h.miercoles.nombre_materia : "N/H",
-                h.jueves    ? h.jueves.nombre_materia : "N/H",
-                h.viernes   ? h.viernes.nombre_materia : "N/H",
+                h.lunes? h.lunes.nombre_materia : "",
+                h.martes    ? h.martes.nombre_materia : "",
+                h.miercoles ? h.miercoles.nombre_materia : "",
+                h.jueves    ? h.jueves.nombre_materia : "",
+                h.viernes   ? h.viernes.nombre_materia : "",
             ];
 
             body.push(fila.map(i => {

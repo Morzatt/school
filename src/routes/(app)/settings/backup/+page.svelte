@@ -7,6 +7,7 @@
     import UploadBackupModal from './UploadBackupModal.svelte';
 
     import Alert from '$lib/components/Messages/Alert.svelte';
+    import { downloadFile } from "$lib/utils/downloadFile";
 
     let { data, form }: { data: PageData, form: ActionData & { timestamp: string } } = $props();
     let { puntos } = $derived(data)
@@ -14,13 +15,11 @@
     $effect(() => {
         if (form?.success && form?.form === "createBackup") {
             setTimeout(() => {
-                const link = document.createElement('a');
-                link.href = `/backups/temporal/backup_${form.timestamp}.dump`;
-                link.download = `backup_${form.timestamp}.dump`; // Set the desired filename
-                link.click(); 
+                downloadFile(`/backups/temporal/backup_${form.timestamp}.dump`, `backup_${form.timestamp}.dump`) 
             }, 1000)
         }
     })
+
     let file = $state()
 
     function deleteFile() {
@@ -38,8 +37,8 @@
 
     <Alert form={form} styles="absolute left-4 top-4 max-w-sm"/>
 
-    <div class="mt-4 flex items-start justify-start gap-3">
-        <div class="w-4/6 h-full flex flex-col items-center justify-center gap-3">
+    <div class="mt-4 flex flex-col lg:flex-row items-start justify-start gap-3">
+        <div class="w-full lg:w-4/6 h-full flex flex-col items-center justify-center gap-3">
             <div class="w-full h-fit bg-base-100 rounded-lg px-8 py-4 shadow-md animate--y">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold">Crear Copia de Seguridad</h3>
@@ -62,9 +61,9 @@
                 </form>
             </div>
 
-            <div class="w-full h-max *:bg-base-100 rounded-lg *:shadow-md animate-y flex items-start justify-between
+            <div class="w-full h-max *:bg-base-100 rounded-lg *:shadow-md animate-y flex flex-col lg:flex-row items-start justify-between
             gap-3">
-                <div class="w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 100ms;">
+                <div class="w-full lg:w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 100ms;">
                     <h3 class="text-xl font-bold">Punto de Restauración</h3>
                     <p class="text-base-content/70 text-sm">Cree un punto de restauración del estado actual de la aplicacion, asignándole un nombre descriptivo para identificarlo fácilmente.</p>
 
@@ -74,7 +73,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action='?/uploadBackup' enctype="multipart/form-data" use:enhance class="w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 200ms;">
+                <form method="POST" action='?/uploadBackup' enctype="multipart/form-data" use:enhance class="w-full lg:w-2/4 h-full rounded-md p-4 animate--y" style="--delay: 200ms;">
                     <h3 class="text-xl font-bold">Subir Copia de Seguridad</h3>
                     <p class="text-base-content/70 text-sm">Restaure su base de datos a un punto anterior, subiendo una copia de seguridad creada con anterioridad.</p>
 
@@ -121,7 +120,7 @@
             </div >
         </div>
 
-        <div class="w-2/6 h-full bg-base-100 rounded-lg p-4 shadow-md animate-x " style="--delat: 300ms">
+        <div class="w-full lg:w-2/6 h-full bg-base-100 rounded-lg p-4 shadow-md animate-x " style="--delat: 300ms">
             <h3 class="text-xl font-bold">Puntos de Restauración Guardados.</h3>
             <p class="text-base-content/70 text-sm"><b>NOTA: </b> Los puntos de restauracion no son incluidos en las copias de seguridad, cualquier cambio de restauracion no aplicara.</p>
 

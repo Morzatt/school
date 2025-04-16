@@ -6,7 +6,8 @@ import type { HorarioPrint } from "../print.handlers";
 import { handleError } from "$lib/utils/asyncHandler";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 import { createListaAsistenciasDocDefinition } from "./alumnosDocuments";
-import type { Alumno, GradoAlumno } from "$lib/database/types";
+import type { Alumno, Empleado, Grado, GradoAlumno, GradoCursado } from "$lib/database/types";
+import { createBuenaConductaDocument } from "./constanciasDocument";
 
 let fontPath = path.join(process.cwd(), `/src/lib/handlers/pdf/fonts`)
 
@@ -37,5 +38,10 @@ export function printHorario(horario: HorarioPrint[], path: string) {
 
 export function printListadeAsistencias(asistencias: Array<Alumno & GradoAlumno>, path: string) {
     const asistenciasDocDefinition = createListaAsistenciasDocDefinition(asistencias)
+    print(asistenciasDocDefinition, path)
+}
+
+export function printBuenaConducta(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+    const asistenciasDocDefinition = createBuenaConductaDocument(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }

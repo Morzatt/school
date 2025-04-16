@@ -22,7 +22,5 @@ export function formatGrado(grado: Grado | undefined | null): string {
         return ""
     }
 
-    return `${formatNumero(grado.numero)}
-    ${ grado.nivel == "Inicial" ? "Nivel" : grado.nivel === "Primaria" ? "Grado" : "Año" }
-    "${grado.seccion}"`
+    return `${formatNumero(grado.numero)} ${ grado.nivel == "Inicial" ? "Nivel" : grado.nivel === "Primaria" ? "Grado" : "Año" } "${grado.seccion}"`
 }

@@ -9,6 +9,7 @@ import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/
 import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
+import { getBuenaConducta } from '$lib/handlers/alumnos.handlers';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -240,7 +241,10 @@ export const actions = {
                     , log)
             }
         }
-    }
+    },
+
+    // CONSTANCIAS
+    getBuenaConducta: getBuenaConducta,
 } satisfies Actions
 
 

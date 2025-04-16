@@ -4,7 +4,7 @@ import pino, { destination } from "pino"
 import path from "path"
 
 const logger = pino({
-    level: "info",
+    level: "error",
     timestamp: pino.stdTimeFunctions.isoTime,
     transport: {
         targets: [
