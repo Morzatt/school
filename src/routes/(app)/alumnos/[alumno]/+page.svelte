@@ -123,6 +123,18 @@
         if (form && form.success && form.form === "getBuenaConducta") {
             downloadFile(`/constancias/alumnos/temporal/buena_conducta_${form.documentId}.pdf`, `buena_conducta_${form.documentId}.pdf`)
         }
+        if (form && form.success && form.form === "getAceptacion") {
+            downloadFile(`/constancias/alumnos/temporal/constancia_aceptacion_${form.documentId}.pdf`, `constancia_aceptacion_${form.documentId}.pdf`)
+        }
+        if (form && form.success && form.form === "getConstanciaEstudio") {
+            downloadFile(`/constancias/alumnos/temporal/constancia_estudio_${form.documentId}.pdf`, `constancia_estudio_${form.documentId}.pdf`)
+        }
+        if (form && form.success && form.form === "getConstanciaInscripcion") {
+            downloadFile(`/constancias/alumnos/temporal/constancia_inscripcion_${form.documentId}.pdf`, `constancia_incripcion_${form.documentId}.pdf`)
+        }
+        if (form && form.success && form.form === "getConstanciaRetiro") {
+            downloadFile(`/constancias/alumnos/temporal/constancia_retiro_${form.documentId}.pdf`, `constancia_retiro_${form.documentId}.pdf`)
+        }
     })
 </script>
 
@@ -177,7 +189,15 @@
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
         <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
-            <div class="w-max p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
+            <div class="w-max relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
+                <form action="?/retirar" use:enhance method="post">
+                    <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                    <button class="btn btn-sm btn-error text-base-100 absolute right-2 top-2">
+                        <span>✕</span>
+                        <span>Retirar</span>
+                    </button>
+                </form>
+
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
                     <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
@@ -195,8 +215,33 @@
                         : "Alumno Retirado"} 
                 </h3>
                 <!-- CONSTANCIAS -->
-                <div class="w-full h-max mt-4 rounded-md flex items-center justify-between gap-2">
-                    <form action="?/getBuenaConducta" method="post" use:enhance>
+                <div class="w-full h-max mt-4 rounded-md flex items-center justify-between gap-2 *:tooltip *:tooltip-top">
+                    <form action="?/getConstanciaEstudio" method="post" use:enhance data-tip="Constancia de Estudio">
+                        <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
+                    <form action="?/getBuenaConducta" method="post" use:enhance data-tip="Constancia de Buena Conducta">
+                        <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
+                    <form action="?/getAceptacion" method="post" use:enhance data-tip="Carta de Aceptacion">
+                        <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
+
+                    <form action="?/getConstanciaInscripcion" method="post" use:enhance data-tip="Constancia de Inscripcion">
+                        <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
+                    <form action="?/getConstanciaRetiro" method="post" use:enhance data-tip="Constancia de Retiro">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
                             <img src="{camera_icon}" alt="" class="filter invert icon">

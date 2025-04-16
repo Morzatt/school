@@ -1,13 +1,14 @@
 import { alumnosRepository } from "$lib/database/repositories/alumnos.repository";
-import type { AlumnoInsertable } from "$lib/database/types";
+import type { Alumno, AlumnoInsertable } from "$lib/database/types";
 import async from "$lib/utils/asyncHandler";
 import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
 import { getAge } from "$lib/utils/getAge";
 import type { RequestEvent } from "@sveltejs/kit";
-import { printBuenaConducta } from "./pdf";
+import { printAceptacion, printBuenaConducta, printConstanciaEstudio, printConstanciaInscripcion, printConstanciaRetiro } from "./pdf";
 import { db } from "$lib/database";
 import path from "path";
 import { unlinkSync } from "fs";
+import type pino from "pino";
 
 export async function createAlumnoHandler (
     { request, locals }: RequestEvent,
@@ -35,17 +36,7 @@ export async function createAlumnoHandler (
     return response.success("Nuevo Alumno creado correctamente!")
 }
 
-
-export async function getBuenaConducta({ request, locals }: RequestEvent,) {
-    let { log, response } = locals;
-    let data = await request.formData()
-    let cedula = data.get('cedula_escolar') as string
-
-    let alumno = await async(alumnosRepository.getById(cedula), log)
-    if (!alumno) {
-        return response.error('El alumno no existe')
-    }
-
+async function getObjects(alumno: Alumno, log: pino.Logger) {
     let grado = await async(
         db
         .selectFrom('grados')
@@ -74,9 +65,108 @@ export async function getBuenaConducta({ request, locals }: RequestEvent,) {
 
     let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
     let documentId = `${alumno.cedula_escolar}_${timeId}`
+
+    return {grado, grado_cursado, director, timeId, documentId}
+}
+
+export async function getBuenaConducta({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
     let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/buena_conducta_${documentId}.pdf`)
 
     printBuenaConducta(alumno, grado, grado_cursado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentId })
+}
+
+export async function getConstanciaEstudio({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
+    let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_estudio_${documentId}.pdf`)
+
+    printConstanciaEstudio(alumno, grado, grado_cursado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentId })
+}
+
+export async function getAceptacion({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
+    let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_aceptacion_${documentId}.pdf`)
+
+    printAceptacion(alumno, grado, grado_cursado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentId })
+}
+
+export async function getConstanciaInscripcion({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
+    let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_inscripcion_${documentId}.pdf`)
+
+    printConstanciaInscripcion(alumno, grado, grado_cursado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentId })
+}
+
+export async function getConstanciaRetiro({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
+    let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_retiro_${documentId}.pdf`)
+
+    printConstanciaRetiro(alumno, grado, grado_cursado, director, temporalPath)
     setTimeout(() => {
         unlinkSync(temporalPath)
     }, 10000)

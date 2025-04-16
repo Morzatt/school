@@ -9,7 +9,7 @@ import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/
 import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
-import { getBuenaConducta } from '$lib/handlers/alumnos.handlers';
+import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro } from '$lib/handlers/alumnos.handlers';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -245,6 +245,19 @@ export const actions = {
 
     // CONSTANCIAS
     getBuenaConducta: getBuenaConducta,
+    getConstanciaEstudio: getConstanciaEstudio,
+    getAceptacion: getAceptacion,
+    getConstanciaInscripcion: getConstanciaInscripcion,
+    getConstanciaRetiro: getConstanciaRetiro,
+    retirar: async ({ request, locals }) => {
+        let { log, response } = locals;
+        let cedula_escolar = (await request.formData()).get('cedula_escolar')
+
+        // SACAR DE LOS GRADOS CURSADOS/FINALIZAR
+
+        // CAMBIAR ESTATUS
+        // GENERAR DOCUMENTOS
+    }
 } satisfies Actions
 
 
