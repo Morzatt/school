@@ -5,7 +5,6 @@
     import user_icon from "$lib/images/icons/username_icon.svg"
     import camera_icon from "$lib/images/icons/camara_icon.svg"   
     import edit_icon from "$lib/images/icons/edit_icon.svg"
-    import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import success_icon from "$lib/images/icons/success_icon.svg"
     import type { ActionData } from '../$types';
@@ -71,57 +70,68 @@
     ])
     let edicionPersonal = $state(false)
 
+    // import grado_instruccion from "$lib/images/icons/"
+    import area_icon from "$lib/images/icons/class_icon.svg"
+    import especializacion_icon from "$lib/images/icons/email_icon.svg"
+    import grado_icon from "$lib/images/icons/school_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import cargo_icon from "$lib/images/icons/profesor.svg"
+
     let profesionalData: Data[] = $derived([
         {
             name: "grado_instruccion",
             updateable: true,
-            icon: cedula_escolar_icon,
+            icon: grado_icon,
             title: "Grado de Instrucción",
             value: capitalizeFirstLetter(empleado.grado_instruccion)
         },
         {
             name: "especializacion",
             updateable: true,
-            icon: empleado.sexo === "Masculino" ? male_icon : female_icon,
+            icon: especializacion_icon,
             title: "Especialización",
             value: capitalizeFirstLetter(empleado.especializacion)
         },
         {
             name: "area",
             updateable: true,
-            icon: birhtday_icon,
+            icon: area_icon,
             title: "Área",
             value: capitalizeFirstLetter(empleado.area)
         },
         {
             name: "cargo",
             updateable: true,
-            icon: edad_icon,
+            icon: cargo_icon,
             title: "Cargo",
             value: capitalizeFirstLetter(empleado.cargo)
         }
     ])
     let edicionProfesional = $state(false)
 
+    import tiempo_servicio from "$lib/images/icons/historial_icon.svg"
+    import turno_ma from "$lib/images/icons/turno_manana.svg"
+    import turno_ta from "$lib/images/icons/turno_tarde.svg"
+    import ingreso_icon from "$lib/images/icons/book_icon.svg"
+
     let institucionData: Data[] = $derived([
         {
             name: "fecha_ingreso",
             updateable: false,
-            icon: cedula_escolar_icon,
+            icon: ingreso_icon,
             title: "Fecha de Ingreso",
             value: empleado.fecha_ingreso
         },
         {
             name: "tiempo_servicio",
             updateable: false,
-            icon: empleado.sexo === "Masculino" ? male_icon : female_icon,
+            icon: tiempo_servicio,
             title: "Tiempo de Servicio",
             value: `${empleado.tiempo_servicio} Años`
         },
         {
             name: "turno",
             updateable: true,
-            icon: birhtday_icon,
+            icon: empleado.turno === "Tarde" ? turno_ta : turno_ma,
             title: "Turno",
             value: empleado.turno
         },
@@ -351,6 +361,25 @@
             <form action="?/retirar" method="POST" use:enhance class="h-auto w-full ">
                 <input type="hidden" value="{empleado.cedula}" name="empleado">
                 <button class="btn btn-error btn-sm mt-6">Retirar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="delete_confirmation_close">✕</button>
+        </form>
+        <h3 class="text-lg mt-2 font-bold">¿Seguro que eliminar el Empleado?</h3>
+        <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+
+        <div class="modal-container">
+            <form action="?/eliminar" method="POST" use:enhance class="h-auto w-full ">
+                <input type="hidden" value="{empleado.cedula}" name="empleado">
+                <button class="btn btn-error btn-sm mt-6">Eliminar</button>
             </form>
         </div>
     </div>

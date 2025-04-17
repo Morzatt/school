@@ -1,6 +1,6 @@
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
 import async from '$lib/utils/asyncHandler';
-import { error, type Actions } from '@sveltejs/kit';
+import { error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Grado } from '$lib/database/types';
 import { gradosRepository } from '$lib/database/repositories/grados.repository';
@@ -35,6 +35,15 @@ function getId(url: string): string {
 }
 
 export const actions = {
+    eliminar: async ({locals, request}) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        let cedula = data.get('empleado') as string
+
+        await async(empleadosRepository.delete(cedula), log)
+        redirect(307, '/empleados')
+    },
+
     retirar: async ({locals, request}) => {
         let { log, response } = locals;
         let data = await request.formData()
