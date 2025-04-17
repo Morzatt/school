@@ -29,6 +29,7 @@
     function closeModal(id: string) {
         document!.getElementById(id)!.click()
     }
+
     let personalData = $derived([
         {
             name: "profesor",
@@ -38,12 +39,15 @@
             value: `<div class="text-end flex items-center justify-end gap-4">
                         <div>
                             <b>${profesor?.primer_nombre ? profesor.primer_nombre : "No"} ${profesor?.primer_apellido ? profesor.primer_apellido : "Asignado"}</b>
-                            <p class="text-base-content/60 text-sm">V-${formatStringWithDots(profesor?.cedula)}</p>
+                            ${grado.profesor ? `<p class="text-base-content/60 text-sm">V-${formatStringWithDots(profesor?.cedula)}</p>` : ""}
                         </div>
-                        <a href="${basePath}/empleados/${profesor?.cedula}" class="btn btn-xs btn-square">
-                            <img src="${ver_icon}" alt="" class="icon">
-                        </a>
-                    </div>` 
+                        ${grado.profesor ? 
+                            `<a href="${basePath}/empleados/${profesor?.cedula}" class="btn btn-xs btn-square">
+                                <img src="${ver_icon}" alt="" class="icon">
+                            </a>` : ""
+                        }
+                    </div>`,
+            nameValue: profesor?.cedula
         },
         {
             name: "alumnos",
@@ -154,7 +158,7 @@
     <div class="w-full mt-4 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4">
         <!-- LEFT -->
         <div class="grid grid-cols-1 gap-2">
-            <form use:enhance action="" method="POST" class="rounded-md p-4 bg-base-100 animate--y">
+            <form use:enhance action="?/editAula" method="POST" class="rounded-md p-4 bg-base-100 animate--y">
                 <div class="w-full h-max flex justify-between items-center ">
                     <div>
                         <h3 class="text-xl font-bold">Detalles del Aula</h3>
@@ -165,13 +169,14 @@
                         </h2>
                     </div>
 
-                    <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" type="button"
-                        onclick="{() =>{ setTimeout(() => {},100) }}">
+                    <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" type="{edicion ? 'submit' : "button"}"
+                        onclick="{() =>{ setTimeout(() => {edicion = !edicion},100) }}">
                         <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
                     </button>
                 </div>
 
                 <div class="mt-2">
+                    <input type="hidden" name="id_grado" value={grado.id_grado}>
                     {#each personalData as field}
                         <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                             <div class="flex items-center justify-between gap-2">
@@ -185,7 +190,7 @@
                                     name="{field.name}"
                                     placeholder="{field.title}..."
                                     class="input input-bordered input-sm max-w-xs"
-                                    value="{field.value}">
+                                    value="{field.name === "profesor" ? field.nameValue : field.value}">
                             {:else}
                                 {#if field.name === "profesor"}
                                     {@html field.value} 

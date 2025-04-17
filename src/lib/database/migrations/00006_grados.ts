@@ -18,7 +18,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('turno', 'text', (col) => col.notNull().check(sql`turno IN ('Mañana', 'Tarde')`)) 
     // 8933618 -> Cedula del profesor
     // CHECK - Al introducir una cedula, el cargo del empleado debe de ser 'Docente'
-    .addColumn('profesor', 'text', (col) => col.notNull().defaultTo('Sin Profesor')) 
+    .addColumn('profesor', 'text') 
 
     .addForeignKeyConstraint("fk_profesor", ["profesor"], "empleados", ["cedula"], (col) => col.onDelete("set default").onUpdate("cascade"))
     .execute()

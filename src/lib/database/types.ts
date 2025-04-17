@@ -250,13 +250,14 @@ export type EmpleadosTable = {
     edad: string
 
     direccion: string,
+    estado: ColumnType<'Activo' | 'Retirado', never>
     
     grado_instruccion: string,
     especializacion: string,
     cargo: string,
 
     area: string,
-    fecha_ingreso: string
+    fecha_ingreso: ColumnType<Date, string, never>
     tiempo_servicio: string,
     turno: Turnos
 }
@@ -292,7 +293,7 @@ export type GradosTable = {
     nivel: ColumnType<Niveles, Niveles, never>,
     seccion: ColumnType<Secciones, Secciones, never>,
     turno: Turnos,
-    profesor: string,
+    profesor: ColumnType<string | null>,
 }
 
 export type Grado = Selectable<GradosTable>

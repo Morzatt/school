@@ -20,7 +20,7 @@ export const load = (async ({ locals, url }) => {
     let query = db
         .selectFrom('grados')
         .leftJoin('grados_alumnos', 'grados_alumnos.id_grado', 'grados.id_grado')
-        .innerJoin('empleados', 'empleados.cedula', 'grados.profesor')
+        .leftJoin('empleados', 'empleados.cedula', 'grados.profesor')
         .leftJoin('alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
         .select([
             'grados.id_grado', 'grados.nivel', 'grados.numero', 'grados.profesor', 'grados.seccion', 'grados.turno', 

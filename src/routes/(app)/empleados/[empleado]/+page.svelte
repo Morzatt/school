@@ -13,7 +13,7 @@
     import { enhance } from '$app/forms';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
-    let { empleado } = $derived(data)
+    let { empleado, grado } = $derived(data)
 
     function openModal(id: string) {
         document!.getElementById(id)!.showModal()
@@ -27,7 +27,7 @@
         name: string,
         icon: string,
         title: string,
-        value: string,
+        value: string | any,
         updateable?: boolean,
     }
 
@@ -36,11 +36,13 @@
     import male_icon from "$lib/images/icons/male_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import birhtday_icon from "$lib/images/icons/cake_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
+    import { formatGrado } from '$lib/utils/createGradoId';
 
     let personalData: Data[] = $derived([
         {
             name: "cedula",
-            updateable: true,
+            updateable: false,
             icon: cedula_escolar_icon,
             title: "Cédula de Identidad",
             value: `V-${formatStringWithDots(empleado.cedula)}`
@@ -71,37 +73,63 @@
 
     let profesionalData: Data[] = $derived([
         {
-            name: "cedula",
+            name: "grado_instruccion",
             updateable: true,
             icon: cedula_escolar_icon,
-            title: "Cédula de Identidad",
-            value: `V-${formatStringWithDots(empleado.cedula)}`
+            title: "Grado de Instrucción",
+            value: capitalizeFirstLetter(empleado.grado_instruccion)
         },
         {
-            name: "sexo",
-            updateable: false,
+            name: "especializacion",
+            updateable: true,
             icon: empleado.sexo === "Masculino" ? male_icon : female_icon,
-            title: "Género",
-            value: `${empleado.sexo}`
+            title: "Especialización",
+            value: capitalizeFirstLetter(empleado.especializacion)
         },
         {
-            name: "fecha_nacimiento",
-            updateable: false,
+            name: "area",
+            updateable: true,
             icon: birhtday_icon,
-            title: "Fecha de Nacimiento",
-            value: new Date(empleado.fecha_nacimiento).toLocaleDateString()
+            title: "Área",
+            value: capitalizeFirstLetter(empleado.area)
         },
         {
-            name: "edad",
-            updateable: false,
+            name: "cargo",
+            updateable: true,
             icon: edad_icon,
-            title: "Edad",
-            value: `${empleado.edad} Años`
+            title: "Cargo",
+            value: capitalizeFirstLetter(empleado.cargo)
         }
     ])
+    let edicionProfesional = $state(false)
+
+    let institucionData: Data[] = $derived([
+        {
+            name: "fecha_ingreso",
+            updateable: false,
+            icon: cedula_escolar_icon,
+            title: "Fecha de Ingreso",
+            value: empleado.fecha_ingreso
+        },
+        {
+            name: "tiempo_servicio",
+            updateable: false,
+            icon: empleado.sexo === "Masculino" ? male_icon : female_icon,
+            title: "Tiempo de Servicio",
+            value: `${empleado.tiempo_servicio} Años`
+        },
+        {
+            name: "turno",
+            updateable: true,
+            icon: birhtday_icon,
+            title: "Turno",
+            value: empleado.turno
+        },
+    ])
+    let edicionInstitucion = $state(false)
 </script>
 
-<main class="w-full h-full relative">
+<main class="w-full h-full relative pb-4">
     <Alert form={form} styles="lg:fixed absolute top-8 left-12 max-w-sm" />
 
     <div class="w-full h-max max-h-20 flex items-center justify-between">
@@ -158,11 +186,11 @@
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles Personales</h3>
 
-                        <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                        <!-- <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
                         onclick="{() =>{ setTimeout(() => { },100) }}"
                         type={"submit"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                        </button>
+                        </button> -->
                     </div>
 
                     <div class="mt-2">
@@ -194,23 +222,23 @@
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles Profesionales</h3>
 
-                        <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                        <!-- <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
                         onclick="{() =>{ setTimeout(() => { },100) }}"
                         type={"submit"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                        </button>
+                        </button> -->
                     </div>
 
                     <div class="mt-2">
-                        <!-- <input type="hidden" name="alumno" value={alumno.cedula_escolar}>
-                        {#each personalData as field}
+                        <input type="hidden" name="empleado" value={empleado.cedula}>
+                        {#each profesionalData as field}
                             <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                                 <div class="flex items-center justify-between gap-2">
                                     <img src="{field.icon}" alt="" class="icon">
                                     <p class="font-semibold text-base-content/80 ">{field.title}</p> 
                                 </div>
 
-                                {#if edicion && field.updateable}
+                                {#if edicionProfesional && field.updateable}
                                     <input type="text" 
                                         min="3"
                                         name="{field.name}"
@@ -218,10 +246,10 @@
                                         class="input input-bordered input-sm max-w-xs"
                                         value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
                                 {:else}
-                                    <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.value}</b> 
+                                    <b class="{field.name === "sexo" ? empleado.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.value}</b> 
                                 {/if}
                             </div>
-                        {/each} -->
+                        {/each}
                     </div>
                 </form>
             </div>
@@ -230,25 +258,25 @@
                 <form use:enhance action="?/edit" method="POST" class="w-full animate-x min-h-60 rounded-md p-4 bg-base-100 shadow-md"
                 style="--delay: 300ms">
                     <div class="w-full h-max flex justify-between items-center ">
-                        <h3 class="text-xl font-bold">Datos Escolares</h3>
+                        <h3 class="text-xl font-bold">Datos dentro de la Institución</h3>
 
-                        <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                        <!-- <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
                         onclick="{() =>{ setTimeout(() => { },100) }}"
                         type={"submit"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                        </button>
+                        </button> -->
                     </div>
 
                     <div class="mt-2">
-                        <!-- <input type="hidden" name="alumno" value={alumno.cedula_escolar}>
-                        {#each personalData as field}
+                        <input type="hidden" name="empleado" value={empleado.cedula}>
+                        {#each institucionData as field}
                             <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
                                 <div class="flex items-center justify-between gap-2">
                                     <img src="{field.icon}" alt="" class="icon">
                                     <p class="font-semibold text-base-content/80 ">{field.title}</p> 
                                 </div>
 
-                                {#if edicion && field.updateable}
+                                {#if edicionInstitucion && field.updateable}
                                     <input type="text" 
                                         min="3"
                                         name="{field.name}"
@@ -256,17 +284,36 @@
                                         class="input input-bordered input-sm max-w-xs"
                                         value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
                                 {:else}
-                                    <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.value}</b> 
+                                    <b class="{field.name === "turno" ? field.value === "Mañana" ? "text-orange-500" : "text-purple-600" : ""}">{field.value}</b> 
                                 {/if}
                             </div>
-                        {/each} -->
+                        {/each}
+
+                        {#if empleado.area === "Docente"}
+                            <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                                <div class="flex items-center justify-between gap-2">
+                                    <img src="{success_icon}" alt="" class="icon">
+                                    <p class="font-semibold text-base-content/80 ">Aula Asignada</p> 
+                                </div>
+                                {#if grado}
+                                    <div class="flex items-center justify-between gap-4">
+                                        <b class="">{formatGrado(grado)}</b>
+                                        <a href="{basePath}/aulas/{grado.id_grado}" class="btn btn-xs btn-square">
+                                            <img src="{ver_icon}" alt="" class="icon">
+                                        </a>
+                                    </div>
+                                {:else}
+                                    <b>Sin Asignar</b>
+                                {/if}
+                            </div>
+                        {/if}
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="w-full lg:w-[30%] min-h-60 flex flex-col items-center justify-center animate--x" style="--delay: 150ms">
-            <div class="w-full relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
+        <div class="w-full h-full lg:w-[30%] gap-3 min-h-60 flex flex-col items-center justify-center animate--x" style="--delay: 150ms">
+            <div class="w-full h-full relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
                     <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
@@ -274,17 +321,40 @@
                         <img src="{camera_icon}" alt="" class="size-full icon">
                     </button>
                 </div>
-                <h3 class="font-bold text-lg mt-2">{empleado.primer_nombre} {empleado.segundo_nombre} {empleado.primer_apellido} {empleado.segundo_apellido}</h3>
-                <h3 class="{true === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
+                <h3 class="font-bold text-center text-lg mt-2">{empleado.primer_nombre} {empleado.segundo_nombre} {empleado.primer_apellido} {empleado.segundo_apellido}</h3>
+                <h3 class="{empleado.estado === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
                     {
-                        true === "Retirado" ?
-                           'Empleado' 
-                        : "Empleado Retirado"} 
+                        empleado.estado === "Retirado" ?
+                           'Empleado Retirado' 
+                        : "Empleado"} 
                 </h3>
+                <button class="btn {empleado.estado === "Retirado" ? "hidden" : ""} mt-3 btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("retiro_confirmation")}}">
+                    <span>✕</span>
+                    <span>Retirar Empleado</span>
+                </button>
             </div>
         </div>
     </div>
 </main>
+
+<dialog id="retiro_confirmation" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="retiro_confirmation_close">✕</button>
+        </form>
+        <h3 class="text-lg mt-2 font-bold">¿Seguro que retirar al Empleado del sistema?</h3>
+        <p class="text-wrap text-sm">Una vez retirado, el alumno no podrá ser asignado a ningún grado ni sección, y sus datos serán cambiados al modo <i>sólo lectura.</i> </p>
+
+        <div class="modal-container">
+            <form action="?/retirar" method="POST" use:enhance class="h-auto w-full ">
+                <input type="hidden" value="{empleado.cedula}" name="empleado">
+                <button class="btn btn-error btn-sm mt-6">Retirar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
 
 <style lang="postcss">
     .modal-container {

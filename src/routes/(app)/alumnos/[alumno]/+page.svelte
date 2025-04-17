@@ -199,12 +199,6 @@
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
         <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
             <div class="w-max relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
-                <button class="{alumno.estado === "Retirado" ? "hidden" : ""} btn btn-sm btn-error text-base-100 absolute right-2 top-2"
-                onclick={() => { document.getElementById('retiro_confirmation').showModal() }}>
-                    <span>✕</span>
-                    <span>Retirar</span>
-                </button>
-
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
                     <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
@@ -221,6 +215,11 @@
                             : "Nivel no asignado"
                         : "Alumno Retirado"} 
                 </h3>
+                <button class="{alumno.estado === "Retirado" ? "hidden" : ""} btn btn-sm btn-error text-base-100 mt-2 px-6"
+                onclick={() => { document.getElementById('retiro_confirmation').showModal() }}>
+                    <span>✕</span>
+                    <span>Retirar</span>
+                </button>
                 <!-- CONSTANCIAS -->
                 <div class="w-full h-max mt-4 rounded-md flex items-center justify-between gap-2 *:tooltip *:tooltip-top">
                     <form action="?/getConstanciaEstudio" method="post" use:enhance data-tip="Constancia de Estudio">

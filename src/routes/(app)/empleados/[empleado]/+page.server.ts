@@ -1,7 +1,10 @@
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
 import async from '$lib/utils/asyncHandler';
-import { error } from '@sveltejs/kit';
+import { error, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import type { Grado } from '$lib/database/types';
+import { gradosRepository } from '$lib/database/repositories/grados.repository';
+import { db } from '$lib/database';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals;
@@ -11,9 +14,42 @@ export const load = (async ({ locals, url }) => {
     if (!empleado) {
         return error(404, "El empleado no existe.")
     }
-    return { empleado };
+
+    let grado: Grado | undefined;
+
+    if (empleado.area === "Docente") {
+        grado = await async(
+            db
+            .selectFrom('grados')
+            .where('grados.profesor', '=', empleado.cedula)
+            .selectAll()
+            .executeTakeFirst()
+        , log)
+    }
+
+    return { empleado, grado };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {
     return url.slice(url.lastIndexOf("/") + 1)
 }
+
+export const actions = {
+    retirar: async ({locals, request}) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        let cedula = data.get('empleado') as string
+
+        await async(
+            db
+            .updateTable('grados')
+            .set({
+                profesor: null
+            })
+            .where('grados.profesor', '=', cedula)
+            .execute()
+        , log)
+        await async(empleadosRepository.update({ estado: "Retirado" }, cedula), log)
+        return response.success('Empleado retirado correctamente.')
+    }
+} satisfies Actions

@@ -93,6 +93,42 @@ function getId(url: string): string {
 }
 
 export const actions = {
+    editAula: async ({locals, request}) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+
+        let edit = {
+            id_grado: data.get('id_grado') as GradoID,
+            profesor: data.get('profesor') as string,
+        }
+
+        let grado = await async(gradosRepository.getById(edit.id_grado), log)
+        if (!grado) {
+            return
+        }
+
+        if (edit.profesor === grado.profesor) {
+            return
+        }
+
+        let profesor = await async(empleadosRepository.getById(edit.profesor), log)
+        if (!profesor) {
+            return response.error('El docente especificado no existe / no está registrado')
+        }
+
+        if (profesor.turno !== grado.turno) {
+            return response.error('El turno del profesor no coincide con el turno del aula.')
+        }
+
+        if (profesor.estado === "Retirado") {
+            return response.error('El profesor se encuentra retirado del sistema.')
+        }
+
+        await async(gradosRepository.update({ profesor: edit.profesor }, edit.id_grado), log)
+
+        return response.success('Docente cambiado correctamente.')
+    },
+
     delete: async ({locals, request}) => {
         let { log } = locals;
         let grado_id = (await request.formData()).get('grado') as GradoID
@@ -128,7 +164,11 @@ export const actions = {
         }
 
         if (profesor.area !== "Docente") {
-            return fail(401, response.error('El Docente de Aula especificado no pertenece al área Docente.'))           
+            return fail(401, response.error('El Docente especificado no pertenece al área Docente.'))           
+        }
+
+        if (profesor.estado === "Retirado") {
+            return response.error('El Docente especificado se encuentra retirado del sistema.')
         }
 
         let grado = await async(gradosRepository.getById(bloque.id_grado), log) 
@@ -325,6 +365,10 @@ export const actions = {
 
             if (profesor.area !== "Docente") {
                 return fail(401, response.error('El Docente de Aula especificado no pertenece al área Docente.'))
+            }
+
+            if (profesor.estado === "Retirado") {
+                return response.error('El Docente especificado se encuentra retirado del sistema.')
             }
 
             let grado = await async(gradosRepository.getById(id_grado), log)

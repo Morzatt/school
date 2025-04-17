@@ -13,6 +13,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('fecha_nacimiento', 'date', (col) => col.notNull())
     .addColumn('edad', 'text', (col) => col.notNull())
     .addColumn('direccion', 'text', (col) => col.notNull())
+    .addColumn('estado', 'text', (col) => col.notNull().check(sql`estado IN  ('Activo', 'Retirado', 'Expulsado')`))
 
     // Bachiller, TSU, Ingeniero, Licenciado, etc...
     .addColumn('grado_instruccion', 'text', (col) => col.notNull())
@@ -23,7 +24,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     // Docente de Matemáticas, Personal de Seguridad, Administrador, etc...
     .addColumn('cargo', 'text', (col) => col.notNull())
     // 14/02/2022
-    .addColumn('fecha_ingreso', 'text', (col) => col.notNull())
+    .addColumn('fecha_ingreso', 'date', (col) => col.notNull())
     // 3 años
     .addColumn('tiempo_servicio', 'text', (col) => col.notNull())
     // 'Mañana' | 'Tarde'
