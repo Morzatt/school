@@ -9,8 +9,9 @@
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import success_icon from "$lib/images/icons/success_icon.svg"
     import { enhance } from '$app/forms';
+    import { invalidateAll } from "$app/navigation"
 
-    let { data, form }: { data: PageData, form: ActionData & { documentId: string } } = $props();
+    let { data, form }: { data: PageData, form: ActionData & { documentId: string, paths: { name: string, path: string }[] } } = $props();
 
     let createRepresentanteForm = $derived.by(() => {
         let f = filterForm('asociarRepresentante');
@@ -135,6 +136,14 @@
         if (form && form.success && form.form === "getConstanciaRetiro") {
             downloadFile(`/constancias/alumnos/temporal/constancia_retiro_${form.documentId}.pdf`, `constancia_retiro_${form.documentId}.pdf`)
         }
+
+        if (form && form.success && form.form === "retirar") {
+            form.paths.forEach((i) => {
+                downloadFile(i.path, i.name)
+            })
+            invalidateAll()
+            document.getElementById('retiro_confirmation_close').click()
+        }
     })
 </script>
 
@@ -190,13 +199,11 @@
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
         <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
             <div class="w-max relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
-                <form action="?/retirar" use:enhance method="post">
-                    <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
-                    <button class="btn btn-sm btn-error text-base-100 absolute right-2 top-2">
-                        <span>✕</span>
-                        <span>Retirar</span>
-                    </button>
-                </form>
+                <button class="{alumno.estado === "Retirado" ? "hidden" : ""} btn btn-sm btn-error text-base-100 absolute right-2 top-2"
+                onclick={() => { document.getElementById('retiro_confirmation').showModal() }}>
+                    <span>✕</span>
+                    <span>Retirar</span>
+                </button>
 
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
@@ -206,7 +213,7 @@
                     </button>
                 </div>
                 <h3 class="font-bold text-lg mt-2">{alumno.primer_nombre} {alumno.segundo_nombre} {alumno.primer_apellido} {alumno.segundo_apellido}</h3>
-                <h3 class="text-base-content/60 text-sm"> 
+                <h3 class="{alumno.estado === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
                     {
                         alumno.estado !== "Retirado" ?
                             alumno.nivel ? 
@@ -398,7 +405,7 @@
                             ${alumno.nivel == "Inicial" ? "Nivel" : alumno.nivel === "Primaria" ? "Grado" : "Año"}` :
                             "No Asignado"}
 
-                            <a href="{basePath}/aulas/{alumno.id_grado}" class="btn btn-xs btn-square">
+                            <a href="{basePath}/aulas/{alumno.id_grado}" class="btn {!alumno.id_grado ? "hidden" : ""} btn-xs btn-square">
                                 <img src="{ver_icon}" alt="" class="icon">
                             </a>
                         </b> 
@@ -561,6 +568,25 @@
         </div>  
     </div>
 </main>
+
+<dialog id="retiro_confirmation" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="retiro_confirmation_close">✕</button>
+        </form>
+        <h3 class="text-lg mt-2 font-bold">¿Seguro que retirar al Alumno del sistema?</h3>
+        <p class="text-wrap text-sm">Una vez retirado, el alumno no podrá ser asignado a ningún grado ni sección, y sus datos serán cambiados al modo <i>sólo lectura.</i> </p>
+
+        <div class="modal-container">
+            <form action="?/retirar" method="POST" use:enhance class="h-auto w-full ">
+                <input type="hidden" value="{alumno.cedula_escolar}" name="cedula_escolar">
+                <button class="btn btn-error btn-sm mt-6">Retirar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
 
 <dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box relative

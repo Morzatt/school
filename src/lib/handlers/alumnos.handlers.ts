@@ -9,6 +9,7 @@ import { db } from "$lib/database";
 import path from "path";
 import { unlinkSync } from "fs";
 import type pino from "pino";
+import { invalidateAll } from "$app/navigation";
 
 export async function createAlumnoHandler (
     { request, locals }: RequestEvent,
@@ -66,7 +67,7 @@ async function getObjects(alumno: Alumno, log: pino.Logger) {
     let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
     let documentId = `${alumno.cedula_escolar}_${timeId}`
 
-    return {grado, grado_cursado, director, timeId, documentId}
+    return { grado, grado_cursado, director, timeId, documentId }
 }
 
 export async function getBuenaConducta({ request, locals }: RequestEvent,) {
@@ -172,4 +173,63 @@ export async function getConstanciaRetiro({ request, locals }: RequestEvent,) {
     }, 10000)
 
     return response.success('Documento creado correctamente', { documentId })
+}
+
+export async function retirarAlumnoHandler({ request, locals }: RequestEvent) {
+    let { log, response } = locals;
+    let cedula_escolar = (await request.formData()).get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula_escolar), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    // SACAR DE LOS GRADOS CURSADOS/FINALIZAR
+    // CAMBIAR ESTATUS
+    await async(
+        db.transaction().execute(async (trx) => {
+            await trx.deleteFrom('grados_alumnos').where('grados_alumnos.id_alumno', '=', cedula_escolar).execute()
+            await trx.updateTable('grados_cursados').set({ estado: 'Finalizado' }).where('grados_cursados.id_alumno', '=', cedula_escolar).execute()
+            await trx.updateTable('alumnos').set({ estado: "Retirado" }).where('alumnos.cedula_escolar', '=', cedula_escolar).execute()
+        })
+    , log)
+
+    let { grado, grado_cursado, director, timeId, documentId } = await getObjects(alumno, log)
+
+    // PATHS
+    let retiroPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_retiro_${documentId}.pdf`)
+    let inscripcionPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_inscripcion_${documentId}.pdf`)
+    let aceptacionPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_aceptacion_${documentId}.pdf`)
+    let estudioPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/constancia_estudio_${documentId}.pdf`)
+    let buenaConductaPath= path.join(process.cwd(), `static/constancias/alumnos/temporal/buena_conducta_${documentId}.pdf`)
+
+    // GENERAR DOCUMENTOS
+    printConstanciaRetiro(alumno, grado, grado_cursado, director, retiroPath)
+    printConstanciaInscripcion(alumno, grado, grado_cursado, director, inscripcionPath)
+    printAceptacion(alumno, grado, grado_cursado, director, aceptacionPath)
+    printConstanciaEstudio(alumno, grado, grado_cursado, director, estudioPath)
+    printBuenaConducta(alumno, grado, grado_cursado, director, buenaConductaPath)
+
+    // Eliminar documentos
+    setTimeout(() => {
+        unlinkSync(retiroPath)
+        unlinkSync(inscripcionPath)
+        unlinkSync(aceptacionPath)
+        unlinkSync(estudioPath)
+        unlinkSync(buenaConductaPath)
+    }, 10000)
+
+    let paths = [retiroPath, inscripcionPath, aceptacionPath, estudioPath, buenaConductaPath].map((p) => {
+        let name = p.replaceAll('\\', '/')
+        let path = p.replaceAll('\\', '/')
+        path = path.slice(path.search('static'))
+        return {
+            name: name.slice(name.lastIndexOf('/') + 1),
+            path: path.slice(path.indexOf('/'))
+        }
+    })
+
+    return response.success('Documento creado correctamente', {
+        paths: paths
+    })
 }

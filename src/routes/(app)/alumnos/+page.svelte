@@ -107,7 +107,7 @@
                                     </div>
                                     <div class="stat-value">{matriculas.matricula?.alumnos}</div>
                                     <div class="stat-title">Total de Alumnos</div>
-                                    <div class="stat-desc text-secondary">31 tasks remaining</div>
+                                    <!-- <div class="stat-desc text-secondary">31 tasks remaining</div> -->
                                 </div>
 
                                 <div class="stat">
@@ -116,7 +116,7 @@
                                     </div>
                                     <div class="stat-title">Turno de la Mañana</div>
                                     <div class="stat-value text-primary">{matriculas.matricula_manana?.alumnos}</div>
-                                    <div class="stat-desc">21% more than last month</div>
+                                    <!-- <div class="stat-desc">21% more than last month</div> -->
                                 </div>
 
                                 <div class="stat">
@@ -125,7 +125,7 @@
                                     </div>
                                     <div class="stat-title">Turno de la Tarde</div>
                                     <div class="stat-value text-secondary">{matriculas.matricula_tarde?.alumnos}</div>
-                                    <div class="stat-desc">21% more than last month</div>
+                                    <!-- <div class="stat-desc">21% more than last month</div> -->
                                 </div>
                             </div>
                         </div>                        

@@ -130,7 +130,8 @@
                 {#if puntos && puntos.length > 0}
                     <div class="flex flex-col gap-4">
                         {#each puntos as punto}
-                            <div class="w-full shadow-md min-h-20 rounded-md bg-base-300 flex px-4 py-2 items-center justify-between gap-4">
+                            <div class="w-full shadow-md min-h-20 rounded-md bg-base-300 flex px-4 py-2 items-center justify-between gap-4
+                            transition-all duration-200 ease-in-out hover:bg-base-200 hover:cursor-help">
                                 <div class="flex flex-col items-center justify-center w-1/4">
                                     <div class="rounded-md size-12 bg-secondary">
                                         <img src="{database_icon}" alt="" class="size-full filter invert icon">

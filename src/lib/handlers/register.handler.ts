@@ -29,8 +29,6 @@ export async function registerHandler(
         return fail(400, response.error('Error: debe proveer una verificacion de contraseña.'))
     }
 
-    console.log(newUsuario.contraseña, rcontraseña)
-
     if (newUsuario.contraseña !== rcontraseña) {
         return fail(400, response.error('Error: Las contraseñas no coinciden.'))
     }

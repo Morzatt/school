@@ -191,7 +191,7 @@
                             <th>{empleado.edad} Años</th>
                             <th class="{empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
                             <th>
-                                <a class="btn btn-sm btn-square bg-accent" href="{basePath}/empleado/{empleado.cedula}">
+                                <a class="btn btn-sm btn-square bg-accent" href="{basePath}/empleados/{empleado.cedula}">
                                     <img src="{ver_icon}" alt="" class="filter invert">
                                 </a>
                             </th>

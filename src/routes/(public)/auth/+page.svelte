@@ -13,8 +13,9 @@
 
 
     import bg_1 from "$lib/images/bg-1.gif"
+    import PregsegModal from "./PregsegModal.svelte";
 
-    let pageData: { data: PageData, form: ActionData } = $props()
+    let pageData: { data: PageData, form: ActionData & { usuario: string } } = $props()
 
     let { form } = $derived(pageData)
     let { text, data } = $derived(pageData.data)
@@ -114,14 +115,25 @@
     }
 
     let usuarioRecovery: string | null = $state("")
+    let usuarioRegister: string = $state("")
 
     $effect(() => {
         if (form?.success && form?.form === "login") { setTimeout(() => { goto("/") }, 1000) }
         if (form?.success && form?.form === "verify") {formContent = "pwd"; usuarioRecovery = form?.usuario!}
         if (form?.success && form?.form === "recovery") {formContent = "login"; usuarioRecovery = null}
+        if (form?.success && form?.form === "register") { 
+            usuarioRegister = form.usuario;
+            document.getElementById('set_pregseg_modal')?.showModal()!
+        }
+        if (form?.success && form?.form === "setPregseg") { 
+            usuarioRegister = ''; formContent = "login";
+            document.getElementById('set_pregseg_close')?.click()
+        }
     })
     let captchaResult = $state(false);
 </script>
+
+<PregsegModal form={null} bind:usuario={usuarioRegister}/>
 
 {#snippet pregseg()}
     <form action="?/verify" method="POST" use:enhance

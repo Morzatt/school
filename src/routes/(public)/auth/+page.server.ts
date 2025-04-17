@@ -12,6 +12,7 @@ import async from '$lib/utils/asyncHandler';
 import { usuarioRepository } from '$lib/database/repositories/user.repository';
 import { fail } from '@sveltejs/kit';
 import { pregSegRepository } from '$lib/database/repositories/preg_seg.repository';
+import type { InsertPregSeg } from '$lib/database/types';
 
 export const load = (async ({ cookies }) => {
     let { text, data } = captcha.create(options)
@@ -60,5 +61,22 @@ export const actions = {
         return response.success('Preguntas de Seguridad verificadas correctamente', { usuario: respuestas.usuario })
     },
 
-    recovery: recoveryHandler
+    recovery: recoveryHandler,
+
+    setPregseg: async ({ locals, request }) => {
+        let { log, response } = locals
+        let data = await request.formData()
+        const usuario = data.get("usuario") as string
+
+        let form = {
+            res_1: data.get("res_1") as string,
+            res_2: data.get("res_2") as string,
+            preg_1: data.get("preg_1") as string,
+            preg_2: data.get("preg_2") as string,
+            usuario: data.get("usuario") as string
+        } satisfies InsertPregSeg 
+
+        await async(pregSegRepository.insert(form), log)
+        return response.success('Preguntas de Seguridad correctamente configuradas')
+    }
 } satisfies Actions

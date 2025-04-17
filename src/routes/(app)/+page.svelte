@@ -2,6 +2,12 @@
     import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
     import type { PageData } from "./$types";
     import stat_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import book_icon from "$lib/images/icons/book_icon.svg"
+    import guias_icon from "$lib/images/icons/guias_icon.svg"
+    import tutoriales_icon from "$lib/images/icons/tutorial_iconn.svg"
+    import retencion_icon from "$lib/images/icons/retencion.svg"
+    import success_icon from "$lib/images/icons/success_icon.svg"
+
     import { onMount } from "svelte";
     import { Chart } from "chart.js/auto";
 
@@ -165,35 +171,35 @@
                     <img src="{stat_icon}" alt="" class="size-full icon">
                 </div>
                 <div class="w-3/4 h-full py-2">
+                    <p class="text-base-content/80 text-sm">Tasa de Ingreso</p>
+                    <b>34.20%</b>
+                </div>
+            </div>     
+            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
+                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
+                    <img src="{retencion_icon}" alt="" class="size-full icon p-2">
+                </div>
+                <div class="w-3/4 h-full py-1">
                     <p class="text-base-content/80 text-sm">Tasa de Retención</p>
                     <b>64.93%</b>
                 </div>
             </div>               
             <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
                 <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
-                    <img src="{stat_icon}" alt="" class="size-full icon">
+                    <img src="{success_icon}" alt="" class="size-full icon p-1">
                 </div>
                 <div class="w-3/4 h-full">
                     <p class="text-base-content/80 text-sm">Tasa de Aprobración</p>
                     <b>34.20%</b>
                 </div>
-            </div>               
+            </div>                    
             <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
                 <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
                     <img src="{stat_icon}" alt="" class="size-full icon">
                 </div>
-                <div class="w-3/4 h-full">
-                    <p class="text-base-content/80 text-sm">Tasa de Aprobración</p>
-                    <b>34.20%</b>
-                </div>
-            </div>          
-            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
-                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
-                    <img src="{stat_icon}" alt="" class="size-full icon">
-                </div>
-                <div class="w-3/4 h-full">
-                    <p class="text-base-content/80 text-sm">Tasa de Aprobración</p>
-                    <b>34.20%</b>
+                <div class="w-3/4 h-full py-2">
+                    <p class="text-base-content/80 text-sm">Matricula</p>
+                    <b>100 Alumnos</b>
                 </div>
             </div> 
         </div>
@@ -211,7 +217,7 @@
         </div>
     </div>
 
-    <div class="w-full h-full flex lg:w-1/4 flex-col gap-4 rounded-box bg-base-200 lg:max-w-sm p-6 shadow-md animate-x" style="--delay: 350ms">
+    <div class="w-full min-h-full flex lg:w-1/4 flex-col gap-4 rounded-box bg-base-200 lg:max-w-sm p-6 shadow-md animate-x" style="--delay: 350ms">
         <!-- Header -->
         <div class="flex flex-col gap-4 items-center">
             <h1 class="font-bold text-xl">¿Necesita Ayuda?</h1>
@@ -228,7 +234,7 @@
 
             <!-- Feature-->
             <div class="flex gap-8 items-center">
-                <box-icon type='solid' name='universal-access'></box-icon>
+                <img src="{tutoriales_icon}" alt="" class="icon">
 
                 <div class="flex flex-col">
                     <h2 class="font-bold">Tutoriales</h2>
@@ -240,7 +246,7 @@
 
             <!-- Feature-->
             <div class="flex gap-8 items-center">
-                <box-icon type='solid' name='universal-access' t></box-icon>
+                <img src="{guias_icon}" alt="" class="icon">
 
                 <div class="flex flex-col">
                     <h2 class="font-bold">Guias</h2>
@@ -252,7 +258,7 @@
 
             <!-- Feature-->
             <div class="flex gap-8 items-center">
-                <i class="fa-solid fa-eye-slash fa-fw text-xl text-secondary"></i>
+                <img src="{book_icon}" alt="" class="icon">
 
                 <div class="flex flex-col">
                     <h2 class="font-bold">Manual de Usuario</h2>

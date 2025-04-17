@@ -98,11 +98,12 @@
 
         <div class="w-full lg:w-5/6 mt-6 h-max flex flex-col p-2 gap-2">
             {#if usuarios}
-                {#each usuarios as usuario}
+                {#each usuarios as usuario, i}
                     {#if usuario.usuario !== data.usuario.usuario} <!-- if user is not the same -->
                         {#if usuario.role !== "superadmin"} <!-- if user is not super admin-->
                             {#if usuarioRange > usuario.range}
-                                <div class="collapse collapse-plus bg-base-100 border border-base-content/20 w-full overflow-x-auto">
+                                <div class="collapse collapse-plus bg-base-100 border border-base-content/20 w-full overflow-x-auto animate-y"
+                                style="--delay: {i*100}ms">
                                     <input type="radio" name="users-accordion"/>
 
                                     <div class="collapse-title grid grid-cols-4 gap-6 w-full">

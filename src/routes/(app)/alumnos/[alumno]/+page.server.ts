@@ -9,7 +9,7 @@ import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/
 import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
-import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro } from '$lib/handlers/alumnos.handlers';
+import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro, retirarAlumnoHandler } from '$lib/handlers/alumnos.handlers';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -83,10 +83,15 @@ export const actions = {
 
         let idAlumno = data.get("cedula_escolar") as string
 
-
         let validation = validateObject(aula, insertAulaSchema.omit({ profesor: true }))
         if (!validation.success) {
             return newValidationFailObject(validation.error, log)
+        }
+
+        let alumno = await async(alumnosRepository.getById(idAlumno), log)
+
+        if (!alumno || alumno.estado === "Retirado") {
+            return response.error('El alumno se encuentra retirado de la institución')
         }
 
         let gradoID = createGradoId(aula) as GradoID
@@ -249,21 +254,7 @@ export const actions = {
     getAceptacion: getAceptacion,
     getConstanciaInscripcion: getConstanciaInscripcion,
     getConstanciaRetiro: getConstanciaRetiro,
-    retirar: async ({ request, locals }) => {
-        let { log, response } = locals;
-        let cedula_escolar = (await request.formData()).get('cedula_escolar') as string
-
-        // SACAR DE LOS GRADOS CURSADOS/FINALIZAR
-        // CAMBIAR ESTATUS
-        await async(
-            db.transaction().execute(async (trx) => {
-                await trx.deleteFrom('grados_alumnos').where('grados_alumnos.id_alumno', '=', cedula_escolar).execute()
-                await trx.updateTable('grados_cursados').set({ estado: 'Finalizado' }).where('grados_cursados.id_alumno', '=', cedula_escolar).execute()
-                await trx.updateTable('alumnos').set({ estado: "Retirado" }).where('alumnos.cedula_escolar', '=', cedula_escolar).execute()
-            })
-        , log)
-        // GENERAR DOCUMENTOS
-    }
+    retirar: retirarAlumnoHandler
 } satisfies Actions
 
 
