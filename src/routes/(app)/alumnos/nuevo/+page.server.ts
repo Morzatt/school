@@ -5,6 +5,8 @@ import type { PageServerLoad } from './$types';
 import { getFormData } from '$lib/utils/getFormData';
 import { db } from '$lib/database';
 import { getAge } from '$lib/utils/getAge';
+import { validateObject, newValidationFailObject } from '$lib/utils/validators';
+import { AlumnoSchema } from '$lib/utils/validators';
 
 export const load = (async ({ url, locals }) => {
     let { log } = locals
@@ -61,6 +63,12 @@ export const actions = {
         }
         getFormData(alumno, request, null, data)
 
+        // Validate the form data
+        const validationResult = validateObject(alumno, AlumnoSchema);
+        if (!validationResult.success) {
+            return newValidationFailObject(validationResult.error, log);
+        }
+
         let representante = await async(representantesRepository.getById(alumno.representante), log)
 
         if (!representante) {
@@ -98,7 +106,7 @@ export const actions = {
                     primer_apellido: alumno.segundo_nombre,
                     segundo_apellido: alumno.segundo_apellido,
                     fecha_nacimiento: alumno.fecha_nacimiento,
-                    edad: getAge(alumno.fecha_nacimiento),
+                    edad: Number(getAge(alumno.fecha_nacimiento)), // Converting to number to fix the type error
                     sexo: alumno.sexo as "Masculino" | "Femenino",
                     lateralidad: alumno.lateralidad as "Diestro" | "Zurdo",
                     peso: alumno.peso,

@@ -65,7 +65,7 @@
             <div class="stat-item px-2">
                 <div class="text-xs font-medium opacity-75 mb-1 uppercase tracking-wider">Niñas</div>
                 <div class="text-xl font-bold text-pink-600">{grado.matricula_hembras}</div>
-            </div>
+                </div>
             </div>
         </div>
 

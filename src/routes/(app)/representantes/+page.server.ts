@@ -1,4 +1,3 @@
-import type { Representante, TelefonosRepresentanteInsertable } from '$lib/database/types';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { RepresentanteInsertable } from '$lib/database/types';
@@ -7,8 +6,7 @@ import { representantesRepository } from '$lib/database/repositories/alumnos.rep
 import { db } from '$lib/database';
 import { getAge } from '$lib/utils/getAge';
 import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
-
-
+import { validateObject, newValidationFailObject, RepresentanteSchema } from '$lib/utils/validators';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -59,6 +57,12 @@ export const actions = {
             ocupacion: data.get("ocupacion") as string,
             grado_instruccion: data.get("grado_instruccion") as string,
         } satisfies Omit<RepresentanteInsertable, "edad">;
+
+        // Validate the form data
+        const validationResult = validateObject(rep, RepresentanteSchema);
+        if (!validationResult.success) {
+            return newValidationFailObject(validationResult.error, log);
+        }
 
         let telefonos = [data.get('telefono_1') as string, data.get('telefono_2') as string]
 

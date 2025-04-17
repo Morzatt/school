@@ -1,8 +1,7 @@
 import { fail } from "@sveltejs/kit"
-import z, { ZodError, ZodObject, ZodSchema, type SafeParseReturnType, type ZodObjectDef } from "zod"
+import z, { ZodError, ZodSchema } from "zod"
 import { capitalizeFirstLetter } from "./capitlizeFirstLetter"
 import type pino from "pino"
-import type { Empleado, EmpleadoInsertable, GradoInsertable } from "$lib/database/types"
 
 // INPUT VALIDATION FUNCTION
 export function validateObject(obj: object, schema: ZodSchema) {
@@ -101,3 +100,53 @@ function setAge(date: Date) {
     return date
 }
 let underAgeDate = setAge(new Date())
+
+export const AlumnoSchema = z.object({
+    cedula: z.string(),
+    nacionalidad: z.enum(["Venezolano", "Extranjero"]),
+    primer_nombre: z.string().min(1, 'El campo no puede estar vacío'),
+    segundo_nombre: z.string(),
+    primer_apellido: z.string().min(1, 'El campo no puede estar vacío'),
+    segundo_apellido: z.string(),
+    fecha_nacimiento: z.string().min(1, 'El campo no puede estar vacío'),
+    sexo: z.enum(["Masculino", "Femenino"]),
+    lateralidad: z.enum(["Diestro", "Zurdo"]),
+    peso: z.string(),
+    estatura: z.string(),
+    condicion: z.string().optional(),
+    detalles_condicion: z.string().optional(),
+    calzado: z.string(),
+    camisa: z.string(),
+    pantalon: z.string(),
+
+    entrega_cedula: z.string().min(1, 'El campo no puede estar vacío'),
+    entrega_nombre: z.string().min(1, 'El campo no puede estar vacío'),
+    entrega_apellido: z.string().min(1, 'El campo no puede estar vacío'),
+    entrega_sexo: z.string().min(1, 'El campo no puede estar vacío'),
+    salida_cedula: z.string().min(1, 'El campo no puede estar vacío'),
+    salida_nombre: z.string().min(1, 'El campo no puede estar vacío'),
+    salida_apellido: z.string().min(1, 'El campo no puede estar vacío'),
+    salida_sexo: z.string().min(1, 'El campo no puede estar vacío'),
+    adicional_cedula: z.string().min(1, 'El campo no puede estar vacío'),
+    adicional_nombre: z.string().min(1, 'El campo no puede estar vacío'),
+    adicional_apellido: z.string().min(1, 'El campo no puede estar vacío'),
+    adicional_sexo: z.string().min(1, 'El campo no puede estar vacío'),
+
+    hasCedula: z.string(),
+    representante: z.string().min(1, 'El campo no puede estar vacío'),
+    relacion: z.string().min(1, 'El campo no puede estar vacío')
+});
+
+export const RepresentanteSchema = z.object({
+    cedula: z.string().min(1, 'El campo no puede estar vacío'),
+    estado_civil: z.string().min(1, 'El campo no puede estar vacío'),
+    nacionalidad: z.enum(["Venezolano", "Extranjero"]),
+    nombre: z.string().min(1, 'El campo no puede estar vacío'),
+    apellido: z.string().min(1, 'El campo no puede estar vacío'),
+    sexo: z.enum(["Masculino", "Femenino"]),
+    fecha_nacimiento: z.string().min(1, 'El campo no puede estar vacío'),
+    direccion: z.string().min(1, 'El campo no puede estar vacío'),
+    correo_electronico: z.string().email('El correo electrónico no es válido'),
+    ocupacion: z.string().min(1, 'El campo no puede estar vacío'),
+    grado_instruccion: z.string().min(1, 'El campo no puede estar vacío'),
+});

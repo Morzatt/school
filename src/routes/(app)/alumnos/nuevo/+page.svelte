@@ -1,13 +1,13 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import { goto } from '$app/navigation';
-    import type { PageData } from './$types';
+    import Alert from '$lib/components/Messages/Alert.svelte';
+    import type { ActionData, PageData } from './$types';
     import DocumentosData from './DocumentosData.svelte';
     import EscolarData from './EscolarData.svelte';
     import FamiliarData from './FamiliarData.svelte';
     import PersonalData from './PersonalData.svelte';
 
-    let { data }: { data: PageData } = $props();
+    let { data, form }: { data: PageData, form: ActionData } = $props();
     let { rep, hasCedula, relacion } = $derived(data)
 
     type Content = "personal" | "escolar" | "familiar" | "documentos" | "preview"
@@ -68,9 +68,10 @@
     }
 </script>
 
-<div id="top">
+<div id="top" class="relative">
     <h1 class="text-2xl font-bold" >Registrar Alumno</h1>
     <p class="text-sm text-base-content/70">Registre los datos y documentos necesarios para ingresar al alumno al sistema y a la institución.</p>
+    <Alert form={form} styles="fixed top-4 left-4 max-w-xs"/>
 </div>
 
 <div class="w-full items-start rounded-xl lg:p-2 lg:px-20">
