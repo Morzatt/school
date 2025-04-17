@@ -7,40 +7,35 @@
 
     let { data }: { data: PageData } = $props();
     let { usuario } = $derived(data)
-    let deleteConfirmation = $state(false)
 </script>
-{#snippet alert()}
-    <div class="absolute 
-            top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
-            w-full h-fit p-4 z-50
-            min-h-[10rem] min-w-[10rem]
-            bg-base-300 border border-base-content rounded-md 
-            text-base-content">
 
-        <h3 class="text-3xl font-bold">Eliminar Usuario</h3>
+<dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="delete_confirmation_close">✕</button>
+        </form>
+
+        <h3 class="text-lg mt-2 font-bold">Eliminar Usuario</h3>
         <p class="text-sm">Todos los datos de este usuario serán permanente eliminados de la aplicación ¿Seguro que desea continuar?</p>
 
-        <form action="?/delete" method="POST" use:enhance class="w-full flex items-center justify-center gap-3 mt-4">
-            <input type="hidden" name="usuario" value="{usuario.usuario}">
+        <div class="modal-container">
+            <form action="?/delete" method="POST" use:enhance class="w-full">
+                <input type="hidden" name="usuario" value="{usuario.usuario}">
 
-            <button class="btn btn-sm" onclick="{()=>{deleteConfirmation=false}}">Volver</button>
-            <button type="submit" class="btn btn-error btn-sm"
-            onclick="{() => {setTimeout(() => { deleteConfirmation=false },500);}}">
-                Eliminar
-            </button>
-        </form>
+                <button type="submit" class="btn btn-error btn-sm mt-6">
+                    Eliminar
+                </button>
+            </form>
+        </div>
     </div>
-{/snippet}
+</dialog>
 
 <div class="relative size-full">
-    {#if deleteConfirmation}
-        {@render alert()} 
-    {/if}
-
     <div class="w-full h-auto 
                  flex flex-col lg:flex-row 
-                 items-start justify-between gap-8 lg:gap-2 
-                 {deleteConfirmation ? "blur-md" : ""}">
+                 items-start justify-between gap-8 lg:gap-2">
         <div class="w-full lg:w-1/4 h-full
          flex flex-col items-center justify-start 
          bg-base-100 shadow-md rounded-md p-4 animate--x">
@@ -72,24 +67,22 @@
             </div>           
 
             <div class="w-full px-2 my-4 lg:mt-8 flex items-center justify-start">
-                <button type="submit" class="bg-transparent group
-                    hover:bg-error rounded-md transition-all 
-                    border border-base-content/50 hover:border-transparent
+                <button type="submit" class="btn btn-error btn-sm text-base-100
                     flex items-center justify-between px-4 py-1 hover:text-white text-sm
                     ease-in-out"
                     onclick="{() => {
-                        deleteConfirmation = true
+                        document.getElementById('delete_confirmation').showModal()
                     }}">
-                    <img src="{eliminar_icon}" alt="" class="group-hover:invert filter size-6">
-                    <b>Eliminar Mi Usuario</b>
+                    <img src="{eliminar_icon}" alt="" class="invert filter size-6">
+                    <span>Eliminar Mi Usuario</span>
                 </button>
             </div>
         </div>
 
-        <div class="w-full lg:w-3/4 h-full bg-base-100 shadow-md rounded-md p-6 animate--x" style="--delay: 150ms;">
+        <div class="w-full lg:w-3/4 h-full p-6 animate--x" style="--delay: 150ms;">
             <h3 class="text-2xl font-bold">Configurar Perfil</h3>
 
-            <form action="?/editUser" method="POST" use:enhance class="w-full px-3 mt-4">
+            <form action="?/editUser" method="POST" use:enhance class="w-full mt-4 bg-base-100 p-6 rounded-md shadow-md">
                 <h4>Configurar Nombre y Apellido</h4>
                 <div class="flex items-center justify-between w-full gap-4">
                     <input type="hidden" name="usuario" value="{usuario.usuario}">
@@ -113,7 +106,7 @@
                 </div>
             </form>
 
-            <form action="?/editPregSeg" method="POST" use:enhance class="w-full px-3 mt-8">
+            <form action="?/editPregSeg" method="POST" use:enhance class="w-full bg-base-100 p-6 shadow-md rounded-md mt-8">
                 <h4>Configurar Preguntas de Seguridad</h4>
                 <div class="flex items-center justify-between w-full gap-4 ">
                     <input type="hidden" name="usuario" value="{usuario.usuario}">

@@ -76,9 +76,27 @@
 <div class="w-full items-start rounded-xl lg:p-2 lg:px-20">
     <div class="w-full  rounded-md p-2 animate--y">
         <ul class="steps w-full">
-            <li data-content="{asignStep('personal') ? "✓" : "?"}" class="step {asignStep("personal") ? "step-primary" : ""}">Información Personal</li>               
-            <li data-content="{asignStep('escolar') ? "✓" : "?"}" class="step {asignStep("escolar") ? "step-primary" : ""}">Información Escolar</li>               
-            <li data-content="{asignStep('familiar') ? "✓" : "?"}" class="step {asignStep("familiar") ? "step-primary" : ""}">Información Familiar</li>               
+            <li data-content="{asignStep('personal') ? "✓" : "?"}" class="step {asignStep("personal") ? "step-primary" : ""}">
+                <p class="text-base-content/70 text-sm">Paso 1</p> 
+                <b>Información Personal</b>
+                <b class="badge {asignStep('personal') ? "badge-primary" : "badge-accent"}">
+                    {asignStep('personal') ? "Completado" : "Pendiente"}
+                </b>
+            </li>               
+            <li data-content="{asignStep('escolar') ? "✓" : "?"}" class="step {asignStep("escolar") ? "step-primary" : ""}">
+                <p class="text-base-content/70 text-sm">Paso 2</p> 
+                <b>Información Escolar</b>
+                <b class="badge {asignStep('escolar') ? "badge-primary" : "badge-neutral"}">
+                    {asignStep('escolar') ? "Completado" : "Pendiente"}
+                </b>
+            </li>               
+            <li data-content="{asignStep('familiar') ? "✓" : "?"}" class="step {asignStep("familiar") ? "step-primary" : ""}">
+                <p class="text-base-content/70 text-sm">Paso 3</p>                
+                <b>Información Familiar</b>
+                <b class="badge {asignStep('familiar') ? "badge-primary" : "badge-neutral"}">
+                    {asignStep('familiar') ? "Completado" : "Pendiente"}
+                </b>
+            </li>               
             <!-- <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">Documentos</li>               
             <li data-content="{asignStep('preview') ? "✓" : "?"}" class="step {asignStep("preview") ? "step-primary" : ""}">Preview</li>                -->
         </ul>

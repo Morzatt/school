@@ -286,7 +286,7 @@
                                 class="input input-bordered input-sm max-w-xs"
                                 value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
                         {:else}
-                            <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.value}</b> 
+                            <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.name === "cedula_escolar" ? `${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${field.value}` : field.value}</b> 
                         {/if}
                     </div>
                 {/each}

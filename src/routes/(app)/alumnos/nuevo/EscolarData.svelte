@@ -65,8 +65,8 @@ border border-base-content/30" style="--delay: 100ms">
 
     <div class="divider m-0 p-0"></div>
 
-    <div class="w-full flex items-start justify-between gap-4 mt-2 relative *:border *:border-base-content/20 *:p-4 *:rounded-xl">
-        <div class="w-1/3 animate--y
+    <div class="w-full flex flex-col lg:flex-row items-start justify-between gap-4 mt-2 relative *:border *:border-base-content/20 *:p-4 *:rounded-xl">
+        <div class="w-full lg:w-1/3 animate--y
         flex items-start justify-start flex-col" style="--delay: 400ms">
             <div class="flex items-center justify-start gap-2 size-fit">
                 <img src="{icon}" alt="">
@@ -118,7 +118,7 @@ border border-base-content/30" style="--delay: 100ms">
             </div>
         </div> 
 
-        <div class="w-1/3 animate--y
+        <div class="w-full lg:w-1/3 animate--y
         flex items-start justify-start flex-col" style="--delay: 600ms">
             <div class="flex items-center justify-start gap-2 size-fit">
                 <img src="{icon}" alt="">
@@ -158,7 +158,7 @@ border border-base-content/30" style="--delay: 100ms">
             </div>
         </div> 
 
-        <div class="w-1/3 animate--y
+        <div class="w-full lg:w-1/3 animate--y
         flex items-start justify-start flex-col" style="--delay: 600ms">
             <div class="flex items-center justify-start gap-2 size-fit">
                 <img src="{icon}" alt="">
