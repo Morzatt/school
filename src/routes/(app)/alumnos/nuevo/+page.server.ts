@@ -102,8 +102,8 @@ export const actions = {
                     cedula_escolar: alumno.cedula,
                     nacionalidad: alumno.nacionalidad as "Venezolano" | "Extranjero",
                     primer_nombre: alumno.primer_nombre,
-                    segundo_nombre: alumno.primer_apellido,
-                    primer_apellido: alumno.segundo_nombre,
+                    segundo_nombre: alumno.segundo_nombre,
+                    primer_apellido: alumno.primer_apellido,
                     segundo_apellido: alumno.segundo_apellido,
                     fecha_nacimiento: alumno.fecha_nacimiento,
                     edad: Number(getAge(alumno.fecha_nacimiento)), // Converting to number to fix the type error
