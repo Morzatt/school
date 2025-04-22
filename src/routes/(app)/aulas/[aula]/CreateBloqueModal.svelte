@@ -14,7 +14,6 @@
             let entrada = document.getElementById(`hora_entrada_${dia}`) as HTMLInputElement
             let fin = document.getElementById(`hora_fin_${dia}`) as HTMLInputElement
 
-            console.log(bloque, entrada.value, fin.value)
             entrada.value = bloque.hora_inicio
             fin.value = bloque.hora_fin
         }, 200)
@@ -84,7 +83,9 @@
 {/snippet}
 
 {#snippet horario()}
-    <form action="?/createBloque" class="w-full h-auto animate--y" use:enhance method="post">
+    <form action="?/createBloque" class="w-full h-auto animate--y" use:enhance={() => {
+        document.getElementById(`create_bloque_${dia}_close`)?.click()
+    }} method="post">
         <input type="hidden" name="dia_semana" value="{dia}">
         <input type="hidden" name="id_grado" value="{grado}">
 
@@ -151,7 +152,7 @@
 
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            id="create_bloque{dia}_close">✕</button>
+            id="create_bloque_{dia}_close">✕</button>
         </form>
 
         <h2 class="font-bold text-xl mb-4">Crear Bloque de Horario</h2>

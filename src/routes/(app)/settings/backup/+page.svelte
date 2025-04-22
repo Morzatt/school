@@ -15,7 +15,7 @@
     $effect(() => {
         if (form?.success && form?.form === "createBackup") {
             setTimeout(() => {
-                downloadFile(`/backups/temporal/backup_${form.timestamp}.dump`, `backup_${form.timestamp}.dump`) 
+                downloadFile(`/downloads/${form.timestamp}?type=backup`, `backup_${form.timestamp}.dump`) 
             }, 1000)
         }
     })
@@ -35,7 +35,7 @@
 <div class="size-full relative">
     <h1 class="font-bold text-2xl">Respaldos/Restauraciones {file}</h1>
 
-    <Alert form={form} styles="absolute left-4 top-4 max-w-sm"/>
+    <Alert form={form} styles="fixed left-4 top-4 max-w-sm"/>
 
     <div class="mt-4 flex flex-col lg:flex-row items-start justify-start gap-3">
         <div class="w-full lg:w-4/6 h-full flex flex-col items-center justify-center gap-3">
@@ -141,7 +141,7 @@
                                 <div class="flex items-center justify-between w-3/4 gap-4">
                                     <div class="flex-1">
                                         <b class="text-wrap">{punto.nombre}</b>
-                                        <p class="text-base-content/70 text-sm">{punto.fecha.toLocaleDateString()}</p>
+                                        <p class="text-base-content/70 text-sm">{punto.fecha.toLocaleDateString('es', { dateStyle: "short" })}</p>
                                     </div>
 
 

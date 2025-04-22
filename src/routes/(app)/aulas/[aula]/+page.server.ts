@@ -8,6 +8,7 @@ import type { PageServerLoad } from './$types';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { printAlumnosGrado, printHorarioGrado } from '$lib/handlers/print.handlers';
+import { createGradoId } from '$lib/utils/createGradoId';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -441,5 +442,23 @@ export const actions = {
                     .execute()
             })
             , log)
-    }
+    },
+
+    deleteHorario: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+
+        let info = {
+            id_horario: data.get('id_horario') as HorarioID,
+        }
+
+        await async(
+            db
+            .deleteFrom('horarios_grados_alt')
+            .where('horarios_grados_alt.id_horario', '=', info.id_horario)
+            .execute()
+        , log)
+
+        return response.success('Bloque eliminado con éxito')
+    },
 } satisfies Actions

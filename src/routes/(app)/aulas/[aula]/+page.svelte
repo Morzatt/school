@@ -95,13 +95,13 @@
     $effect(() => {
         if (form?.success && form?.form === "printHorario") {
             setTimeout(() => {
-                downloadFile(`/horarios/temporal/horario_${form.horarioId}.pdf`, `horario_${form.horarioId}.pdf`)
+                downloadFile(`/downloads/${form.horarioId}?type=horario`, `horario_${form.horarioId}.pdf`)
             }, 1000)
         }
 
         if (form?.success && form?.form === "printAlumnos") {
             setTimeout(() => {
-                downloadFile(`/horarios/temporal/lista_${form.listaId}.pdf`,`lista_${form.listaId}.pdf`)
+                downloadFile(`/downloads/${form.listaId}?type=lista`,`lista_${form.listaId}.pdf`)
             }, 1000)
         }
     })

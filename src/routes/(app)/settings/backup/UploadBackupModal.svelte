@@ -21,7 +21,9 @@
         <p class="text-sm">Provea detalles y cree su punto de restauración.</p>
 
         <div class="modal-container">
-            <form method="post" use:enhance action="?/createCheckpoint" class="w-full">
+            <form method="post" use:enhance={() => {
+                document.getElementById(`upload_backup_close`)?.click()
+            }} action="?/createCheckpoint" class="w-full">
                 <div class="form-control">
                     <div class="label">
                         <div class="label-text">Identificador</div>

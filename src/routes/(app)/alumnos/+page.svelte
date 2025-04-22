@@ -27,7 +27,7 @@
     let estado = $state("all")
     let turno = $state("all")
 
-    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro"?"":filter}&search=${search}&nivel=${nivel}&estado=${estado}&turno=${turno}`) 
+    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro" ? "" : filter}&search=${search}&nivel=${nivel}&estado=${estado}&turno=${turno}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -149,8 +149,8 @@
                                 <select class="btn btn-outline btn-sm px-5" oninput="{() =>{ index = 0; setTimeout(handleSearch,100) } }" bind:value={filter}>
                                     <option disabled selected>Filtro</option>
                                     <option value="cedula_escolar">Cedula</option>
-                                    <option value="cedula_escolar">Nombre</option>
-                                    <option value="cedula_escolar">Apellido</option>
+                                    <option value="primer_nombre">Nombre</option>
+                                    <option value="primer_apellido">Apellido</option>
                                 </select>
 
                                 <label class="form-control flex flex-row items-center border border-base-content/20">
@@ -161,11 +161,11 @@
                             </div>
 
                             <div class="flex items-center justify-end px-5 pb-5 pt-3">
-                                <button class="btn btn-accent-content btn-outline ml-6 btn-sm"
+                                <!-- <button class="btn btn-accent-content btn-outline ml-6 btn-sm"
                                 onclick="{() => {document.getElementById("creation_modal")!.showModal()}}">
                                     <span>+</span>
                                     <span>Añadir</span>
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                         

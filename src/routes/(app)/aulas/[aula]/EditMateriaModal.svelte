@@ -25,7 +25,7 @@
 
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            id="add_alumno_close">✕</button>
+            id="{hora.id_horario}_close">✕</button>
         </form>
 
         <h2 class="font-bold text-xl">Editar Horario</h2>
@@ -36,13 +36,18 @@
                 <h3>{hora.nombre_materia}</h3>
             </div>
 
-            <button class="btn btn-sm btn-error text-base-100">
-                <span>Eliminar Hora</span>
-            </button>
+            <form action="?/deleteHorario" method="post" use:enhance={() => { document.getElementById(`${hora.id_horario}_close`)?.click() }}>
+                <input type="hidden" name="id_horario" value={hora.id_horario}>
+                <input type="hidden" name="dia_semana" value={dia}>
+
+                <button class="btn btn-sm btn-error text-base-100">
+                    <span>Eliminar Hora</span>
+                </button>
+            </form>
         </div>
 
         <div class="modal-container">
-            <form method="post" action="?/editHorario" use:enhance class="mt-4 w-full">
+            <form method="post" action="?/editHorario" use:enhance={() => { document.getElementById(`${hora.id_horario}_close`)?.click() }} class="mt-4 w-full">
                 <input type="hidden" name="id_horario" value={hora.id_horario}>
                 <input type="hidden" name="dia_semana" value={dia}>
 

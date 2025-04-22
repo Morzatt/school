@@ -122,19 +122,19 @@
 
     $effect(() => {
         if (form && form.success && form.form === "getBuenaConducta") {
-            downloadFile(`/constancias/alumnos/temporal/buena_conducta_${form.documentId}.pdf`, `buena_conducta_${form.documentId}.pdf`)
+            downloadFile(`/downloads/${form.documentId}?type=buena_conducta`, `buena_conducta_${form.documentId}.pdf`)
         }
         if (form && form.success && form.form === "getAceptacion") {
-            downloadFile(`/constancias/alumnos/temporal/constancia_aceptacion_${form.documentId}.pdf`, `constancia_aceptacion_${form.documentId}.pdf`)
+            downloadFile(`/downloads/${form.documentId}?type=aceptacion`, `constancia_aceptacion_${form.documentId}.pdf`)
         }
         if (form && form.success && form.form === "getConstanciaEstudio") {
-            downloadFile(`/constancias/alumnos/temporal/constancia_estudio_${form.documentId}.pdf`, `constancia_estudio_${form.documentId}.pdf`)
+            downloadFile(`/downloads/${form.documentId}?type=estudio`, `constancia_estudio_${form.documentId}.pdf`)
         }
         if (form && form.success && form.form === "getConstanciaInscripcion") {
-            downloadFile(`/constancias/alumnos/temporal/constancia_inscripcion_${form.documentId}.pdf`, `constancia_incripcion_${form.documentId}.pdf`)
+            downloadFile(`/downloads/${form.documentId}?type=inscripcion`, `constancia_incripcion_${form.documentId}.pdf`)
         }
         if (form && form.success && form.form === "getConstanciaRetiro") {
-            downloadFile(`/constancias/alumnos/temporal/constancia_retiro_${form.documentId}.pdf`, `constancia_retiro_${form.documentId}.pdf`)
+            downloadFile(`/downloads/${form.documentId}?type=retiro`, `constancia_retiro_${form.documentId}.pdf`)
         }
 
         if (form && form.success && form.form === "retirar") {

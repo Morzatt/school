@@ -75,9 +75,15 @@
                         <option disabled selected>Elegir</option>
                         {#if representante.sexo === "Masculino"}
                             <option value="Padre">Padre</option>
+                            <option value="Tio">Tio</option>
+                            <option value="Primo">Primo</option>
+                            <option value="Hermano">Hermano</option>
                             <option value="Abuelo">Abuelo</option>
                         {:else if representante.sexo === "Femenino"}
                             <option value="Madre">Madre</option>
+                            <option value="Tia">Tia</option>
+                            <option value="Prima">Prima</option>
+                            <option value="Hermana">Hermana</option>
                             <option value="Abuela">Abuela</option>
                         {/if}
                     </select>

@@ -66,6 +66,13 @@
         let container = document.getElementById('input_container') as HTMLDivElement
         container.innerHTML = ""
     }
+
+    $effect(() => {
+        console.log(form)
+        if (form && !form.success && form.type === "Warning") {
+            content = "personal"
+        }
+    })
 </script>
 
 <div id="top" class="relative">
