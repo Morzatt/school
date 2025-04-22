@@ -1,7 +1,7 @@
 import { db } from '$lib/database';
 import { representantesRepository } from '$lib/database/repositories/alumnos.repository';
 import async from '$lib/utils/asyncHandler';
-import { error } from '@sveltejs/kit';
+import { error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
@@ -37,3 +37,15 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
 function getId(url: string): string {
     return url.slice(url.lastIndexOf("/") + 1)
 }
+
+export const actions = {
+    delete: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        let id = data.get('cedula_representante') as string
+
+        await async(representantesRepository.delete(id), log)
+
+        redirect(307, '/representantes')
+    }
+} satisfies Actions

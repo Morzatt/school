@@ -143,7 +143,7 @@
             </div>
         </div>
 
-        <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("delete_confirmation")}}">
+        <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {document.getElementById("delete_representante").showModal()}}">
             <img src="{delete_icon}" alt="" class="icon">
             <span>Eliminar Representante</span>
         </button>
@@ -320,3 +320,26 @@
         </div>
     </div>
 </main>
+
+<dialog id="delete_representante" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box relative
+                sm:w-10/12 sm:max-w-md overflow-hidden">
+        <Alert form={form} styles="absolute top-4 left-3" />
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            id="delete_representante_close">✕</button>
+        </form>
+
+        <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar el Representante?</h3>
+        <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+
+        <div class="modal-container">
+            <form action="?/delete" method="POST" use:enhance={() => {
+                document.getElementById('delete_representante_close').click()
+            }} class="h-auto w-full ">
+                <input type="hidden" value="{representante.cedula}" name="cedula_representante">
+                <button class="btn btn-error btn-sm mt-6">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</dialog>
