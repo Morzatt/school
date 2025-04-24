@@ -37,7 +37,7 @@ export const handle = (async ({ resolve, event }) => {
             if (isFormSubmission) {
                 if (!session.data.write) {
                     event.locals.log.error({ msg: 'El usuario no tiene permiso de escritura' })
-                    // return json(event.locals.response.error('El usuario no tiene permiso de escritura'));
+                    return json(event.locals.response.error('El usuario no tiene permiso de escritura'));
                 }
             }
 
