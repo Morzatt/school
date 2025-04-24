@@ -112,7 +112,7 @@ border border-base-content/30" style="--delay: 100ms">
                         <input type="number" name="estatura"  bind:value={estatura}
                         placeholder="..."
                         class="max-w-[3rem] focus:outline-0" required>
-                        <p class="select-none">Métros</p>
+                        <p class="select-none">Centimetros</p>
                     </label>
                 </div>
             </div>

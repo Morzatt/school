@@ -2,7 +2,7 @@ import { FormResponse } from "$lib/classes/responses.classes";
 import { checkSession, clearSession } from "$lib/handlers/login.handler";
 import logger from "$lib/utils/logger";
 import type { Handle } from "@sveltejs/kit";
-import { redirect } from "@sveltejs/kit";
+import { json, redirect } from "@sveltejs/kit";
 
 export const handle = (async ({ resolve, event }) => {
     // Logger Setting
@@ -25,20 +25,29 @@ export const handle = (async ({ resolve, event }) => {
             redirect(307, "/auth")
         }
 
-        if (event.url.pathname.startsWith("/admin")) {
-            if (session.data?.role !== "Administrador") {
-                redirect(301, "/")
-            }
-        }
-        
+
         if (session.data) {
+            const requestMethod = event.request.method;
+            const contentType = event.request.headers.get('content-type');
+
+            const isFormSubmission = requestMethod === 'POST' &&
+                (contentType?.includes('application/x-www-form-urlencoded') ||
+                    contentType?.includes('multipart/form-data'));
+
+            if (isFormSubmission) {
+                if (!session.data.write) {
+                    event.locals.log.error({ msg: 'El usuario no tiene permiso de escritura' })
+                    // return json(event.locals.response.error('El usuario no tiene permiso de escritura'));
+                }
+            }
+
             Reflect.deleteProperty(session.data, "contraseña")
             event.locals.usuario = session.data
             event.locals.log = event.locals.log.child({
                 session_id: cookie,
                 usuario: session.data.usuario
             })
-        } 
+        }
     }
 
     const response = await resolve(event);

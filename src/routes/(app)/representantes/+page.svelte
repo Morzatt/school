@@ -41,9 +41,15 @@
     }
 
     let paginas = $state(2)
+
+    $effect(() => {
+        if (form && form.success && form.form === "create") {
+            document.getElementById('create_representante_close')?.click()
+        }
+    })
 </script>
 
-<CreateRepresentanteModal form={null}/>
+<CreateRepresentanteModal form={form}/>
 
 <div class="">
     <h3 class="text-xl font-bold">Representantes</h3>

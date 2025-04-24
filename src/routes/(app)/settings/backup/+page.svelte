@@ -167,7 +167,7 @@
                         {/each} 
                     </div>
                 {:else}
-                    <p class="text-base-content/70 font-medium">No hay bloques de horarios creados aún.</p>
+                    <p class="text-base-content/70 font-medium">No puntos de restauracion creados aún.</p>
                 {/if}
             </div>
         </div>

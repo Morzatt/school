@@ -11,7 +11,6 @@
     let { form }: { form: ActionData } = $props();
 
     let telefonos: string[] = $state([""])
-
     let content: 'personal' | 'contact' | 'preview' = $state("personal")
 
     let nacionalidad = $state("Elegir")
@@ -325,7 +324,7 @@
 
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            id="eliminar_representante_close">✕</button>
+            id="create_representante_close">✕</button>
         </form>
 
         <h1 class="text-xl font-bold">Registrar Representante</h1>
