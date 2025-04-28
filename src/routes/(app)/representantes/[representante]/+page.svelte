@@ -65,14 +65,14 @@
         },
         {
             name: "grado_instruccion",
-            updateable: false,
+            updateable: true,
             icon: representante.sexo === "Masculino" ? male_icon : female_icon,
             title: "Grado de Instruccion",
             value: `${representante.grado_instruccion}`
         },
         {
             name: "ocupacion",
-            updateable: false,
+            updateable: true,
             icon: representante.sexo === "Masculino" ? male_icon : female_icon,
             title: "Ocupacion",
             value: `${representante.ocupacion}`
@@ -82,19 +82,21 @@
     let contactData: Data[] = $derived([
         {
             name: "direccion",
-            updateable: false,
+            updateable: true,
             icon: cedula_escolar_icon,
             title: "Dirección",
             value: `${representante.direccion}`
         },
         {
             name: "correo_electronico",
-            updateable: false,
+            updateable: true,
             icon: cedula_escolar_icon,
             title: "Correo Electronico",
             value: `${representante.correo_electronico}`
         },
     ])
+
+    let editContacto = $state(false)
 
     function stripDots(inputString: string) {
         return inputString.replace(/\./g, '');
@@ -264,8 +266,8 @@
                         <h3 class="text-xl font-bold">Detalles del Contacto</h3>
 
                         <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
-                        onclick="{() =>{ setTimeout(() => {edicion = !edicion;},100) }}"
-                        type={edicion ? "submit" : "button"}>
+                        onclick="{() =>{ setTimeout(() => { editContacto= !editContacto;},100) }}"
+                        type={editContacto ? "submit" : "button"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
                         </button>
                     </div>
@@ -280,7 +282,7 @@
                                     <p class="font-semibold text-base-content/80 ">{field.title}</p> 
                                 </div>
 
-                                {#if edicion && field.updateable}
+                                {#if editContacto && field.updateable}
                                     <input type="text" 
                                         min="3"
                                         name="{field.name}"

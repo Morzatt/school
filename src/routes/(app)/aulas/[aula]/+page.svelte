@@ -214,9 +214,9 @@
                 <h3 class="text-xl font-bold">Lista de Alumnos</h3>
 
                 <div class="flex flex-col items-end justify-start gap-4">
-                    <button class="btn btn-circle btn-sm" onclick={() => {openModal('add_alumno_modal')}}>
+                    <!-- <button class="btn btn-circle btn-sm" onclick={() => {openModal('add_alumno_modal')}}>
                         <img src="{add_icon}" alt="" class="icon">
-                    </button>
+                    </button> -->
                     <form method="post" use:enhance action="?/printAlumnos">
                         <input type="hidden" name="id_grado" value={grado.id_grado}>
                         <button class="btn btn-sm btn-primary flex gap-2">

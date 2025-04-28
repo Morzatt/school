@@ -311,6 +311,7 @@
             </div>
 
             <div class="mt-3 w-full">
+            {#if representantes && representantes.length > 0}
                 <div class="p-1 border-base-content/40 mb-1 font-bold
                             pb-1 bg-base-content text-base-100
                             px-2
@@ -321,7 +322,6 @@
                     <p>Ver</p>
                     <p>Eliminar</p>
                 </div>
-                {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
                         <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_1.5fr_1.5fr]">
                             <p>V-{formatStringWithDots(representante.cedula)}</p>
@@ -338,6 +338,8 @@
                         <DeleteRepresentanteModal cedula_alumno={alumno.cedula_escolar} cedula_representante={representante.cedula} form={deleteRepresentanteForm}/>
                         <RepresentanteModal representante={ representante } form={null} tel={filterCellphoneNumber(representante.cedula)}/>                           
                     {/each}
+                {:else}
+                    <h2 class="text-base-content/70">El alumno no Representantes asociados.</h2>
                 {/if}
             </div>
 
@@ -346,16 +348,16 @@
             </div>
 
             <div class="mt-3 w-full">
-                <div class="p-1 mb-1 font-bold
-                            pb-1 bg-info/60 text-base-content
-                            px-2 
-                            w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr]">
-                    <p>Cedula</p>
-                    <p>Nombre</p>
-                    <p>Autorización</p>
-                    <p>Eliminar</p>
-                </div>
                 {#if familiares && familiares.length > 0}
+                    <div class="p-1 mb-1 font-bold
+                                pb-1 bg-info/60 text-base-content
+                                px-2 
+                                w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr]">
+                        <p>Cedula</p>
+                        <p>Nombre</p>
+                        <p>Autorización</p>
+                        <p>Eliminar</p>
+                    </div>
                     {#each familiares as familiar, i(familiar)}
                         <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_2fr]">
                             <p>V-{formatStringWithDots(familiar.cedula)}</p>
@@ -378,7 +380,7 @@
 
                                 <div class="modal-container">
                                     <form action="?/deleteFamiliar" method="POST" use:enhance={() => { document.getElementById(`delete_familiar_${familiar.cedula}_close`).click() }} class="h-auto w-full ">
-                                        <input type="hidden" value="{familiar.cedula}" name="cedula_representante">
+                                        <input type="hidden" value="{familiar.cedula}" name="cedula_familiar">
                                         <input type="hidden" value="{alumno.cedula_escolar}" name="cedula_alumno">
                                         <button class="btn btn-error btn-sm mt-6">Eliminar</button>
                                     </form>
@@ -386,6 +388,8 @@
                             </div>
                         </dialog>
                     {/each}
+                {:else}
+                    <h2 class="text-base-content/70">El alumno no posee familiares autorizados.</h2>
                 {/if}
             </div>
         </div>
@@ -507,10 +511,10 @@
         <div class="w-full min-h-80 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate-y">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Grados Cursados</h3>
-
+<!-- 
                 <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" onclick="{() =>{edicion = !edicion;}}">
                     <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                </button>
+                </button> -->
             </div>
 
             <!-- <div class="mt-4 flex items-center justify-start w-full">

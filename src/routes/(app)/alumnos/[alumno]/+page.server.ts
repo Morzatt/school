@@ -65,6 +65,25 @@ function getId(url: string): string {
 }
 
 export const actions = {
+    deleteFamiliar: async ({ request, locals }) => {
+        let { response, log } = locals
+        let data = await request.formData()
+        let cedula_familiar = data.get("cedula_familiar") as string
+        let cedula_alumno = data.get("cedula_alumno") as string
+
+        await async(
+            db
+            .deleteFrom('familiares_alumnos')
+            .where((eb) => eb.and([
+                eb('familiares_alumnos.id_alumno', '=', cedula_alumno),
+                eb('familiares_alumnos.id_familiar', '=', cedula_familiar)
+            ]))
+            .execute()
+        , log)
+
+        return response.success('Familiar correctamente eliminado')
+    },
+
     delete: async ({ request, locals }) => {
         let { response, log } = locals
         let cedula_escolar = (await request.formData()).get("cedula_escolar") as string

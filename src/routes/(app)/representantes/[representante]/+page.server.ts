@@ -47,5 +47,40 @@ export const actions = {
         await async(representantesRepository.delete(id), log)
 
         redirect(307, '/representantes')
-    }
+    },
+
+    edit: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+
+        let d = {
+            grado_instruccion: data.get('grado_instruccion') as string | undefined,
+            ocupacion: data.get('ocupacion') as string | undefined,
+            direccion: data.get('direccion') as string | undefined,
+            correo_electronico: data.get('correo_electronico') as string | undefined,
+            cedula: data.get('cedula') as string,
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                if (d.grado_instruccion) {
+                    await trx.updateTable('representantes').set({ grado_instruccion: d.grado_instruccion }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.ocupacion) {
+                    await trx.updateTable('representantes').set({ ocupacion: d.ocupacion }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.direccion) {
+                    await trx.updateTable('representantes').set({ direccion: d.direccion }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.correo_electronico) {
+                    await trx.updateTable('representantes').set({ correo_electronico: d.correo_electronico }).where('cedula', '=', d.cedula).execute()
+                }
+            })
+        , log)
+
+        return response.success('Datos actualizados correctamente')
+    },
 } satisfies Actions
