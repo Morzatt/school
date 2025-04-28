@@ -10,7 +10,7 @@
     let { data, form }: { data: PageData, form: ActionData } = $props();
     let { usuarios } = $derived(data)
 
-    function asignColor(status: "Activo" | "Bloqueado"): string {
+    function asignColor(status: "Activo" | "Bloqueado" | 'Por Asignar'): string {
         switch (status) {
             case "Activo": 
                 return "text-green-800 bg-green-100"
@@ -20,30 +20,32 @@
                 return "text-yellow-700 bg-yellow-100"
         }
     }
-    function asignColorInverted(status: "Activo" | "Bloqueado") {
+    function asignColorInverted(status: "Activo" | "Bloqueado" | 'Por Asignar') {
         switch (status) {
             case "Activo": 
                 return "text-red-800 bg-red-100"
             case "Bloqueado":
                 return "text-green-800 bg-green-100"
-            default: 
-                return "text-yellow-700 bg-yellow-100"
+            case 'Por Asignar':
+                return "text-green-800 bg-green-100"
         }
     }
 
     function asignRange(role: string) {
-        switch (role) {
-            case "admin":
+        switch (true) {
+            case containsWholeSubstring(role, 'admin'):
                 return 1
-            case "administrador": 
-                return 1
-            case "superadmin":
+            case containsWholeSubstring(role, "superadmin"):
                 return 2
-            case "superadministrador":
-                return 2;
             default: 
                 return 0    
         }
+    }
+
+    function containsWholeSubstring(mainString: string, subString: string) {
+        const escapedSubString = subString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escapedSubString}\\b`);
+        return regex.test(mainString);
     }
 
     function submitForm(formId: string) {
@@ -68,30 +70,7 @@
     let userToDelete = $state("")
 </script>
 
-{#snippet alert()}
-    <div class="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
-    min-h-[10rem] min-w-[10rem] bg-base-300 size-fit p-4 z-50 border border-base-content
-    rounded-md text-base-content">
-        <h3 class="text-3xl font-bold">Eliminar Usuario</h3>
-        <p class="text-sm">Todos los datos de este usuario serán permanente eliminados de la aplicación ¿Seguro que desea continuar?</p>
-
-        <form action="?/delete" method="POST" use:enhance class="w-full flex items-center justify-center gap-3 mt-4">
-            <input type="hidden" name="usuario" value="{userToDelete}">
-
-            <button class="btn btn-sm" onclick="{()=>{userToDelete =""; deleteConfirmation=false}}">Volver</button>
-            <button type="submit" class="btn btn-error btn-sm"
-            onclick="{() => {setTimeout(() => { userToDelete =""; deleteConfirmation=false },500);}}">
-                Eliminar
-            </button>
-        </form>
-    </div>
-{/snippet}
-
 <div class="relative size-full">
-    {#if deleteConfirmation}
-        {@render alert()} 
-    {/if}
-
     <div class="relative size-full {deleteConfirmation ? "blur-sm" : ""}">
         <Alert form={ form } styles="absolute right-3 top-3 max-w-sm"/>
         <h1 class="text-xl">Administrar Usuarios y Permisos</h1>
@@ -100,8 +79,27 @@
             {#if usuarios}
                 {#each usuarios as usuario, i}
                     {#if usuario.usuario !== data.usuario.usuario} <!-- if user is not the same -->
-                        {#if usuario.role !== "superadmin"} <!-- if user is not super admin-->
+                        {#if !containsWholeSubstring(usuario.role, "superadmin")} <!-- if user is not super admin-->
                             {#if usuarioRange > usuario.range}
+
+                                <dialog id="delete_confirmation_{usuario.usuario}" class="modal modal-bottom sm:modal-middle">
+                                    <div class="modal-box relative
+                                                sm:w-10/12 sm:max-w-md overflow-hidden">
+                                        <form method="dialog">
+                                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                                            id="delete_confirmation_close_{usuario.usuario}">✕</button>
+                                        </form>
+
+                                        <h3 class="text-xl font-bold">Eliminar Usuario</h3>
+                                        <p class="text-sm">Todos los datos de este usuario serán permanente eliminados de la aplicación ¿Seguro que desea continuar?</p>
+
+                                        <form action="?/delete" method="POST" use:enhance={()=> { document.getElementById(`delete_confirmation_close_${usuario.usuario}`)?.click() }}>
+                                            <input type="hidden" name="usuario" value="{usuario.usuario}">
+                                            <button class="btn btn-error btn-sm mt-6">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </dialog>
+
                                 <div class="collapse collapse-plus bg-base-100 border border-base-content/20 w-full overflow-x-auto animate-y"
                                 style="--delay: {i*100}ms">
                                     <input type="radio" name="users-accordion"/>
@@ -171,6 +169,7 @@
 
                                             <form action="?/role" method="POST" use:enhance class="flex mt-2 items-center gap-1" id="{usuario.usuario}_role_form">
                                                 <input type="hidden" name="usuario" value="{usuario.usuario}">
+
                                                 <input type="text" name="role"
                                                 class="w-full h-full p-2
                                                 bg-transparent border border-base-content/30 
@@ -189,9 +188,11 @@
 
                                             <form action="?/status" method="POST" use:enhance>
                                                 <input type="hidden" name="usuario" value="{usuario.usuario}">
-                                                <input type="hidden" name="estado" value="{usuario.estado === "Activo" ? "Bloqueado" : "Activo"}">
+
+                                                <input type="hidden" name="estado" value="{usuario.estado === "Activo" ? 'Bloqueado' :  "Activo"}">
+
                                                 <button type="submit" class="btn btn-sm {asignColorInverted(usuario.estado)}">
-                                                    {usuario.estado === "Bloqueado" ? "Desbloquear":"Bloquear"}
+                                                    {usuario.estado === "Activo" ? 'Bloquear' :  "Activar"}
                                                 </button>
                                             </form>
                                         </div>
@@ -204,8 +205,7 @@
                                              hover:bg-red-500 rounded-md transition-all
                                               ease-in-out"
                                               onclick="{() => {
-                                                deleteConfirmation = true;
-                                                userToDelete = usuario.usuario
+                                                document.getElementById(`delete_confirmation_${usuario.usuario}`)!.showModal() 
                                               }}">
                                                 <img src="{eliminar_icon}" alt="" class="group-hover:invert filter size-6 icon">
                                             </button>

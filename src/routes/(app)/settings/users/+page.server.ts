@@ -3,6 +3,7 @@ import async from '$lib/utils/asyncHandler';
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Usuario } from '$lib/database/types';
+import { containsWholeSubstring } from '$lib/utils/containsWholeSubstring';
 
 function asignRange(role: string) {
     switch (role) {
@@ -76,7 +77,7 @@ export const actions = {
 
         let userDB = await async(usuarioRepository.getByUsername(usuario), log)
 
-        if (newRole.toLowerCase() === "superadmin" || newRole.toLowerCase() === "superadministrador") {
+        if (containsWholeSubstring(newRole.toLowerCase(),"superadmin")) {
             return response.error(`No se puede asignar el rol ${newRole}: prohibido`)
         }
 

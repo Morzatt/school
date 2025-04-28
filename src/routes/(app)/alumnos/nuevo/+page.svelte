@@ -2,7 +2,6 @@
     import { enhance } from '$app/forms';
     import Alert from '$lib/components/Messages/Alert.svelte';
     import type { ActionData, PageData } from './$types';
-    import DocumentosData from './DocumentosData.svelte';
     import EscolarData from './EscolarData.svelte';
     import FamiliarData from './FamiliarData.svelte';
     import PersonalData from './PersonalData.svelte';
@@ -11,7 +10,7 @@
     let { rep, hasCedula, relacion } = $derived(data)
 
     type Content = "personal" | "escolar" | "familiar" | "documentos" | "preview"
-    let content: Content = $state('personal')
+    let content: Content = $state('familiar')
 
     function changeContent(newContent: Content) {
         content = newContent;
@@ -35,7 +34,7 @@
     }
 
     type FormValues = { key: string, value: string }
-    type FormState = Record<Content, FormValues[]>
+    type FormState = Record<Content, FormValues[] | string[][]>
 
     let formState: FormState = $state({
         personal:   [],
@@ -52,7 +51,7 @@
     function sendFormValues() {
         let container = document.getElementById('input_container') as HTMLDivElement
         for (let el in formState)  {
-            formState[el]!.forEach(i => {
+            formState[el]!.forEach((i) => {
                 let input = document.createElement('input')
                 input.type = "hidden"
                 input.name = i.key

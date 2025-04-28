@@ -2,6 +2,7 @@
     import { basePath, formatStringWithDots } from '$lib';
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
+    import {getAge} from "$lib/utils/getAge"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import camera_icon from "$lib/images/icons/camara_icon.svg"   
     import edit_icon from "$lib/images/icons/edit_icon.svg"
@@ -72,7 +73,7 @@
             updateable: false,
             icon: edad_icon,
             title: "Edad",
-            value: `${alumno.edad} Años`
+            value: getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')) : `${getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE'))} Años`
         }
     ])
     let edicion = $state(false)

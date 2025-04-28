@@ -10,7 +10,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('role', 'text', (col) => col.notNull().defaultTo("Usuario"))
     .addColumn('read', 'boolean', (col) => col.notNull().defaultTo(false))
     .addColumn('write', 'boolean', (col) => col.notNull().defaultTo(false))
-    .addColumn('estado', 'text', (col) => col.notNull().defaultTo("Activo").check(sql`estado IN ('Activo', 'Bloqueado')`))
+    .addColumn('estado', 'text', (col) => col.notNull().defaultTo("Por Asignar").check(sql`estado IN ('Activo', 'Bloqueado', 'Por Asignar')`))
     .addColumn('created_at', 'timestamp', (col) =>
       col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
     )

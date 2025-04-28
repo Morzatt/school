@@ -10,10 +10,10 @@
     import chevron_right from "$lib/images/icons/chevron_right.svg"
     import { basePath, formatStringWithDots } from '$lib';
     import Alert from '$lib/components/Messages/Alert.svelte';
-    import { enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { goto } from '$app/navigation';
     import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
     import CreateEmpleadoModal from './CreateEmpleadoModal.svelte';
+    import { getAge } from '$lib/utils/getAge';
 
 
     let { empleados } = $derived(data)
@@ -45,9 +45,17 @@
     }
 
     let paginas = $state(2)
+
+    $effect(() => {
+        if (form && form.form === "createEmpleado" && form.success) {
+            document.getElementById('create_empleado_close').click()
+        }
+    })
 </script>
 
-<div class="">
+<div class="relative">
+    <Alert form={ form } styles="fixed top-12 left-12 max-w-sm"/>
+
     <h3 class="text-xl font-bold">{type === 'all' ? 'Todos los Empleados' : capitalizeFirstLetter(type)}</h3>
 
     <div class="w-full h-12 mt-4 flex items-center justify-between gap-4 px-5 animate-y" style="--delay: 100ms">
@@ -188,7 +196,7 @@
                             <th class="{ empleado.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{empleado.sexo}</th>
                             <th>{empleado.area}</th>
                             <th>{empleado.cargo}</th>
-                            <th>{empleado.edad} Años</th>
+                            <th>{getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE')) : `${getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE'))} Años`}</th>
                             <th class="{empleado.turno === "Mañana" ? "text-orange-500" : "text-purple-600" }">{empleado.turno}</th>
                             <th>
                                 <a class="btn btn-sm btn-square bg-accent" href="{basePath}/empleados/{empleado.cedula}">

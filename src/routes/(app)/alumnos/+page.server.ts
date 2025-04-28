@@ -60,8 +60,10 @@ export const load = (async ({ locals, url }) => {
     let matricula = await async(
         db.selectFrom("alumnos")
         .select((eb) => eb.fn.count('alumnos.cedula_escolar').as('alumnos'))
+        .innerJoin('grados_alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')
         .executeTakeFirst()
     ,log)
+
     let matricula_manana = await async(
         db.selectFrom("alumnos")
         .innerJoin('grados_alumnos', 'alumnos.cedula_escolar', 'grados_alumnos.id_alumno')

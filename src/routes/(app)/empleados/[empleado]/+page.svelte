@@ -112,6 +112,7 @@
     import turno_ma from "$lib/images/icons/turno_manana.svg"
     import turno_ta from "$lib/images/icons/turno_tarde.svg"
     import ingreso_icon from "$lib/images/icons/book_icon.svg"
+    import { getAge } from '$lib/utils/getAge';
 
     let institucionData: Data[] = $derived([
         {
@@ -126,7 +127,7 @@
             updateable: false,
             icon: tiempo_servicio,
             title: "Tiempo de Servicio",
-            value: `${empleado.tiempo_servicio} Años`
+            value: getAge(String(empleado.fecha_ingreso))
         },
         {
             name: "turno",

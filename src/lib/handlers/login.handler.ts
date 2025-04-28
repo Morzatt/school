@@ -37,8 +37,12 @@ export async function loginHandler(
         return fail(400, response.error("El usuario no se encuentra registrado."));
     }
 
-    if (dbuser?.estado === "Bloqueado") {
+    if (dbuser.estado === "Bloqueado") {
         return fail(400, response.error("El usuario no puede iniciar sesión porque su acceso ha sido bloqueado."));
+    }
+
+    if (dbuser.estado === "Por Asignar") {
+        return fail(400, response.error("El usuario se encuentra en espera de aprobación para ingresar a la aplicación."));
     }
 
     const auth = compareSync(usuario.contraseña, dbuser?.contraseña!)

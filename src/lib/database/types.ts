@@ -51,11 +51,11 @@ export type UsuariosTable = {
     role: ColumnType<string, never, string>
     read: ColumnType<boolean, never, boolean>,
     write: ColumnType<boolean, never, boolean>,
-    estado: ColumnType<Estados, never>
+    estado: ColumnType<Estados, Estados | undefined, Estados>
     created_at: ColumnType<Date, never>,
 }
 
-type Estados = "Activo" | "Bloqueado"
+type Estados = "Activo" | "Bloqueado" | 'Por Asignar'
 export type Usuario = Selectable<UsuariosTable>
 export type NewUsuario = Insertable<UsuariosTable>
 export type UpdateUsuario = Updateable<UsuariosTable>
@@ -257,7 +257,7 @@ export type EmpleadosTable = {
     cargo: string,
 
     area: string,
-    fecha_ingreso: ColumnType<Date, string, never>
+    fecha_ingreso: ColumnType<Date , string, never>
     tiempo_servicio: string,
     turno: Turnos
 }

@@ -84,6 +84,13 @@ border border-base-content/30" style="--delay: 100ms">
 
                 <div class="form-control">
                     <div class="label">
+                        <b class="label-text">Cédula de Identidad</b>
+                    </div>
+                    <input type="number" name="cedula" class="max-w-[7rem] input input-sm input-bordered bg-base-200 {hasCedula === 'false' ? "disabled input-disabled" : ""}" bind:value={cedula}>
+                </div> 
+
+                <div class="form-control">
+                    <div class="label">
                         <b class="label-text">Nacionalidad</b>
                     </div>
                     <select class="btn btn-sm border border-base-content/40" name="nacionalidad" bind:value={nacionalidad}>

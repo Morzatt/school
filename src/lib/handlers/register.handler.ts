@@ -43,7 +43,10 @@ export async function registerHandler(
     
     newUsuario.contraseña = hashPwd(newUsuario.contraseña)
 
-    await async(repository.create(newUsuario), log, { ...newUsuario })
+    await async(repository.create({
+        ...newUsuario,
+        estado: 'Por Asignar' 
+    }), log, { ...newUsuario })
     log.info({ msg: "NUEVO USUARIO REGISTRADO", usuario: newUsuario.usuario })
 
     return response.success("Usuario Registrado con Éxito!", {

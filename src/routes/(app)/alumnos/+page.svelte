@@ -16,6 +16,7 @@
     import { enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
     import type { Niveles, Numeros, Secciones } from '$lib/database/types';
+    import { getAge } from '$lib/utils/getAge';
 
     let { data, form }: { data: PageData, form: ActionData } = $props();
     let { alumnos, matriculas } = $derived(data)
@@ -314,7 +315,7 @@
                                                 <th class="{ alumno.turno ? alumno.turno === "Mañana" ? "text-orange-500" : "text-purple-600" : "text-error" }">
                                                     {alumno.turno ? alumno.turno : "No asignado"}
                                                 </th>
-                                                <th>{alumno.edad} Años</th>
+                                                <th>{getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')) : `${getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE'))} Años`}</th>
                                                 <th>
                                                     <div class="{alumno.estado === "Retirado" ? "bg-error" : "bg-success"} p-2 rounded-sm">
                                                         {alumno.estado}

@@ -31,7 +31,6 @@ export async function createEmpleadoHandler(
         fecha_ingreso: "",
         turno: "" as 'Mañana' | 'Tarde'
     } satisfies Omit<Omit<EmpleadoInsertable, "edad">, "tiempo_servicio"> 
-    // FALTA EDAD Y TIEMPO DE SERVICIO
 
     await async(getFormData(nEmpleado, request, mock), log)
 
@@ -50,7 +49,7 @@ export async function createEmpleadoHandler(
     await async(er.create({
         ...nEmpleado,
         edad: getAge(nEmpleado.fecha_nacimiento),
-        tiempo_servicio: getAge(nEmpleado.fecha_ingreso)
+        tiempo_servicio: getAge(nEmpleado.fecha_ingreso),
     }), log)
 
     return response.success('Empleado creado correctamente.')
