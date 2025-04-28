@@ -11,6 +11,7 @@
     import success_icon from "$lib/images/icons/success_icon.svg"
     import { enhance } from '$app/forms';
     import { invalidateAll } from "$app/navigation"
+    import description_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 
     let { data, form }: { data: PageData, form: ActionData & { documentId: string, paths: { name: string, path: string }[] } } = $props();
 
@@ -199,15 +200,15 @@
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
         <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
-            <div class="w-max relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
+            <div class="w-max max-w-xs relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
                     <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
                     hover:bg-base-content/20 active:bg-base-content/10 rounded-md transition-all duration-200">
-                        <img src="{camera_icon}" alt="" class="size-full icon">
+                        <img src="{description_icon}" alt="" class="size-full icon">
                     </button>
                 </div>
-                <h3 class="font-bold text-lg mt-2">{alumno.primer_nombre} {alumno.segundo_nombre} {alumno.primer_apellido} {alumno.segundo_apellido}</h3>
+                <h3 class="font-bold text-center text-lg mt-2 text-wrap">{alumno.primer_nombre} {alumno.segundo_nombre} {alumno.primer_apellido} {alumno.segundo_apellido}</h3>
                 <h3 class="{alumno.estado === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
                     {
                         alumno.estado !== "Retirado" ?
@@ -226,32 +227,32 @@
                     <form action="?/getConstanciaEstudio" method="post" use:enhance data-tip="Constancia de Estudio">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
                         </button> 
                     </form>
                     <form action="?/getBuenaConducta" method="post" use:enhance data-tip="Constancia de Buena Conducta">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
                         </button> 
                     </form>
                     <form action="?/getAceptacion" method="post" use:enhance data-tip="Carta de Aceptacion">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
                         </button> 
                     </form>
 
                     <form action="?/getConstanciaInscripcion" method="post" use:enhance data-tip="Constancia de Inscripcion">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
                         </button> 
                     </form>
                     <form action="?/getConstanciaRetiro" method="post" use:enhance data-tip="Constancia de Retiro">
                         <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
                         <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
-                            <img src="{camera_icon}" alt="" class="filter invert icon">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
                         </button> 
                     </form>
                 </div>
@@ -299,7 +300,7 @@
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-center justify-start gap-4">
-        <div class="w-full lg:w-2/4 min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate--x" style="--delay:250ms">
+        <div class="w-full lg:w-[55%] min-h-60 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate--x" style="--delay:250ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Representantes</h3>
 
@@ -313,7 +314,7 @@
                 <div class="p-1 border-base-content/40 mb-1 font-bold
                             pb-1 bg-base-content text-base-100
                             px-2
-                            w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
+                            w-full grid text-sm grid-cols-[3fr_4fr_3fr_1.5fr_1.5fr]">
                     <p>Cedula</p>
                     <p>Nombre</p>
                     <p>Relación</p>
@@ -322,7 +323,7 @@
                 </div>
                 {#if representantes && representantes.length > 0}
                     {#each representantes as representante}
-                        <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_2fr_2fr]">
+                        <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_1.5fr_1.5fr]">
                             <p>V-{formatStringWithDots(representante.cedula)}</p>
                             <p>{representante.nombre} {representante.apellido}</p>
                             <p>{representante.relacion}</p>
@@ -344,11 +345,52 @@
                 <h3 class="text-lg font-bold">Familiares</h3>
             </div>
 
-            <div class="mt-2 w-full flex gap-2">
+            <div class="mt-3 w-full">
+                <div class="p-1 mb-1 font-bold
+                            pb-1 bg-info/60 text-base-content
+                            px-2 
+                            w-full grid text-sm grid-cols-[3fr_4fr_3fr_2fr]">
+                    <p>Cedula</p>
+                    <p>Nombre</p>
+                    <p>Autorización</p>
+                    <p>Eliminar</p>
+                </div>
+                {#if familiares && familiares.length > 0}
+                    {#each familiares as familiar, i(familiar)}
+                        <div class="p-1 w-full grid textsm grid-cols-[3fr_4fr_3fr_2fr]">
+                            <p>V-{formatStringWithDots(familiar.cedula)}</p>
+                            <p>{familiar.nombre} {familiar.apellido}</p>
+                            <p>Entrada/Retiro</p>
+                            <button class="btn btn-xs btn-square hover:btn-error hover:text-white"
+                            onclick={ document.getElementById(`delete_familiar_${familiar.cedula}`).showModal() }>
+                               <span>✕</span>
+                            </button>
+                        </div>
+
+                        <dialog id="delete_familiar_{familiar.cedula}" class="modal modal-bottom sm:modal-middle">
+                            <div class="modal-box relative
+                                        sm:w-10/12 sm:max-w-md overflow-hidden">
+                                <form method="dialog">
+                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" id="delete_familiar_{familiar.cedula}_close">✕</button>
+                                </form>
+
+                                <h3 class="text-lg mt-4 font-bold">¿Seguro que desea desvincular este familiar del Alumno?</h3>
+
+                                <div class="modal-container">
+                                    <form action="?/deleteFamiliar" method="POST" use:enhance={() => { document.getElementById(`delete_familiar_${familiar.cedula}_close`).click() }} class="h-auto w-full ">
+                                        <input type="hidden" value="{familiar.cedula}" name="cedula_representante">
+                                        <input type="hidden" value="{alumno.cedula_escolar}" name="cedula_alumno">
+                                        <button class="btn btn-error btn-sm mt-6">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </dialog>
+                    {/each}
+                {/if}
             </div>
         </div>
 
-        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-2/4 min-h-60 shadow-md order-base-content/30 rounded-md p-4 bg-base-100 animate-x" style="--delay:250ms">
+        <form action="?/editAula" method="POST" use:enhance class="w-full lg:w-[45%] min-h-60 shadow-md order-base-content/30 rounded-md p-4 bg-base-100 animate-x" style="--delay:250ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Datos Escolares</h3>
 

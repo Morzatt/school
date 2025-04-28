@@ -65,7 +65,7 @@
             updateable: false,
             icon: edad_icon,
             title: "Edad",
-            value: `${empleado.edad} Años`
+            value: getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE')) : `${getAge(empleado.fecha_nacimiento.toLocaleDateString('sv-SE'))} Años`
         }
     ])
     let edicionPersonal = $state(false)
@@ -293,7 +293,7 @@
                                         name="{field.name}"
                                         placeholder="{field.title}..."
                                         class="input input-bordered input-sm max-w-xs"
-                                        value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
+                                        value="{field.value}">
                                 {:else}
                                     <b class="{field.name === "turno" ? field.value === "Mañana" ? "text-orange-500" : "text-purple-600" : ""}">{field.value}</b> 
                                 {/if}

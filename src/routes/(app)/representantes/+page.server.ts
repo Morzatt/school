@@ -64,45 +64,37 @@ export const actions = {
             return newValidationFailObject(validationResult.error, log);
         }
 
-        let telefonos = [data.get('telefono_1') as string, data.get('telefono_2') as string]
+        let telefono_1 = data.get('telefono_1') as string
+        let telefono_2 = data.get('telefono_2') as string
 
         let representante = await async(representantesRepository.getById(rep.cedula), log)
         if (representante !== undefined) {
             return response.error("El representante ya se encuentra registrado")
         }
 
-        db.transaction().execute(async (trx) => {
-            await async(representantesRepository.create({
-                ...rep,
-                edad: getAge(rep.fecha_nacimiento)
-            }, trx), log)
+        await async(
+            db.transaction().execute(async (trx) => {
+                await representantesRepository.create({
+                    ...rep,
+                    edad: getAge(rep.fecha_nacimiento)
+                }, trx)
 
-            if (typeof telefonos === "string") {
-                await async(
-                    trx
-                    .insertInto("telefonos_representantes")
-                    .values({
-                        representante: rep.cedula,
-                        numero_telefono: telefonos
-                    })
-                    .execute()
-                , log)
-                return
-            } else {
-                for (let i of telefonos) {
-                    await async(
-                        trx
-                        .insertInto("telefonos_representantes")
-                        .values({
-                            representante: rep.cedula,
-                            numero_telefono: i 
-                        })
-                        .execute()
-                    , log)
-                }
-                return
-            }
-        })
+                await trx.insertInto("telefonos_representantes")
+                .values({
+                    representante: rep.cedula,
+                    numero_telefono: telefono_1
+                })
+                .execute()
+
+                await trx.insertInto("telefonos_representantes")
+                .values({
+                    representante: rep.cedula,
+                    numero_telefono: telefono_2
+                })
+                .execute()
+            })
+        , log)
+
 
         return response.success('Representante creado correctamente.')
     },

@@ -10,7 +10,7 @@
     import chevron_right from "$lib/images/icons/chevron_right.svg"
     import { basePath, formatStringWithDots } from '$lib';
     import Alert from '$lib/components/Messages/Alert.svelte';
-    import { goto } from '$app/navigation';
+    import { goto, invalidateAll } from '$app/navigation';
     import { capitalizeFirstLetter } from '$lib/utils/capitlizeFirstLetter';
     import CreateEmpleadoModal from './CreateEmpleadoModal.svelte';
     import { getAge } from '$lib/utils/getAge';
@@ -40,8 +40,8 @@
     }
 
     async function handleSearch() {
-        // await invalidateAll()
-        goto(url)
+        await invalidateAll()
+        await goto(url, {  keepFocus: true })
     }
 
     let paginas = $state(2)
@@ -65,7 +65,7 @@
                 rounded-xl rounded-r-none border border-base-content/20
                     py-1 px-3
                     bg-base-100">
-                    <input bind:value={search} placeholder="Buscar Empleados..."
+                    <input bind:value={search} oninput="{handleSearch}" placeholder="Buscar Empleados..."
                         class="input w-full focus:bg-transparent focus:border-transparent focus:outline-0 transition-all input-sm focus:outline-offset-0">
                 </label>
                 <button class="rounded-xl px-2 tooltip rounded-l-none border border-base-content/20 bg-base-200" data-tip="Buscar"

@@ -9,8 +9,9 @@
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import chevron_right from "$lib/images/icons/chevron_right.svg"
     import { basePath, formatStringWithDots } from '$lib';
-    import { goto } from '$app/navigation';
+    import { goto, invalidateAll } from '$app/navigation';
     import CreateRepresentanteModal from './CreateRepresentanteModal.svelte';
+    import { getAge } from '$lib/utils/getAge';
 
 
     let { representantes } = $derived(data)
@@ -36,8 +37,8 @@
     }
 
     async function handleSearch() {
-        // await invalidateAll()
-        goto(url)
+        await invalidateAll()
+        await goto(url, {  keepFocus: true })
     }
 
     let paginas = $state(2)
@@ -58,10 +59,8 @@
         <div class="flex items-center justify-start gap-4">
             <div class="join">
                 <label class="form-control flex flex-row items-center 
-                rounded-xl rounded-r-none border border-base-content/20
-                    py-1 px-3
-                    bg-base-100">
-                    <input bind:value={search} placeholder="Buscar Representante..."
+                rounded-xl rounded-r-none border border-base-content/20py-1 px-3 bg-base-100">
+                    <input bind:value={search} oninput="{handleSearch}" placeholder="Buscar Representante..."
                         class="input w-full focus:bg-transparent focus:border-transparent focus:outline-0 transition-all input-sm focus:outline-offset-0">
                 </label>
                 <button class="rounded-xl px-2 tooltip rounded-l-none border border-base-content/20 bg-base-200" data-tip="Buscar"
@@ -158,7 +157,7 @@
                             <th>{representante.nombre}</th>
                             <th>{representante.apellido}</th>
                             <th class="{ representante.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{representante.sexo}</th>
-                            <th>{representante.edad} Años</th>
+                            <th>{getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')) : `${getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE'))} Años`}</th>
                             <th>{representante.telefono}</th>
                             <th>
                                 <a class="btn btn-sm btn-square btn-accent text-base-100" href="{basePath}/representantes/{representante.cedula}">

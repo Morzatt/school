@@ -27,17 +27,19 @@ export const handle = (async ({ resolve, event }) => {
 
 
         if (session.data) {
-            const requestMethod = event.request.method;
-            const contentType = event.request.headers.get('content-type');
+            if (!event.url.pathname.includes('/auth') || !event.url.pathname.includes('/account')) {
+                const requestMethod = event.request.method;
+                const contentType = event.request.headers.get('content-type');
 
-            const isFormSubmission = requestMethod === 'POST' &&
-                (contentType?.includes('application/x-www-form-urlencoded') ||
-                    contentType?.includes('multipart/form-data'));
+                const isFormSubmission = requestMethod === 'POST' &&
+                    (contentType?.includes('application/x-www-form-urlencoded') ||
+                        contentType?.includes('multipart/form-data'));
 
-            if (isFormSubmission) {
-                if (!session.data.write) {
-                    event.locals.log.error({ msg: 'El usuario no tiene permiso de escritura' })
-                    return json(event.locals.response.error('El usuario no tiene permiso de escritura'));
+                if (isFormSubmission) {
+                    if (!session.data.write) {
+                        event.locals.log.error({ msg: 'El usuario no tiene permiso de escritura' })
+                        return json(event.locals.response.error('El usuario no tiene permiso de escritura'));
+                    }
                 }
             }
 

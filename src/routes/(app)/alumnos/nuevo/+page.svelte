@@ -10,7 +10,7 @@
     let { rep, hasCedula, relacion } = $derived(data)
 
     type Content = "personal" | "escolar" | "familiar" | "documentos" | "preview"
-    let content: Content = $state('familiar')
+    let content: Content = $state('personal')
 
     function changeContent(newContent: Content) {
         content = newContent;
@@ -59,17 +59,18 @@
                 container.appendChild(input)
             })
         }
-
     }
+
     function deleteData() {
         let container = document.getElementById('input_container') as HTMLDivElement
         container.innerHTML = ""
     }
 
     $effect(() => {
-        console.log(form)
         if (form && !form.success && form.type === "Warning") {
+            let container = document.getElementById('input_container') as HTMLDivElement
             content = "personal"
+            container.innerHTML = ""
         }
     })
 </script>

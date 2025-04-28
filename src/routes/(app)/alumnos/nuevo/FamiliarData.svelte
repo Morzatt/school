@@ -141,7 +141,7 @@
         for (let i in familiares) {
             for (let k in familiares[i]) {
                 data.push({
-                   key: `${k}_${i}`,
+                   key: `${k}_auth_${i}`,
                    value: familiares[i][k]
                 })
             }
@@ -222,7 +222,7 @@ border border-base-content/30" style="--delay: 100ms">
         {/each}
 
         <div class="{index === 3 ? "hidden" : ""} w-full lg:w-1/3 flex items-center justify-center min-h-[10rem] animate--y">
-            <button onclick="{addFam}"
+            <button onclick="{addFam}" type="button"
              class="p-3 rounded-md border border-base-content/30 btn tooltip tooltip-top" 
              data-tip="Añadir Familiar Autorizado">
                 <img src="{add_icon}" alt="">

@@ -32,6 +32,7 @@
     import seccion from "$lib/images/icons/seccion.svg"
     import Alert from '$lib/components/Messages/Alert.svelte';
     import CreateAlumnoModal from './CreateAlumnoModal.svelte';
+    import { getAge } from '$lib/utils/getAge';
 
     let personalData: Data[] = $derived([
         {
@@ -60,7 +61,7 @@
             updateable: false,
             icon: edad_icon,
             title: "Edad",
-            value: `${representante.edad}`
+            value: getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')) : `${getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE'))} Años`
         },
         {
             name: "grado_instruccion",

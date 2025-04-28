@@ -44,118 +44,127 @@ export const actions = {
             camisa: '',
             pantalon: '',
 
-            entrega_cedula: '',
-            entrega_nombre: '',
-            entrega_apellido: '',
-            entrega_sexo: '',
-            salida_cedula: '',
-            salida_nombre: '',
-            salida_apellido: '',
-            salida_sexo: '',
-            adicional_cedula: '',
-            adicional_nombre: '',
-            adicional_apellido: '',
-            adicional_sexo: '',
-
             hasCedula: "",
             representante: "",
             relacion: ""
         }
-        // getFormData(alumno, request, null, data)
+        getFormData(alumno, request, null, data)
 
-        console.log(data)
+        let auth1 = {
+            cedula: data.get('cedula_auth_1') as string,
+            nombre: data.get('nombre_auth_1') as string,
+            apellido: data.get('apellido_auth_1') as string,
+            sexo: data.get('sexo_auth_1') as string,
+        }
+
+        let auth2 = {
+            cedula: data.get('cedula_auth_2') as string,
+            nombre: data.get('nombre_auth_2') as string,
+            apellido: data.get('apellido_auth_2') as string,
+            sexo: data.get('sexo_auth_2') as string
+        }
+
+        let auth3 = {
+            cedula: data.get('cedula_auth_3') as string,
+            nombre: data.get('nombre_auth_3') as string,
+            apellido: data.get('apellido_auth_3') as string,
+            sexo: data.get('sexo_auth_3') as string,
+        }
+
+        let familiares = [auth1, auth2, auth3]
 
         // Validate the form data
-        // const validationResult = validateObject(alumno, AlumnoSchema);
-        // if (!validationResult.success) {
-        //     return newValidationFailObject(validationResult.error, log);
-        // }
+        let schema = alumno.hasCedula === "true" ? AlumnoSchema.omit({ condicion: true, detalles_condicion: true }) : AlumnoSchema.omit({ condicion: true, cedula: true, detalles_condicion: true })
+        const validationResult = validateObject(alumno, schema);
+        if (!validationResult.success) {
+            return newValidationFailObject(validationResult.error, log);
+        }
 
-        // let representante = await async(representantesRepository.getById(alumno.representante), log)
+        let representante = await async(representantesRepository.getById(alumno.representante), log)
 
-        // if (!representante) {
-        //     return response.error('El representante no existe.')
-        // }
+        if (!representante) {
+            return response.error('El representante no existe.')
+        }
 
-        // if (alumno.hasCedula === 'false') {
-        //     let numberOfHijos = await async(
-        //         db
-        //         .selectFrom("representantes_alumnos")
-        //         .innerJoin('alumnos', 'representantes_alumnos.id_alumno', "alumnos.cedula_escolar")
-        //         .select(['alumnos.cedula_escolar', 'alumnos.fecha_nacimiento'])
-        //         .execute()
-        //     , log)
+        if (alumno.hasCedula === 'false') {
+            let numberOfHijos = await async(
+                db
+                .selectFrom("representantes_alumnos")
+                .innerJoin('alumnos', 'representantes_alumnos.id_alumno', "alumnos.cedula_escolar")
+                .select(['alumnos.cedula_escolar', 'alumnos.fecha_nacimiento'])
+                .execute()
+            , log)
 
-        //     let hijosSameYear: number = 1;
-        //     if (numberOfHijos && numberOfHijos?.length > 0) {
-        //         for (let i of numberOfHijos) {
-        //             if (new Date(i.fecha_nacimiento).getFullYear() === new Date(alumno.fecha_nacimiento).getFullYear()) {
-        //                 hijosSameYear++
-        //             }
-        //         }
-        //     }
+            let hijosSameYear: number = 1;
+            if (numberOfHijos && numberOfHijos?.length > 0) {
+                for (let i of numberOfHijos) {
+                    if (new Date(i.fecha_nacimiento).getFullYear() === new Date(alumno.fecha_nacimiento).getFullYear()) {
+                        hijosSameYear++
+                    }
+                }
+            }
 
-        //     alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
-        // }
+            alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
+        }
 
-        // let result = await async (
-        //     db.transaction().execute(async (trx) => {
-        //         await trx.insertInto('alumnos').values({
-        //             cedula_escolar: alumno.cedula,
-        //             nacionalidad: alumno.nacionalidad as "Venezolano" | "Extranjero",
-        //             primer_nombre: alumno.primer_nombre,
-        //             segundo_nombre: alumno.segundo_nombre,
-        //             primer_apellido: alumno.primer_apellido,
-        //             segundo_apellido: alumno.segundo_apellido,
-        //             fecha_nacimiento: alumno.fecha_nacimiento,
-        //             edad: Number(getAge(alumno.fecha_nacimiento)), // Converting to number to fix the type error
-        //             sexo: alumno.sexo as "Masculino" | "Femenino",
-        //             lateralidad: alumno.lateralidad as "Diestro" | "Zurdo",
-        //             peso: alumno.peso,
-        //             estatura: alumno.estatura,
-        //             // condicion: '',
-        //             // detalles_condicion: '',
-        //             calzado: alumno.calzado,
-        //             camisa: alumno.camisa,
-        //             pantalon: alumno.pantalon, 
-        //             // direccion: ""
-        //         }).execute()
+        let result = await async (
+            db.transaction().execute(async (trx) => {
+                await trx.insertInto('alumnos').values({
+                    cedula_escolar: alumno.cedula,
+                    nacionalidad: alumno.nacionalidad as "Venezolano" | "Extranjero",
+                    primer_nombre: alumno.primer_nombre,
+                    segundo_nombre: alumno.segundo_nombre,
+                    primer_apellido: alumno.primer_apellido,
+                    segundo_apellido: alumno.segundo_apellido,
+                    fecha_nacimiento: alumno.fecha_nacimiento,
+                    edad: Number(getAge(alumno.fecha_nacimiento)), // Converting to number to fix the type error
+                    sexo: alumno.sexo as "Masculino" | "Femenino",
+                    lateralidad: alumno.lateralidad as "Diestro" | "Zurdo",
+                    peso: alumno.peso,
+                    estatura: alumno.estatura,
+                    // condicion: '',
+                    // detalles_condicion: '',
+                    calzado: alumno.calzado,
+                    camisa: alumno.camisa,
+                    pantalon: alumno.pantalon, 
+                    // direccion: ""
+                }).execute()
 
-        //         await trx.insertInto('familiares_alumnos').values({
-        //             cedula: alumno.entrega_cedula,
-        //             nombre: alumno.entrega_nombre,
-        //             apellido: alumno.entrega_apellido,
-        //             sexo: alumno.entrega_sexo,
-        //             id_alumno: alumno.cedula,
-        //             type: "Entrega"
-        //         }).execute()
+                for (let i of familiares) {
+                    let familiar = await trx.selectFrom('familiares_autorizados').selectAll().where('familiares_autorizados.cedula', '=', i.cedula).executeTakeFirst()
 
-        //         await trx.insertInto('familiares_alumnos').values({
-        //             cedula: alumno.salida_cedula,
-        //             nombre: alumno.salida_nombre,
-        //             apellido: alumno.salida_apellido,
-        //             sexo: alumno.salida_sexo,
-        //             id_alumno: alumno.cedula,
-        //             type: "Salida"
-        //         }).execute()
+                    if (familiar) {
+                        await trx.insertInto('familiares_alumnos').values({
+                            id_alumno: alumno.cedula,
+                            id_familiar: i.cedula
+                        }).execute()
+                        return
+                    }
 
-        //         await trx.insertInto('familiares_alumnos').values({
-        //             cedula: alumno.adicional_cedula,
-        //             nombre: alumno.adicional_nombre,
-        //             apellido: alumno.adicional_apellido,
-        //             sexo: alumno.adicional_sexo,
-        //             id_alumno: alumno.cedula,
-        //             type: "Adicional"
-        //         }).execute()
+                    if (i.cedula && i.nombre && i.apellido && i.sexo) {
+                        await trx.insertInto('familiares_autorizados').values({
+                            cedula: i.cedula,
+                            nombre: i.nombre,
+                            apellido: i.apellido,
+                            sexo: i.sexo,
+                        }).execute()
 
-        //         await trx.insertInto("representantes_alumnos").values({
-        //             id_alumno: alumno.cedula,
-        //             id_representante: alumno.representante,
-        //             relacion: alumno.relacion
-        //         }).execute()
-        //     })
-        // , log)
+                        await trx.insertInto('familiares_alumnos').values({
+                            id_alumno: alumno.cedula,
+                            id_familiar: i.cedula
+                        }).execute()
+                    }
+                }
 
-        // redirect(303, "/alumnos")
+
+                await trx.insertInto("representantes_alumnos").values({
+                    id_alumno: alumno.cedula,
+                    id_representante: alumno.representante,
+                    relacion: alumno.relacion
+                }).execute()
+            })
+        , log)
+
+        redirect(303, "/alumnos")
     },
 } satisfies Actions

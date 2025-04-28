@@ -1,4 +1,4 @@
-import type { 
+import type {
     ColumnType,
     Insertable,
     JSONColumnType,
@@ -12,13 +12,14 @@ export interface Database {
     sessions: SessionsTable,
 
     alumnos: AlumnosTable,
+    familiares_autorizados: FamiliaresAutorizadosTable
     familiares_alumnos: FamiliaresAlumnosTable
     representantes: RepresentantesTable
     telefonos_representantes: TelefonosRepresentantesTable
     representantes_alumnos: RepresentantesAlumnosTable
     grados_cursados: GradosCursadosTable
 
-    empleados: EmpleadosTable 
+    empleados: EmpleadosTable
 
     grados: GradosTable,
     grados_alumnos: GradosAlumnosTable
@@ -128,7 +129,7 @@ export type AlumnosTable = {
     primer_nombre: string,
     segundo_nombre: string,
     primer_apellido: string,
-    segundo_apellido:string,
+    segundo_apellido: string,
 
     nacionalidad: "Venezolano" | "Extranjero",
     sexo: "Masculino" | "Femenino",
@@ -150,13 +151,20 @@ export type Alumno = Selectable<AlumnosTable>
 export type AlumnoInsertable = Insertable<AlumnosTable>
 export type AlumnoUpdateable = Updateable<AlumnosTable>
 
-export type FamiliaresAlumnosTable = {
+export type FamiliaresAutorizadosTable = {
     cedula: string,
     nombre: string,
-    apellido: string, 
+    apellido: string,
     sexo: string,
-    id_alumno: string
-    type: "Entrega" | "Salida" | "Adicional"
+}
+
+export type FamiliarAutorizado = Selectable<FamiliaresAutorizadosTable>
+export type FamiliarAutorizadoInsertable = Insertable<FamiliaresAutorizadosTable>
+export type FamiliarAutorizadoUpdateable = Updateable<FamiliaresAutorizadosTable>
+
+export type FamiliaresAlumnosTable = {
+    id_alumno: string,
+    id_familiar: string,
 }
 
 export type FamiliaresAlumno = Selectable<FamiliaresAlumnosTable>
@@ -244,20 +252,20 @@ export type EmpleadosTable = {
     primer_nombre: string,
     segundo_nombre: string,
     primer_apellido: string,
-    segundo_apellido:string,
+    segundo_apellido: string,
     sexo: "Masculino" | "Femenino",
     fecha_nacimiento: ColumnType<Date, string, never>
     edad: string
 
     direccion: string,
     estado: ColumnType<'Activo' | 'Retirado', never>
-    
+
     grado_instruccion: string,
     especializacion: string,
     cargo: string,
 
     area: string,
-    fecha_ingreso: ColumnType<Date , string, never>
+    fecha_ingreso: ColumnType<Date, string, never>
     tiempo_servicio: string,
     turno: Turnos
 }
@@ -335,7 +343,7 @@ export type MateriaUpdateable = Updateable<MateriasTable>
 export type DiasSemana = "Lunes" | 'Martes' | 'Miercoles' | 'Jueves' | 'Viernes'
 type FirstTwoLetters<T extends string> = T extends `${infer A}${infer B}${infer _}` ? `${A}${B}` : never;
 
-export type BloqueID = `${number}${'A' | 't'}-${number}${'A' | 'T'}` 
+export type BloqueID = `${number}${'A' | 't'}-${number}${'A' | 'T'}`
 export type TimeString = `${number}${number}:${number}${number} ${'AM' | 'PM'}`
 
 export type BloquesHorariosTable = {

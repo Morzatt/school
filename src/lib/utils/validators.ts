@@ -118,21 +118,8 @@ export const AlumnoSchema = z.object({
     calzado: z.string(),
     camisa: z.string(),
     pantalon: z.string(),
-
-    entrega_cedula: z.string().min(1, 'El campo no puede estar vacío'),
-    entrega_nombre: z.string().min(1, 'El campo no puede estar vacío'),
-    entrega_apellido: z.string().min(1, 'El campo no puede estar vacío'),
-    entrega_sexo: z.string().min(1, 'El campo no puede estar vacío'),
-    salida_cedula: z.string().min(1, 'El campo no puede estar vacío'),
-    salida_nombre: z.string().min(1, 'El campo no puede estar vacío'),
-    salida_apellido: z.string().min(1, 'El campo no puede estar vacío'),
-    salida_sexo: z.string().min(1, 'El campo no puede estar vacío'),
-    adicional_cedula: z.string().min(1, 'El campo no puede estar vacío'),
-    adicional_nombre: z.string().min(1, 'El campo no puede estar vacío'),
-    adicional_apellido: z.string().min(1, 'El campo no puede estar vacío'),
-    adicional_sexo: z.string().min(1, 'El campo no puede estar vacío'),
-
     hasCedula: z.string(),
+
     representante: z.string().min(1, 'El campo no puede estar vacío'),
     relacion: z.string().min(1, 'El campo no puede estar vacío')
 });

@@ -10,7 +10,6 @@
 
     let { form }: { form: ActionData } = $props();
 
-    let telefonos: string[] = $state([""])
     let content: 'personal' | 'contact' | 'preview' = $state("personal")
 
     let nacionalidad = $state("Elegir")
@@ -158,7 +157,7 @@
                     <select name="sexo" class="btn btn-sm border border-base-content/60" bind:value={sexo}>
                         <option selected disabled>Elegir</option>
                         <option value="Masculino">Masculino</option>
-                        <option value="Masculino">Femenino</option>
+                        <option value="Femenino">Femenino</option>
                     </select>
                 </label> 
                 <!-- APELLIDO -->
@@ -249,14 +248,14 @@
                     <div class="label">
                         <span class="label-text">Teléfono <b>1</b></span>
                     </div>
-                    <input type="tel" name="telefono" class="input" placeholder="Telefono #1..." bind:value={tel1}>
+                    <input type="number" name="telefono2" class="input" placeholder="Telefono #1..." bind:value={tel1}>
                 </label> 
 
                 <label class="form-control lg:max-w-[12rem]">
                     <div class="label">
                         <span class="label-text">Teléfono <b>2</b></span>
                     </div>
-                    <input type="tel" name="telefono" class="input" placeholder="Telefono #2..." bind:value={tel2}>
+                    <input type="number" name="telefono1" class="input" placeholder="Telefono #2..." bind:value={tel2}>
                 </label>  
             </div>
         </div>

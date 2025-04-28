@@ -20,7 +20,7 @@
             id="delete_representante_{cedula_representante}_confirmation_close">✕</button>
         </form>
 
-        <h3 class="text-lg mt-2 font-bold">¿Seguro que desea desvincular este representante al Alumno?</h3>
+        <h3 class="text-lg mt-4 font-bold">¿Seguro que desea desvincular este representante al Alumno?</h3>
         <div class="modal-container">
             <form action="?/deleteRepresentante" method="POST" use:enhance class="h-auto w-full ">
                 <input type="hidden" value="{cedula_representante}" name="cedula_representante">

@@ -42,7 +42,11 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         , log)
 
     let familiares = await async(
-        db.selectFrom('familiares_alumnos').selectAll().where('id_alumno', "=", cedula).execute()
+        db.selectFrom('familiares_autorizados')
+        .innerJoin('familiares_alumnos', 'familiares_alumnos.id_familiar', 'familiares_autorizados.cedula')
+        .selectAll()
+        .where('familiares_alumnos.id_alumno', "=", cedula)
+        .execute()
     , log)
 
     let grados_cursados = await async(
