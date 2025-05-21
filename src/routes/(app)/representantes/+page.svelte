@@ -16,11 +16,10 @@
 
     let { representantes } = $derived(data)
     let index = $state(data.index ? data.index : 0)
-    let filter = $state("Filtro")
     let sexo = $state('all')
     let search = $state("")
 
-    let url = $derived(`${basePath}/representantes?index=${index}&filter=${filter === "Filtro" ? "" : filter}&search=${search}&sexo=${sexo}`) 
+    let url = $derived(`${basePath}/representantes?index=${index}&search=${search}&sexo=${sexo}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -68,13 +67,6 @@
                     <img src="{search_icon}" alt="" class="size-[1.8em] icon">
                 </button>
             </div>
-
-            <select class="btn btn-outline btn-sm px-5" oninput="{() =>{ index = 0; setTimeout(handleSearch,100) } }" bind:value={filter}>
-                <option disabled selected>Filtro</option>
-                <option value="cedula">Cedula</option>
-                <option value="primer_nombre">Nombre</option>
-                <option value="primer_apellido">Apellido</option>
-            </select>
         </div>
 
         <button class="btn btn-outline btn-sm px-5"
@@ -121,7 +113,7 @@
             <button onclick="{indexHandler.incrementIndex}" aria-label="pagination-next" class="btn join-item gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Siguiente">
                 <img src="{chevron_right}" alt="" class="size-[1.4em] group-active:invert filter icon">
             </button>
-            <button onclick="{() => {index=0; filter="Filtro"; search=""; handleSearch()}}"
+            <button onclick="{() => {index=0; search=""; handleSearch()}}"
                 aria-label="pagination-next"
                 class="btn mx-4 gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Limpiar Busqueda">
                 <img src="{clear_icon}" alt="" class="size-[1.4em] group-active:invert filter icon">

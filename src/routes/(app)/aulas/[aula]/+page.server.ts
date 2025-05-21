@@ -8,7 +8,8 @@ import type { PageServerLoad } from './$types';
 import { empleadosRepository } from '$lib/database/repositories/profesores.repository';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { printAlumnosGrado, printHorarioGrado } from '$lib/handlers/print.handlers';
-import { createGradoId } from '$lib/utils/createGradoId';
+import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
+import { alumnosRepository } from '$lib/database/repositories/alumnos.repository';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals
@@ -84,9 +85,26 @@ export const load = (async ({ locals, url }) => {
         .executeTakeFirst()
     ,log)
 
-    let bloques = await db.selectFrom('bloques_horarios').selectAll().orderBy("hora_inicio asc").execute()
+    let bloques = await async(db.selectFrom('bloques_horarios').selectAll().orderBy("hora_inicio asc").execute(), log)
 
-    return { grado, horarios, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales };
+    let grados = (await async(db.selectFrom('grados').selectAll().execute(), log))?.filter(g => {
+        if ((grado.nivel === "Inicial" && grado.numero === "3") && (g.nivel === "Primaria" && g.numero === "1")) {
+            return g
+        }
+
+        if (grado.nivel === "Primaria" && g.nivel === "Inicial") {
+            return
+        }
+
+        if ((grado.nivel === "Inicial" && g.nivel === "Primaria")) {
+            return
+        }
+
+        return (parseInt(g.numero)) === (parseInt(grado.numero) + 1)
+
+    })
+
+    return { grado, horarios, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales, grados };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {
@@ -94,7 +112,7 @@ function getId(url: string): string {
 }
 
 export const actions = {
-    editAula: async ({locals, request}) => {
+    editAula: async ({ locals, request }) => {
         let { log, response } = locals;
         let data = await request.formData()
 
@@ -444,8 +462,7 @@ export const actions = {
             , log)
     },
 
-    deleteHorario: async ({ locals, request }) => {
-        let { log, response } = locals;
+    deleteHorario: async ({ locals, request }) => { let { log, response } = locals;
         let data = await request.formData()
 
         let info = {
@@ -461,4 +478,99 @@ export const actions = {
 
         return response.success('Bloque eliminado con éxito')
     },
+
+    prom: async({locals, request}) => {
+        let { response, log } = locals;
+        let data = await request.formData()
+
+        let grado_actual = await async(
+            db.selectFrom('grados').where('grados.id_grado', '=', data.get('grado_actual') as GradoID).selectAll().executeTakeFirst()
+        , log)
+
+        if (!grado_actual) {
+            return response.error('El grado que intenta promover no existe')
+        }
+
+        let grado_prom = await async(
+            db.selectFrom('grados').where('grados.id_grado', '=', data.get('grado_prom') as GradoID).selectAll().executeTakeFirst()
+        , log)
+
+        if (!grado_prom) {
+            return response.error('El grado al que intenta promover no existe')
+        }
+
+        let alumnos = data.getAll('alumnos')
+        if (!alumnos) {
+            return response.error('No se ha seleccionado ningún alumno para promover.')
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                for (let i of alumnos) {
+                    let id_alumno = i as string
+
+                    await trx.updateTable('grados_alumnos')
+                        .set({ id_grado: grado_prom.id_grado })
+                        .where('grados_alumnos.id_alumno', '=', id_alumno)
+                        .execute()
+
+                    await trx.updateTable('grados_cursados')
+                        .set({ estado: "Finalizado" })
+                        .where('grados_cursados.id_alumno', '=', id_alumno)
+                        .execute()
+
+                    await trx.insertInto('grados_cursados').values({
+                        id_alumno: id_alumno,
+                        fecha: new Date().toLocaleDateString(),
+                        grado: formatGrado(grado_prom),
+                        estado: "En Curso"
+                    }).execute()
+                }
+            })
+        , log)
+
+        return response.success('Alumnos promovidos correctamente')
+    },
+
+    add: async({locals, request}) => {
+        let { response, log } = locals;
+        let data = await request.formData()
+
+        let grado_actual = await async(
+            db.selectFrom('grados').where('grados.id_grado', '=', data.get('grado_actual') as GradoID).selectAll().executeTakeFirst()
+        , log)
+
+        if (!grado_actual) {
+            return response.error('El grado que intenta promover no existe')
+
+        }
+        let alumnos = data.getAll('alumnos')
+        if (!alumnos) {
+            return response.error('No se ha seleccionado ningún alumno para promover.')
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                for (let i of alumnos) {
+                    let id_alumno = i as string
+
+                    await trx.insertInto('grados_alumnos')
+                        .values({
+                            id_alumno: id_alumno,
+                            id_grado: grado_actual.id_grado
+                        })
+                        .execute()
+
+                    await trx.insertInto('grados_cursados').values({
+                        id_alumno: id_alumno,
+                        fecha: new Date().toLocaleDateString(),
+                        grado: formatGrado(grado_actual),
+                        estado: "En Curso"
+                    }).execute()
+                }
+            })
+        , log)
+
+        return response.success('Alumnos promovidos correctamente')
+    }
 } satisfies Actions

@@ -173,7 +173,6 @@ export const actions = {
             })
         , log)
 
-
         return response.success('Alumno añadido al aula correctamente.')
     },
 

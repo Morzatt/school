@@ -14,11 +14,12 @@
     import { enhance } from '$app/forms';
     import Horario from './Horario.svelte';
     import type { ActionData } from '../$types';
-    import AddAlumnosModal from './AddAlumnosModal.svelte';
     import { downloadFile } from '$lib/utils/downloadFile';
+    import PromocionModal from './PromocionModal.svelte';
+    import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData & { horarioId: string } } = $props();
-    let { grado, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
+    let { grado, grados, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
 
@@ -92,6 +93,7 @@
                 return `${nm}to`
         }
     }
+
     $effect(() => {
         if (form?.success && form?.form === "printHorario") {
             setTimeout(() => {
@@ -106,6 +108,9 @@
         }
     })
 </script>
+
+<PromocionModal form={null} grados={ grados } gradoActual={grado} alumnos={alumnos}/>
+<AddAlumnosModal form={null} gradoActual={grado}/>
 
 <main class="w-full h-full relative">
     <div class="w-full h-max max-h-20 flex items-center justify-between">
@@ -210,31 +215,34 @@
 
         <!-- RIGHT / ALUMNOS -->
         <div class="rounded-md p-4 bg-base-100 min-h-[30rem] animate-x" style="--delay:100ms">
-            <div class="w-full flex items-start justify-between">
+            <div class="w-full flex items-center justify-between">
                 <h3 class="text-xl font-bold">Lista de Alumnos</h3>
 
-                <div class="flex flex-col items-end justify-start gap-4">
-                    <!-- <button class="btn btn-circle btn-sm" onclick={() => {openModal('add_alumno_modal')}}>
-                        <img src="{add_icon}" alt="" class="icon">
-                    </button> -->
-                    <form method="post" use:enhance action="?/printAlumnos">
-                        <input type="hidden" name="id_grado" value={grado.id_grado}>
-                        <button class="btn btn-sm btn-primary flex gap-2">
-                            <img src="{print}" alt="" class="icon filter invert">
-                            <span>Imprimir</span>
-                        </button>           
-                    </form>
-                </div>
+                <button class="btn btn-circle btn-sm" onclick={() => {openModal('add_alumno_modal')}}>
+                    <img src="{add_icon}" alt="" class="icon">
+                </button>
+            </div>
 
-                <AddAlumnosModal form={null}/>
+            <div class="mt-3 w-full flex items-start justify-between">
+                <button class="btn btn-primary btn-sm" onclick={() => {openModal('promociones')}}>
+                    <span>Promover Aula</span>
+                </button>
+
+                <form method="post" use:enhance action="?/printAlumnos">
+                    <input type="hidden" name="id_grado" value={grado.id_grado}>
+                    <button class="btn btn-sm btn-primary flex gap-2">
+                        <img src="{print}" alt="" class="icon filter invert">
+                        <span>Imprimir</span>
+                    </button>           
+                </form>
             </div>
 
             <div class="w-full mt-3 max-h-[25rem]
                          overflow-x-hidden overflow-y-auto 
                          border border-base-content/40 px-3 pt-2 rounded-md" style="scrollbar-width: thin;">
                 {#if alumnos && alumnos.length > 0}
-                    {#each alumnos as alumno, i}
-                        <div class="w-full h-max flex items-center justify-between">
+                    {#each alumnos as alumno, i(alumno)}
+                        <div class="w-full h-max flex items-center justify-between animate-pop-delayed" style="--delay: {(i*100) + 100}ms">
                             <div class="flex h-20 items-center gap-2">
                                 <b class="h-full w-8 flex items-center justify-center text-base-100 rounded-lg
                                 {alumno.sexo === "Masculino" ? "bg-blue-600/80" : "bg-pink-600/80"}">

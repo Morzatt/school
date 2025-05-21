@@ -42,6 +42,21 @@ main {
         @apply filter invert;
     }
 
+    html[data-theme=forest] img.icon,
+    .dark-invert {
+        @apply filter invert;
+    }
+
+    html[data-theme="halloween"] img.icon,
+    .dark-invert {
+        @apply filter invert;
+    }
+
+    html[data-theme="synthwave"] img.icon,
+    .dark-invert {
+        @apply filter invert;
+    }
+
     @media (prefers-reduced-motion: no-preference) {
         .animate-pop {
             animation: button-pop var(--animation-btn, 0.25s)ease-out;

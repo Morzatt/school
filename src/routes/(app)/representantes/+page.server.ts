@@ -29,8 +29,13 @@ export const load = (async ({ locals, url }) => {
     if (sexo && sexo !== "All") {
         query = query.where('sexo', "=", sexo)
     }
-    if (filter && search) {
-        let q1 = query.where(`representantes.${filter}`, "ilike", `%${search}%`)
+    if (search) {
+        let q1 = query.where((eb) => eb.or([
+            eb(`representantes.cedula`, "ilike", `%${search}%`),
+            eb(`representantes.nombre`, "ilike", `%${search}%`),
+            eb(`representantes.apellido`, "ilike", `%${search}%`),
+            eb(`representantes.direccion`, "ilike", `%${search}%`),
+        ]))
         representantes = await async(q1.execute(), log)
     } else {
         representantes = await async(query.execute(), log)

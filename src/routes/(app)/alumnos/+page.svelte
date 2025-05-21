@@ -22,13 +22,12 @@
     let { alumnos, matriculas } = $derived(data)
 
     let index = $state(data.index ? data.index : 0)
-    let filter = $state("Filtro")
     let search = $state("")
     let nivel = $state("all")
     let estado = $state("all")
     let turno = $state("all")
 
-    let url = $derived(`${basePath}/alumnos?index=${index}&filter=${filter === "Filtro" ? "" : filter}&search=${search}&nivel=${nivel}&estado=${estado}&turno=${turno}`) 
+    let url = $derived(`${basePath}/alumnos?index=${index}&search=${search}&nivel=${nivel}&estado=${estado}&turno=${turno}`) 
 
     let indexHandler = {
         incrementIndex: async () => {
@@ -147,12 +146,6 @@
                                         <img src="{search_icon}" alt="" class="size-[1.8em] icon">
                                     </button>
                                 </div>
-                                <select class="btn btn-outline btn-sm px-5" oninput="{() =>{ index = 0; setTimeout(handleSearch,100) } }" bind:value={filter}>
-                                    <option disabled selected>Filtro</option>
-                                    <option value="cedula_escolar">Cedula</option>
-                                    <option value="primer_nombre">Nombre</option>
-                                    <option value="primer_apellido">Apellido</option>
-                                </select>
 
                                 <label class="form-control flex flex-row items-center border border-base-content/20">
                                     <input type="date" id="date_search" placeholder="Buscar Alumnos"
@@ -256,7 +249,7 @@
                                 </button>
 
                                 <button 
-                                onclick="{() => {index=0;filter=""; search="";nivel="all"; estado ='all'; handleSearch()}}"
+                                onclick="{() => {index=0; search="";nivel="all"; estado ='all'; handleSearch()}}"
                                  aria-label="pagination-next"
                                   class="btn mx-4 gap-2 btn-sm active:bg-neutral-800 group tooltip" data-tip="Limpiar Busqueda">
                                     <img src="{clear_icon}" alt="" class="size-[1.4em] group-active:invert filter icon">

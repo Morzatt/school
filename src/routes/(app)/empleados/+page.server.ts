@@ -10,7 +10,6 @@ export const load = (async ({ locals, url }) => {
     let { response, log } = locals
     let index = parseInt(url.searchParams.get("index") as string) 
     let type = url.searchParams.get("type") as string
-    let filter = url.searchParams.get("filter") as string
     let search = url.searchParams.get("search") as string
     let turno= url.searchParams.get("turno") as string
 
@@ -31,8 +30,15 @@ export const load = (async ({ locals, url }) => {
         query = query.where('empleados.turno', '=', capitalizeFirstLetter(turno))
     }
     
-    if (filter && search) {
-        let q1 = query.where(`empleados.${filter}`, "ilike", `%${search}%`)
+    if (search) {
+        let q1 = query.where((eb) => eb.or([
+            eb(`empleados.cedula`, "ilike", `%${search}%`),
+            eb(`empleados.primer_nombre`, "ilike", `%${search}%`),
+            eb(`empleados.primer_apellido`, "ilike", `%${search}%`),
+            eb(`empleados.segundo_nombre`, "ilike", `%${search}%`),
+            eb(`empleados.segundo_apellido`, "ilike", `%${search}%`),
+            eb(`empleados.direccion`, "ilike", `%${search}%`),
+        ]))
         empleados = await async(q1.execute(), log)
     } else {
         empleados = await async(query.execute(), log)

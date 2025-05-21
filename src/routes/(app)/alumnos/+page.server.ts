@@ -8,7 +8,6 @@ import type { Actions, PageServerLoad } from './$types';
 export const load = (async ({ locals, url }) => {
     let { response, log } = locals
     let index = parseInt(url.searchParams.get("index") as string) 
-    let filter = url.searchParams.get("filter") as string
     let search = url.searchParams.get("search") as string
 
     let estado = capitalizeFirstLetter(url.searchParams.get("estado")) as 'Activo' | 'Retirado' | 'All'
@@ -38,22 +37,35 @@ export const load = (async ({ locals, url }) => {
     if (nivel && nivel !== 'All') {
         query = query.where('grados.nivel', "=", nivel).orderBy('grados.numero desc').orderBy('grados.nivel desc')
     }
-    
-    if (filter && search) {
-        let q1 = query.where(`alumnos.${filter}`, "ilike", `%${search}%`)
+
+    if (search) {
+        let q1 = query.where((eb) => eb.or([
+            eb(`alumnos.cedula_escolar`, "ilike", `%${search}%`),
+            eb(`alumnos.primer_nombre`, "ilike", `%${search}%`),
+            eb(`alumnos.segundo_nombre`, "ilike", `%${search}%`),
+            eb(`alumnos.primer_apellido`, "ilike", `%${search}%`),
+            eb(`alumnos.segundo_apellido`, "ilike", `%${search}%`),
+        ]))
         alumnos = await async(q1.execute(), log)
-        total_alumnos = await async (
+
+        total_alumnos = await async(
             db.selectFrom("alumnos")
-                .where(`alumnos.${filter}`, "ilike", `%${search}%`)
-                .select((eb) => eb.fn.count("alumnos.cedula_escolar")
+            .where((eb) => eb.or([
+                eb(`alumnos.cedula_escolar`, "ilike", `%${search}%`),
+                eb(`alumnos.primer_nombre`, "ilike", `%${search}%`),
+                eb(`alumnos.segundo_nombre`, "ilike", `%${search}%`),
+                eb(`alumnos.primer_apellido`, "ilike", `%${search}%`),
+                eb(`alumnos.segundo_apellido`, "ilike", `%${search}%`),
+            ]))
+            .select((eb) => eb.fn.count("alumnos.cedula_escolar")
                 .as("records"))
-                .executeTakeFirst(), log) as { records: number }
+            .executeTakeFirst(), log) as { records: number }
     } else {
         alumnos = await async(query.execute(), log)
-        total_alumnos = await async (
+        total_alumnos = await async(
             db.selectFrom("alumnos")
                 .select((eb) => eb.fn.count("alumnos.cedula_escolar")
-                .as("records"))
+                    .as("records"))
                 .executeTakeFirst(), log) as { records: number }
     }
 
