@@ -51,6 +51,12 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
         const TEMP_DIR = path.join(process.cwd(), '/static/constancias/alumnos/temporal'); 
         return await downloadRetiro(id, TEMP_DIR, log, response)
     }
+
+    if (type === "image") {
+        const dir = path.join(process.cwd(), `/static`); 
+        const filePath = url.searchParams.get('path') as string
+        return await downloadFile(filePath, dir, log, response)
+    }
 };
 
 async function accessReadStream(path: string) {
@@ -60,6 +66,16 @@ async function accessReadStream(path: string) {
         return fileStream
     } catch (error) {
         throw error
+    }
+}
+
+let downloadFile: DownloadFunction = async (fileName, TEMP_DIR, log) => {
+    const tempFilePath = path.join(TEMP_DIR, fileName);
+    try {
+        let fileStream = await async(accessReadStream(tempFilePath), log)
+        return new Response(fileStream);
+    } catch (e) {
+        handleError(log, e, {})
     }
 }
 

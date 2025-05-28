@@ -98,10 +98,13 @@ export async function up(db: Kysely<any>):  Promise<void> {
 
   await db.schema 
     .createTable("documentos_alumnos")
-    .addColumn('alumno', 'text')
-    .addColumn('tipo_documento', 'text')
-    .addColumn('path', 'text')
-    .addForeignKeyConstraint("fk_alumno", ["alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .addColumn('id_alumno', 'text', (col) => col.notNull())
+    .addColumn('tipo_documento', 'text', (col) => col.notNull())
+    .addColumn('path', 'text', (col) => col.notNull())
+    .addColumn('ultima_edicion', 'timestamp', (col) =>
+      col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull(),
+    )
+    .addForeignKeyConstraint("fk_alumno", ["id_alumno"], "alumnos", ["cedula_escolar"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 }
 

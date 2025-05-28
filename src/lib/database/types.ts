@@ -12,23 +12,23 @@ export interface Database {
     sessions: SessionsTable,
 
     alumnos: AlumnosTable,
-    familiares_autorizados: FamiliaresAutorizadosTable
-    familiares_alumnos: FamiliaresAlumnosTable
-    representantes: RepresentantesTable
-    telefonos_representantes: TelefonosRepresentantesTable
-    representantes_alumnos: RepresentantesAlumnosTable
-    grados_cursados: GradosCursadosTable
+    familiares_autorizados: FamiliaresAutorizadosTable,
+    familiares_alumnos: FamiliaresAlumnosTable,
+    representantes: RepresentantesTable,
+    telefonos_representantes: TelefonosRepresentantesTable,
+    representantes_alumnos: RepresentantesAlumnosTable,
+    grados_cursados: GradosCursadosTable,
+    documentos_alumnos: DocumentosAlumnosTable,
 
-    empleados: EmpleadosTable
+    empleados: EmpleadosTable,
 
     grados: GradosTable,
-    grados_alumnos: GradosAlumnosTable
-    materias: MateriasTable
+    grados_alumnos: GradosAlumnosTable,
+    materias: MateriasTable,
 
-    bloques_horarios: BloquesHorariosTable
-    horarios_grados_alt: HorariosGradosAltTable
-
-    puntos_restauracion: PuntosRestauracionTable
+    bloques_horarios: BloquesHorariosTable,
+    horarios_grados_alt: HorariosGradosAltTable,
+    puntos_restauracion: PuntosRestauracionTable,
 }
 
 // 
@@ -181,6 +181,21 @@ export type GradosCursadosTable = {
 export type GradoCursado = Selectable<GradosCursadosTable>
 export type GradoCursadoInsertable = Insertable<GradosCursadosTable>
 export type GradoCursadoUpdateable = Updateable<GradosCursadosTable>
+
+
+export type TiposDocumentos = 'partida_nacimiento' | 'foto_carnet' | 'cedula_estudiante' | 'cedula_representante' | 'certificado_vacunacion'
+export type DocumentosAlumnosTable = {
+    id_alumno: ColumnType<string, string, never>,
+    tipo_documento: ColumnType<TiposDocumentos, TiposDocumentos, never>,
+    path: string,
+    ultima_edicion: ColumnType<Date, never, Date>,
+}
+
+export type DocumentoAlumno = Selectable<DocumentosAlumnosTable>
+export type DocumentoAlumnoInsertable = Insertable<DocumentosAlumnosTable>
+export type DocumentoAlumnoUpdateable = Updateable<DocumentosAlumnosTable>
+
+
 
 // 
 // 

@@ -1,12 +1,16 @@
-import { representantesRepository } from '$lib/database/repositories/alumnos.repository';
-import async from '$lib/utils/asyncHandler';
-import { error, redirect, type Actions } from '@sveltejs/kit';
+import { alumnosRepository, representantesRepository } from '$lib/database/repositories/alumnos.repository';
+import async, { handleError } from '$lib/utils/asyncHandler';
+import { fail, error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getFormData } from '$lib/utils/getFormData';
 import { db } from '$lib/database';
 import { getAge } from '$lib/utils/getAge';
 import { validateObject, newValidationFailObject } from '$lib/utils/validators';
 import { AlumnoSchema } from '$lib/utils/validators';
+import { existsSync, writeFileSync } from 'fs';
+import { mkdir } from "fs/promises"
+import path from "path"
+import type { DocumentoAlumno, DocumentoAlumnoInsertable } from '$lib/database/types';
 
 export const load = (async ({ url, locals }) => {
     let { log } = locals
@@ -107,6 +111,65 @@ export const actions = {
             alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
         }
 
+        let alumnoFromDB = await async(alumnosRepository.getById(alumno.cedula), log)
+        if (alumnoFromDB) {
+            return response.error('La cedula escolar especificada ya se encuentra asignada a un alumno.')
+        }
+
+        let partida_nacimiento = data.get('partida_nacimiento') as File
+        let foto_carnet = data.get('foto_carnet') as File
+        let cedula_estudiante = data.get('cedula_estudiante') as File
+        let cedula_representante = data.get('cedula_representante') as File
+        let certificado_vacunacion = data.get('certificado_vacuna') as File
+
+        type FileTypes = 'partida_nacimiento' | 'foto_carnet' | 'cedula_estudiante' | 'cedula_representante' | 'certificado_vacunacion'
+
+        let files: { name: FileTypes, file: File }[] = [
+            {
+                name: 'partida_nacimiento',
+                file: partida_nacimiento
+            },
+            {
+                name: 'foto_carnet',
+                file: foto_carnet
+            },
+            {
+                name: 'cedula_estudiante',
+                file: cedula_estudiante
+            },
+            {
+                name: 'cedula_representante',
+                file: cedula_representante
+            },
+            {
+                name: 'certificado_vacunacion',
+                file: certificado_vacunacion
+            },
+        ]
+
+        let folderPath = path.join(process.cwd(), `/static/alumnos/${alumno.cedula}`)
+        let folderExists = existsSync(folderPath)
+        if (!folderExists) {
+            await async(mkdir(folderPath), log)
+        }
+
+        let documents: DocumentoAlumnoInsertable[] = []
+        let imgExt = ['.jpg', '.jpeg', '.png', '.webp']
+        for (let i of files) {
+            if (i.file && i.file.size > 0) {
+                let fileExtension = i.file.name.slice(i.file.name.lastIndexOf('.'))
+                let fileName = `${i.name}_${alumno.cedula}${fileExtension}`
+                let filePath = path.join(folderPath, fileName)
+                writeFileSync(filePath, Buffer.from(await i.file.arrayBuffer()));
+
+                documents.push({
+                    path: path.join(`/alumnos/${alumno.cedula}`, fileName),
+                    id_alumno: alumno.cedula,
+                    tipo_documento: i.name,
+                })
+            }
+        }
+
         let result = await async (
             db.transaction().execute(async (trx) => {
                 await trx.insertInto('alumnos').values({
@@ -162,9 +225,22 @@ export const actions = {
                     id_representante: alumno.representante,
                     relacion: alumno.relacion
                 }).execute()
+
+
+                if (documents.length > 0) {
+                    for (let i of documents) {
+                        await trx.insertInto("documentos_alumnos")
+                        .values(i)
+                        .execute()
+                    }
+                }
             })
         , log)
 
         redirect(303, "/alumnos")
     },
 } satisfies Actions
+
+function createTimeId(date: Date) {
+  return date.toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+}

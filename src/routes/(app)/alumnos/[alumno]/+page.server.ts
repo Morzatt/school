@@ -4,12 +4,18 @@ import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { basePath } from '$lib';
 import { db } from '$lib/database';
-import type { AlumnoUpdateable, GradoID, GradoInsertable, Niveles, Numeros, RepresentantesAlumnosInsertable, RepresentanteUpdateable, Secciones, Turnos } from '$lib/database/types';
+import type { AlumnoUpdateable, GradoID, GradoInsertable, Niveles, Numeros, RepresentantesAlumnosInsertable, RepresentanteUpdateable, Secciones, TiposDocumentos, Turnos } from '$lib/database/types';
 import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/utils/validators';
 import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
-import { gradosAlumnosRepository, gradosRepository } from '$lib/database/repositories/grados.repository';
+import { gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
 import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro, retirarAlumnoHandler } from '$lib/handlers/alumnos.handlers';
+import { existsSync, statSync, writeFileSync } from "fs"
+import fs from "fs"
+import path from "path"
+import { mkdir, rm } from 'fs/promises';
+import type pino from 'pino';
+import { error } from 'console';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -23,6 +29,10 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         .where('alumnos.cedula_escolar', '=', cedula)
         .executeTakeFirst()
     , log)
+
+    if (!dataResult) {
+        error(404, 'El alumno no existe')
+    }
 
     let representantes = await async(representantesAlumnosRepository.getRepresentantesByAlumno(cedula), log)
 
@@ -57,7 +67,14 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         .execute()
     , log)
 
-    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares, grados_cursados };
+    let documentos = await async(
+        db.selectFrom('documentos_alumnos')
+        .selectAll()
+        .where('documentos_alumnos.id_alumno', '=', dataResult!.cedula_escolar)
+        .execute()
+    ,log)
+
+    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares, grados_cursados, documentos};
 });
 
 function getId(url: string): string {
@@ -87,9 +104,13 @@ export const actions = {
     delete: async ({ request, locals }) => {
         let { response, log } = locals
         let cedula_escolar = (await request.formData()).get("cedula_escolar") as string
-        // console.log(cedula_escolar)
-        await async(alumnosRepository.delete(cedula_escolar), log)
 
+        let folderPath = path.join(process.cwd(), `/static/alumnos/${cedula_escolar}`)
+        let folderExists = existsSync(folderPath)
+        if (folderExists) {
+            await async(rm(folderPath, { recursive: true, force: true }), log)
+        }
+        await async(alumnosRepository.delete(cedula_escolar), log)
         redirect(307, `${basePath}/alumnos`)
     },
 
@@ -191,6 +212,45 @@ export const actions = {
         }
 
         await async(alumnosRepository.update({ cedula_escolar: alumno.cedula_escolar }, id), log)
+
+        let folderPath = path.join(process.cwd(), `/static/alumnos/${id}`)
+        let folderExists = existsSync(folderPath)
+        if (!folderExists) {
+            return response.error('La carpeta de documentos del alumno no existe.')
+        }
+        if (!statSync(folderPath).isDirectory()) {
+            console.error(`Error: Path is not a directory: ${folderPath}`);
+            return;
+        }
+
+        await processDirectory(folderPath, id, alumno.cedula_escolar, log)
+        await async(fs.promises.rename(folderPath, path.join(process.cwd(), `/static/alumnos/${alumno.cedula_escolar}`)), log)
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                let documentos = await trx.selectFrom('documentos_alumnos').selectAll()
+                .where('documentos_alumnos.id_alumno', '=', alumno.cedula_escolar)
+                .execute()
+
+                if (!documentos) {
+                    return
+                }
+
+                for (let i of documentos) {
+                    let newPath = i.path.replaceAll(id, alumno.cedula_escolar)
+
+                    await trx
+                    .updateTable('documentos_alumnos')
+                    .set({ path: newPath })
+                    .where((eb) => eb.and([
+                        eb('documentos_alumnos.id_alumno', '=', i.id_alumno),
+                        eb('documentos_alumnos.tipo_documento', '=', i.tipo_documento)
+                    ]))
+                    .executeTakeFirst()
+                }
+            })
+        ,log)
+
         redirect(307, `${basePath}/alumnos/${alumno.cedula_escolar}`)
     },
 
@@ -276,10 +336,129 @@ export const actions = {
     getAceptacion: getAceptacion,
     getConstanciaInscripcion: getConstanciaInscripcion,
     getConstanciaRetiro: getConstanciaRetiro,
-    retirar: retirarAlumnoHandler
+    retirar: retirarAlumnoHandler,
+    updateDocument: async ({ locals, request }) => {
+        // BUSCAR PRIMERO ARCHIVO EN CARPETA, SI NO EXISTE SUBIR, SI YA EXISTE UNO ELIMINAR PRIMERO
+        let { log, response } = locals;
+        let data = await request.formData();
+
+        let documento = {
+            tipo_documento: data.get('tipo_documento'),
+            id_alumno: data.get('id_alumno'),
+            archivo: data.get('archivo') as File,
+        }
+
+        let documentoFromDB = await async(
+            db.selectFrom("documentos_alumnos")
+            .selectAll()
+            .where((eb) => eb.and([
+                eb('documentos_alumnos.id_alumno', '=', documento.id_alumno as string),
+                eb('documentos_alumnos.tipo_documento', '=', documento.tipo_documento as TiposDocumentos)
+            ]))
+            .executeTakeFirst()
+        , log)
+
+        let folderPath = path.join(process.cwd(), `/static/alumnos/${documento.id_alumno}`)
+        let folderExists = existsSync(folderPath)
+        if (!folderExists) {
+            await async(mkdir(folderPath), log)
+        }
+
+        let archivoPath: string;
+        if (documento.archivo && documento.archivo.size > 0) {
+            let fileExtension = documento.archivo.name.slice(documento.archivo.name.lastIndexOf('.'))
+            let fileName = `${documento.tipo_documento}_${documento.id_alumno}${fileExtension}`
+            let filePath = path.join(folderPath, fileName)
+            writeFileSync(filePath, Buffer.from(await documento.archivo.arrayBuffer()));
+
+            archivoPath = path.join(`/alumnos/${documento.id_alumno}`, fileName)
+        } else {
+            return response.error('El archivo esta vacio')
+        }
+
+        if (!documentoFromDB) {
+            db.insertInto('documentos_alumnos')
+            .values({
+                id_alumno: documento.id_alumno as string,
+                tipo_documento: documento.tipo_documento as TiposDocumentos,
+                path: archivoPath,
+            })
+            .execute()
+        } else {
+            db
+            .updateTable('documentos_alumnos')
+            .set({
+                path: archivoPath,
+                ultima_edicion: new Date()
+            })
+            .where((eb) => eb.and([
+                eb('documentos_alumnos.id_alumno', '=', documento.id_alumno as string),
+                eb('documentos_alumnos.tipo_documento', '=', documento.tipo_documento as TiposDocumentos)
+            ]))
+            .execute()
+        }
+
+        return response.success('Archivo subido exitosamente')
+    },
 } satisfies Actions
 
 
 function extractOldNumber(number: string) {
     return number.slice(number.lastIndexOf('_')+1)
+}
+
+
+async function processDirectory(currentPath: string, string1: string, string2: string, log: pino.Logger<never, boolean>) {
+    try {
+        const items = await async(fs.promises.readdir(currentPath), log);
+
+
+        if (!items) {
+            return
+        }
+
+        // Process items in reverse order to avoid issues with renaming directories
+        // that are parents of items further down the list.
+        for (let i = items.length - 1; i >= 0; i--) {
+            const item = items[i];
+            const oldFullPath = path.join(currentPath, item);
+
+            // Check if the item's name includes string1
+            if (item.includes(string1)) {
+                const newName = item.replace(new RegExp(escapeRegExp(string1), 'g'), string2);
+                const newFullPath = path.join(currentPath, newName);
+
+                try {
+                    await async(fs.promises.rename(oldFullPath, newFullPath), log);
+                } catch (renameErr) {
+                    console.error(`Error renaming "${oldFullPath}" to "${newFullPath}": ${renameErr.message}`);
+                }
+
+                // If it was a directory and successfully renamed, we need to continue
+                // processing its contents from the new path.
+                const stat = await async(fs.promises.stat(newFullPath), log);
+                if (stat && stat.isDirectory()) {
+                    await processDirectory(newFullPath, string1, string2, log);
+                }
+            } else {
+                // If it's a directory but its name doesn't contain string1,
+                // we still need to recurse into it to find matching files/folders inside.
+                const stat = await async(fs.promises.stat(oldFullPath), log);
+                if (stat && stat.isDirectory()) {
+                    await processDirectory(oldFullPath, string1, string2, log);
+                }
+            }
+        }
+    } catch (err) {
+        console.error(`Error processing directory "${currentPath}": ${err.message}`);
+    }
+}
+
+/**
+ * Escapes special characters in a string to be used safely in a RegExp constructor.
+ * @param {string} str The string to escape.
+ * @returns {string} The escaped string.
+ */
+function escapeRegExp(str: string) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the matched substring
 }

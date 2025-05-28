@@ -2,6 +2,7 @@
     import { enhance } from '$app/forms';
     import Alert from '$lib/components/Messages/Alert.svelte';
     import type { ActionData, PageData } from './$types';
+    import DocumentosData from './DocumentosData.svelte';
     import EscolarData from './EscolarData.svelte';
     import FamiliarData from './FamiliarData.svelte';
     import PersonalData from './PersonalData.svelte';
@@ -82,8 +83,8 @@
 </div>
 
 <div class="w-full items-start rounded-xl lg:p-2 lg:px-20">
-    <div class="w-full  rounded-md p-2 animate--y">
-        <ul class="steps w-full">
+    <div class="w-full max-w-full overflow-auto rounded-md p-2 animate--y">
+        <ul class="steps w-full min-w-[50rem]">
             <li data-content="{asignStep('personal') ? "✓" : "?"}" class="step {asignStep("personal") ? "step-primary" : ""}">
                 <p class="text-base-content/70 text-sm">Paso 1</p> 
                 <b>Información Personal</b>
@@ -105,27 +106,32 @@
                     {asignStep('familiar') ? "Completado" : "Pendiente"}
                 </b>
             </li>               
+            <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">
+                <p class="text-base-content/70 text-sm">Paso 4</p>                
+                <b>Documentos</b>
+                <b class="badge {asignStep('documentos') ? "badge-primary" : "badge-neutral"}">
+                    {asignStep('documentos') ? "Completado" : "Pendiente"}
+                </b>
+            </li>   
             <!-- <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">Documentos</li>               
             <li data-content="{asignStep('preview') ? "✓" : "?"}" class="step {asignStep("preview") ? "step-primary" : ""}">Preview</li>                -->
         </ul>
     </div>
 
-    <form action="?/createAlumno" method="POST" use:enhance class="size-full">
+    <form action="?/createAlumno" method="POST" use:enhance class="size-full" enctype="multipart/form-data">
+        <input type="hidden" name="representante" value={rep.cedula}>
+        <input type="hidden" name="hasCedula" value={hasCedula}>
+        <input type="hidden" name="relacion" value={relacion}>
+        <div id="input_container"></div>
+
         {#if content === "personal"}
             <PersonalData setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
         {:else if content === "escolar"}
             <EscolarData setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
         {:else if content === "familiar"}
             <FamiliarData setFormValues={setFormValues} changeContent={changeContent} sendFormValues={sendFormValues}/>
-        <!-- {:else if content === "documentos"} -->
-            <!-- <DocumentosData setFormValues={setFormValues} changeContent={changeContent}/> -->
+        {:else if content === "documentos"}
+            <DocumentosData setFormValues={setFormValues} changeContent={changeContent} sendFormValues={sendFormValues}/>
         {/if}
-
-        <input type="hidden" name="representante" value={rep.cedula}>
-        <input type="hidden" name="hasCedula" value={hasCedula}>
-        <input type="hidden" name="relacion" value={relacion}>
-
-        <div id="input_container"></div>
-
     </form>
 </div>

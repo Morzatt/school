@@ -69,7 +69,7 @@
 
                     <div class="flex items-center justify-between gap-4 mt-8">
                         <button class="btn btn-secondary btn-sm"
-                        onclick={() => document.getElementById('upload_backup_modal').showModal()}>Crear Punto de Restauración</button> 
+                        onclick={() => document.getElementById('upload_backup_modal').showModal() }>Crear Punto de Restauración</button> 
                     </div>
                 </div>
 

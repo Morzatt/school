@@ -1,17 +1,22 @@
 <script lang="ts">
-    import { basePath, formatStringWithDots } from '$lib';
     import type { ActionData, PageData } from './$types';
+    import { enhance } from '$app/forms';
+    import { invalidateAll } from "$app/navigation"
+    import Documento from './Documento.svelte';
+
+    // UTILS IMPORT
+    import { basePath, formatStringWithDots } from '$lib';
+    import { getAge } from "$lib/utils/getAge"
+
+    // IMAGES IMPORT
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
-    import {getAge} from "$lib/utils/getAge"
     import user_icon from "$lib/images/icons/username_icon.svg"
-    import camera_icon from "$lib/images/icons/camara_icon.svg"   
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import success_icon from "$lib/images/icons/success_icon.svg"
-    import { enhance } from '$app/forms';
-    import { invalidateAll } from "$app/navigation"
     import description_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import photo_icon from "$lib/images/icons/camara_icon.svg"
 
     let { data, form }: { data: PageData, form: ActionData & { documentId: string, paths: { name: string, path: string }[] } } = $props();
 
@@ -30,7 +35,7 @@
         return form?.form === name ? form : null
     }
 
-    let { alumno, representantes, telefonos, familiares, grados_cursados } = $derived(data)
+    let { alumno, representantes, telefonos, familiares, grados_cursados, documentos } = $derived(data)
 
     type Data = {
         name: string,
@@ -147,7 +152,10 @@
             document.getElementById('retiro_confirmation_close').click()
         }
     })
+
+    let fileTypes = ['partida_nacimiento' , 'foto_carnet' , 'cedula_estudiante' , 'cedula_representante' , 'certificado_vacunacion'];
 </script>
+
 
 <main class="w-full h-full relative">
     <Alert form={form} styles="lg:fixed absolute top-8 left-12 max-w-sm" />
@@ -202,10 +210,16 @@
         <div class="w-full lg:w-max min-h-60 flex flex-col items-center justify-center animate--x">
             <div class="w-max max-w-xs relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
-                    <img src="{user_icon}" alt="" class="size-36 icon">
-                    <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
-                    hover:bg-base-content/20 active:bg-base-content/10 rounded-md transition-all duration-200">
-                        <img src="{description_icon}" alt="" class="size-full icon">
+                    {#if true}
+                        {@const documento = documentos?.filter(i => { return i.tipo_documento === "foto_carnet"; })[0] }
+                        <img src="{(documento && documento.path) ? `/downloads/0000?type=image&path=${documento.path}` : user_icon}" alt="" class="size-36 icon mask mask-circle">                       
+                        <Documento visible="false" alumno={alumno} tipo_documento={"foto_carnet"} documento={ documento ? documento : null }  />                               
+                    {/if}
+                    <button type="button" class="btn btn-sm btn-square absolute bottom-1 right-1 flex items-center justify-center p-0.5 px-1" 
+                    onclick={() => {
+                        document.getElementById(`foto_carnet_modal`).showModal()
+                    }}>
+                        <img src="{photo_icon}" alt="" class="size-full icon">
                     </button>
                 </div>
                 <h3 class="font-bold text-center text-lg mt-2 text-wrap">{alumno.primer_nombre} {alumno.segundo_nombre} {alumno.primer_apellido} {alumno.segundo_apellido}</h3>
@@ -507,88 +521,11 @@
         </form>  
     </div>
 
-    <div class="w-full mt-4 flex items-center justify-start gap-4">
-        <div class="w-full min-h-80 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate-y">
+    <div class="w-full mt-4 flex flex-col lg:flex-row items-center lg:items-start justify-start gap-4">
+        <div class="w-full lg:w-2/4 min-h-80 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate-y">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Grados Cursados</h3>
-<!-- 
-                <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group" onclick="{() =>{edicion = !edicion;}}">
-                    <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                </button> -->
             </div>
-
-            <!-- <div class="mt-4 flex items-center justify-start w-full">
-                {#if grados_cursados && grados_cursados.length > 0}
-                    <ul class="timeline timeline-vertical w-full m-0 p-5 px-12 
-                    timeline-snap-icon max-md:timeline-compact">
-                        {#each grados_cursados as gradoCursado, i}
-                            {#if i % 2}
-                                <li>
-                                    <hr class="bg-primary">
-                                        <p class="timeline-start text-base-content/90">{gradoCursado.fecha}</p>
-                                        <div class="timeline-middle">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                                class="h-5 w-5">
-                                                <path
-                                                fill-rule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                                clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div class="w-full {gradoCursado.grado.includes('Nivel') ? "bg-primary/10" : "bg-accent/10"}
-                                        min-h-16 rounded-xl py-3 px-6 timeline-box timeline-end
-                                        flex items-center justify-between">
-                                            <div>
-                                                <b class="text-xl">{gradoCursado.grado}</b>
-                                            </div>
-
-                                            <div class="flex items-center justify-center gap-2 {gradoCursado.estado === "En Curso" ? "bg-warning" : "bg-success"} rounded-xl px-3 py-2 text-neutral">
-                                                <b class="">{gradoCursado.estado}</b>
-                                                <img src="{success_icon}" alt="" class="size-8 icon">
-                                            </div>
-                                        </div>
-                                    <hr class="bg-primary" />
-                                </li>
-                            {:else}
-                                <li>
-                                    <hr class="bg-primary">
-                                        <p class="timeline-end text-base-content/90">{gradoCursado.fecha}</p>
-                                        <div class="timeline-middle">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                                class="h-5 w-5">
-                                                <path
-                                                fill-rule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                                clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div class="w-full {gradoCursado.grado.includes('Nivel') ? "bg-primary/10" : "bg-accent/10"}
-                                        min-h-16 rounded-xl py-3 px-6 timeline-box timeline-start
-                                        flex items-center justify-between">
-                                            <div>
-                                                <b class="text-xl">{gradoCursado.grado}</b>
-                                            </div>
-
-                                            <div class="flex items-center justify-center gap-2 {gradoCursado.estado === "En Curso" ? "bg-warning" : "bg-success"} rounded-xl px-3 py-2 text-neutral">
-                                                <b class="">{gradoCursado.estado}</b>
-                                                <img src="{success_icon}" alt="" class="size-8 icon">
-                                            </div>
-                                        </div>
-                                    <hr class="bg-primary" />
-                                </li>
-                            {/if}
-                        {/each}
-                    </ul>
-                {:else}
-                    <h1 class="text-2xl text-base-content/80">No existen grados cursados</h1>
-                {/if}
-            </div> -->
 
             <div class="mt-4 max-h-80 overflow-y-auto">
                 {#if grados_cursados && grados_cursados.length > 0}
@@ -612,6 +549,25 @@
                 {/if}
             </div>
         </div>  
+
+        <div class="w-full lg:w-2/4 min-h-80 order-base-content/30 rounded-md p-4 bg-base-100 shadow-md animate-y">
+            <div>
+                <h3 class="text-xl font-bold">Documentos</h3>
+                <p class="text-sm text-base-content/60">Presione sobre un icono para editar el documento.</p>
+            </div>
+
+            <div class="mt-4 max-h-80 overflow-y-auto">
+                <div class="w-full gap-4 grid grid-cols-1 lg:grid-cols-3">
+                    {#each fileTypes as fileType}
+                        {@const documento = documentos?.filter(i => { return i.tipo_documento === fileType; })[0] }
+
+                        {#if fileType !== "foto_carnet"}
+                            <Documento alumno={alumno} tipo_documento={fileType} documento={ documento ? documento : null }  />                               
+                        {/if}
+                    {/each}
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
