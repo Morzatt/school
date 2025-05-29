@@ -10,7 +10,7 @@ import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
 import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro, retirarAlumnoHandler } from '$lib/handlers/alumnos.handlers';
-import { existsSync, statSync, writeFileSync } from "fs"
+import { existsSync, statSync, unlinkSync, writeFileSync } from "fs"
 import fs from "fs"
 import path from "path"
 import { mkdir, rm } from 'fs/promises';
@@ -338,7 +338,6 @@ export const actions = {
     getConstanciaRetiro: getConstanciaRetiro,
     retirar: retirarAlumnoHandler,
     updateDocument: async ({ locals, request }) => {
-        // BUSCAR PRIMERO ARCHIVO EN CARPETA, SI NO EXISTE SUBIR, SI YA EXISTE UNO ELIMINAR PRIMERO
         let { log, response } = locals;
         let data = await request.formData();
 
@@ -369,6 +368,12 @@ export const actions = {
             let fileExtension = documento.archivo.name.slice(documento.archivo.name.lastIndexOf('.'))
             let fileName = `${documento.tipo_documento}_${documento.id_alumno}${fileExtension}`
             let filePath = path.join(folderPath, fileName)
+            let fileExists = existsSync(filePath)
+
+            if (fileExists) {
+                unlinkSync(filePath)
+            }
+
             writeFileSync(filePath, Buffer.from(await documento.archivo.arrayBuffer()));
 
             archivoPath = path.join(`/alumnos/${documento.id_alumno}`, fileName)
