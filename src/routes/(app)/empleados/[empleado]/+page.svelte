@@ -4,6 +4,7 @@
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import camera_icon from "$lib/images/icons/camara_icon.svg"   
+    import description_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import ver_icon from "$lib/images/icons/details_icon.svg"
     import success_icon from "$lib/images/icons/success_icon.svg"
@@ -11,7 +12,7 @@
     import { basePath, formatStringWithDots } from '$lib';
     import { enhance } from '$app/forms';
 
-    let { data, form }: { data: PageData, form: ActionData } = $props();
+    let { data, form }: { data: PageData, form: ActionData & { documentId: string } } = $props();
     let { empleado, grado } = $derived(data)
 
     function openModal(id: string) {
@@ -113,6 +114,7 @@
     import turno_ta from "$lib/images/icons/turno_tarde.svg"
     import ingreso_icon from "$lib/images/icons/book_icon.svg"
     import { getAge } from '$lib/utils/getAge';
+    import { downloadFile } from '$lib/utils/downloadFile';
 
     let institucionData: Data[] = $derived([
         {
@@ -138,6 +140,12 @@
         },
     ])
     let edicionInstitucion = $state(false)
+
+    $effect(() => {
+        if (form && form.success && form.form === 'getConstanciaAceptacion') {
+           downloadFile(`/downloads/${form.documentoId}?type=constanciaAceptacionEmpleados`, `constancia_aceptacion_${form.documentoId}.pdf`)
+        }
+    })
 </script>
 
 <main class="w-full h-full relative pb-4">
@@ -327,10 +335,10 @@
             <div class="w-full h-full relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
                 <div class="size-fit relative">
                     <img src="{user_icon}" alt="" class="size-36 icon">
-                    <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
+                    <!-- <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
                     hover:bg-base-content/20 active:bg-base-content/10 rounded-md transition-all duration-200">
                         <img src="{camera_icon}" alt="" class="size-full icon">
-                    </button>
+                    </button> -->
                 </div>
                 <h3 class="font-bold text-center text-lg mt-2">{empleado.primer_nombre} {empleado.segundo_nombre} {empleado.primer_apellido} {empleado.segundo_apellido}</h3>
                 <h3 class="{empleado.estado === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
@@ -343,6 +351,14 @@
                     <span>✕</span>
                     <span>Retirar Empleado</span>
                 </button>
+                <div class="w-full h-max mt-4 rounded-md flex items-center justify-around gap-2 *:tooltip *:tooltip-top">
+                    <form action="?/getConstanciaAceptacion" method="post" use:enhance data-tip="Constancia de Aceptacion">
+                        <input type="hidden" name="cedula" value={empleado.cedula}>
+                        <button class="btn btn-circle btn-sm btn-neutral p-1 flex items-center justify-center hover:btn-info">
+                            <img src="{description_icon}" alt="" class="filter invert icon">
+                        </button> 
+                    </form>
+                </div>
             </div>
         </div>
     </div>

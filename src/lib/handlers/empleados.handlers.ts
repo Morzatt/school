@@ -1,3 +1,4 @@
+import { db } from "$lib/database";
 import { empleadosRepository, type EmpleadosRepositoryInterface } from "$lib/database/repositories/profesores.repository";
 import type { EmpleadoInsertable } from "$lib/database/types";
 import async from "$lib/utils/asyncHandler";
@@ -5,6 +6,9 @@ import { getAge } from "$lib/utils/getAge";
 import { getFormData } from "$lib/utils/getFormData";
 import { InsertEmpleadoSchema, newValidationFailObject, validateObject } from "$lib/utils/validators";
 import { fail, type RequestEvent } from "@sveltejs/kit";
+import path from 'path'
+import { printConstanciaAceptacionEmpleado } from "./pdf";
+import { unlinkSync } from "fs";
 
 export async function createEmpleadoHandler(
     { request, locals }: RequestEvent,
@@ -53,4 +57,38 @@ export async function createEmpleadoHandler(
     }), log)
 
     return response.success('Empleado creado correctamente.')
+}
+
+export async function getConstanciaAceptacion({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula') as string
+
+    let empleado = await async(empleadosRepository.getById(cedula), log)
+    if (!empleado) {
+        return response.error('El empleado no existe')
+    }
+
+    let director = await async(
+        db
+        .selectFrom('empleados')
+        .selectAll()
+        .where('empleados.cargo', '=', 'Director')
+        .executeTakeFirst()
+    , log)
+
+    if (!director) {
+        return response.error('No se ha registrado el director de la institucion')
+    }
+
+    let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+    let documentId = `${empleado.cedula}_${timeId}`
+    let temporalPath = path.join(process.cwd(), `static/constancias/empleados/temporal/constancia_aceptacion_${documentId}.pdf`)
+
+    printConstanciaAceptacionEmpleado(empleado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentoId: documentId })
 }

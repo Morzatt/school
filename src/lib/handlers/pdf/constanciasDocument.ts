@@ -428,3 +428,89 @@ export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumn
     return grupalDocDefinition
 }
 
+export function createConstanciaAceptacionEmpleado(empleado: Empleado, director: Empleado) {
+    let bannerGobernacionPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/bannerMinisterio.jpg')
+    let logoColegioPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/logoColegio.jpg')
+    let date = new Date()
+
+    const grupalDocDefinition: TDocumentDefinitions = {
+        pageSize: "A4",
+        header: [
+            {
+                columns: [
+                    {
+                        image: bannerGobernacionPath,
+                        alignment: 'center',
+                        width: 600
+                    },
+                ]
+            }
+        ],
+        content: [
+            {
+                image: logoColegioPath,
+                alignment: 'center',
+                width: 100,
+                margin: [0, 20, 0, 0]
+            },
+            {
+                text: `REPUBLICA BOLIVARIANA DE VENEZUELA
+                        MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN
+                        UNIDAD EDUCATIVA  NACIONAL “ARMANDO REVERON”`,
+                bold: true,
+                alignment: "center",
+                margin: [0, 20, 0, 0],
+                lineHeight: 1.5
+            },
+
+            {
+                text: "CARTA DE ACEPTACION",
+                bold: true,
+                margin: [0, 30, 0, 0],
+                alignment: 'center',
+                decoration: 'underline'
+            },
+
+            {
+                text: [
+                    `Quien suscribe, `,
+                    { text: `${director.primer_nombre} ${director.primer_apellido},`, bold: true, decoration: 'underline' },
+                    ' titular de la cédula de identidad',
+                    { text: ` V-${formatStringWithDots(director.cedula)}`, bold: true, decoration: 'underline' },
+                    ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el funcionario(a)`,
+                    { text: `${empleado.primer_nombre} ${empleado.segundo_nombre} ${empleado.primer_apellido} ${empleado.segundo_apellido},`, bold: true, decoration: 'underline' },
+                    ' C.I ',
+                    { text: ` V-${formatStringWithDots(empleado.cedula)}`, bold: true, decoration: 'underline'},
+                    ` fue aceptado(a) para cumplir funciones como personal docente en esta Institución Educativa. Dicha aceptación se realiza por necesidad de recurso`
+                ],
+                margin: [0, 25, 0, 0],
+                lineHeight: 2,
+                alignment: 'justify'
+            },
+            {
+                text: `Información que se emite en Ciudad Bolivar, a los ${date.getDate()} dias del mes de ${(date.toLocaleDateString('es', { month: 'long' }))} del año ${date.getFullYear()}`,
+                margin: [0, 40, 0, 0]
+            },
+            {
+                text: `Atentamente.`,
+                margin: [0, 40, 0, 0],
+                alignment: 'center'
+            },
+            {
+                text: '_______________________________',
+                margin: [0, 150, 0, 0],
+                alignment: 'center'
+            },
+            {
+                text: [
+                    { text: `${director.primer_nombre} ${director.primer_apellido} \n` },
+                    { text: `Director(a)` }
+                ],
+                alignment: 'center'
+            }
+        ],
+        styles: styles
+    };
+    return grupalDocDefinition
+}
+

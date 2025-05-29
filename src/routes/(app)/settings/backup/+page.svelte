@@ -146,21 +146,63 @@
 
 
                                     <div class="flex items-center justify-between gap-3">
-                                        <form method="post" use:enhance action="?/selectPunto">
-                                            <input type="hidden" name="backup_id" value={punto.backup_id}>
-                                            <button class="btn btn-square btn-sm btn-success *:filter *:invert font-bold
-                                            flex items-center justify-center tooltip tooltip-top" data-tip="Elegir Backup">
-                                                <img src="{success_icon}" alt="" class="icon">
-                                            </button>
-                                        </form>
+                                        <!-- SELECT -->
+                                        <button class="btn btn-square btn-sm btn-success *:filter *:invert font-bold
+                                        flex items-center justify-center tooltip tooltip-top" data-tip="Elegir Backup"
+                                        onclick={() => { document.getElementById('select_confirmation').showModal() }}>
+                                            <img src="{success_icon}" alt="" class="icon">
+                                        </button>
 
-                                        <form action="?/deletePunto" method="post" use:enhance>
-                                            <input type="hidden" name="backup_id" value={punto.backup_id}>
-                                            <button class="btn btn-square btn-sm btn-error *:filter *:invert font-bold
-                                            flex items-center justify-center tooltip tooltip-top" data-tip="Eliminar Backup">
-                                                <img src="{delete_icon}" alt="" class="icon">
-                                            </button>
-                                        </form>
+                                        <dialog id="select_confirmation" class="modal modal-bottom sm:modal-middle">
+                                            <div class="modal-box relative
+                                                        sm:w-10/12 sm:max-w-md overflow-hidden">
+                                                <form method="dialog">
+                                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                                                    id="select_confirmation_close">✕</button>
+                                                </form>
+                                                <h3 class="text-lg mt-2 font-bold">¿Seguro que desea restaurar este punto?</h3>
+                                                <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+
+                                                <div class="modal-container">
+                                                    <form method="post" use:enhance action="?/selectPunto">
+                                                        <input type="hidden" name="backup_id" value={punto.backup_id}>
+                                                        <button class="btn btn-sm btn-success *:filter *:invert font-bold px-2 mt-4
+                                                        flex items-center justify-center tooltip tooltip-top" data-tip="Elegir Backup">
+                                                            <span>Restaurar</span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
+
+                                        <!-- DELETE -->
+                                        <button class="btn btn-square btn-sm btn-error *:filter *:invert font-bold
+                                        flex items-center justify-center tooltip tooltip-top" data-tip="Eliminar Backup"
+                                        onclick={() => { document.getElementById('delete_confirmation').showModal() }}>
+                                            <img src="{delete_icon}" alt="" class="icon">
+                                        </button>
+
+                                        <dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
+                                            <div class="modal-box relative
+                                                        sm:w-10/12 sm:max-w-md overflow-hidden">
+                                                <form method="dialog">
+                                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                                                    id="delete_confirmation_close">✕</button>
+                                                </form>
+                                                <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar este punto de restauracion?</h3>
+                                                <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+
+                                                <div class="modal-container">
+                                                    <form action="?/deletePunto" method="post" use:enhance>
+                                                        <input type="hidden" name="backup_id" value={punto.backup_id}>
+                                                        <button class="btn btn-sm btn-error *:filter *:invert font-bold px-2 mt-4
+                                                        flex items-center justify-center tooltip tooltip-top">
+                                                            <span>Eliminar</span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
                                     </div>
                                 </div>
                             </div> 

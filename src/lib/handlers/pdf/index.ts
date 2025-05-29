@@ -7,7 +7,7 @@ import { handleError } from "$lib/utils/asyncHandler";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 import { createListaAsistenciasDocDefinition } from "./alumnosDocuments";
 import type { Alumno, Empleado, Grado, GradoAlumno, GradoCursado } from "$lib/database/types";
-import { createBuenaConductaDocument, createCartaAceptacionDocument, createConstanciaEstudioDocument, createConstanciaInscripcion, createConstanciaRetiro } from "./constanciasDocument";
+import { createBuenaConductaDocument, createCartaAceptacionDocument, createConstanciaAceptacionEmpleado, createConstanciaEstudioDocument, createConstanciaInscripcion, createConstanciaRetiro } from "./constanciasDocument";
 
 let fontPath = path.join(process.cwd(), `/src/lib/handlers/pdf/fonts`)
 
@@ -108,3 +108,7 @@ export function printConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumno
 // 
 // 
 // CONSTANCIAS DE EMPLEADOS
+export function printConstanciaAceptacionEmpleado(empleado: Empleado, director: Empleado, path: string) {
+    const asistenciasDocDefinition = createConstanciaAceptacionEmpleado(empleado, director)
+    print(asistenciasDocDefinition, path)
+}
