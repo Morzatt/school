@@ -58,7 +58,7 @@
             updateable: true,
             icon: cedula_escolar_icon,
             title: "Cédula Escolar",
-            value: `${formatStringWithDots(alumno.cedula_escolar)}`
+            value: `${(alumno.cedula_escolar)}`
         },
         {
             name: "sexo",

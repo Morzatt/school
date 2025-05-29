@@ -1,7 +1,6 @@
 import type { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces";
 import { format, eachDayOfInterval, startOfMonth, endOfMonth } from 'date-fns';
 import type { Alumno, GradoAlumno } from "$lib/database/types";
-import { formatStringWithDots } from "$lib";
 import path from "path"
 
 const styles: StyleDictionary = {
@@ -34,7 +33,7 @@ export function createListaAsistenciasDocDefinition(alumnos: Array<Alumno & Grad
             let fila = [
                 `${i+1}`,
                `${alumnos[i].primer_apellido} ${alumnos[i].segundo_apellido}, ${alumnos[i].primer_nombre} ${alumnos[i].segundo_nombre}`,
-               `${formatStringWithDots(alumnos[i].cedula_escolar)}`,
+               `${(alumnos[i].cedula_escolar)}`,
                {text: `${alumnos[i].sexo[0]}`, bold: true},
                ...diasMes.map(i => { return "" })
             ];

@@ -75,7 +75,7 @@
                                     <b>{alumno.primer_nombre} {alumno.primer_apellido}</b>
                                     <div>
                                         <span class="text-sm">Cedula: </span>
-                                        <span class="text-sm font-semibold">{alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}{formatStringWithDots(alumno.cedula_escolar)}</span>
+                                        <span class="text-sm font-semibold">{alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}{(alumno.cedula_escolar)}</span>
                                     </div> 
 
                                     <div>

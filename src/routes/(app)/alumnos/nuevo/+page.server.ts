@@ -92,6 +92,7 @@ export const actions = {
         }
 
         if (alumno.hasCedula === 'false') {
+            let fecha_nacimiento = alumno.fecha_nacimiento.replaceAll('-', '/')
             if (alumno.relacion === 'Madre') {
                 let numberOfHijos = await async(
                     db
@@ -104,33 +105,34 @@ export const actions = {
                 let hijosSameYear: number = 1;
                 if (numberOfHijos && numberOfHijos?.length > 0) {
                     for (let i of numberOfHijos) {
-                        if (new Date(i.fecha_nacimiento).getFullYear() === new Date(alumno.fecha_nacimiento).getFullYear()) {
+                        if (new Date(i.fecha_nacimiento).getFullYear() === new Date(fecha_nacimiento).getFullYear()) {
                             hijosSameYear++
                         }
                     }
                 }
 
-                alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
+                alumno.cedula = `${hijosSameYear}${new Date(fecha_nacimiento).getFullYear().toString().slice(2)}${alumno.representante}`
             } else { 
+                let fecha_nacimiento = alumno.fecha_nacimiento.replaceAll('-', '/')
                 let numberOfHijos = await async(
                     db
                     .selectFrom("alumnos")
                     .select(['alumnos.cedula_escolar'])
-                    .where('alumnos.cedula_escolar', 'like', `%${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.cedula_madre}%`)
+                    .where('alumnos.cedula_escolar', 'like', `%${new Date(fecha_nacimiento).getFullYear().toString().slice(2)}${alumno.cedula_madre}%`)
                     .execute()
                 , log)
 
                 let maxNumber = 0;
                 if (numberOfHijos && numberOfHijos.length > 0) {
                     for (let i of numberOfHijos) {
-                        let numberChild = parseInt(i.cedula_escolar.split(`${alumno.fecha_nacimiento.slice(2)}${alumno.cedula_madre}`)[0]);
+                        let numberChild = parseInt(i.cedula_escolar.split(`${fecha_nacimiento.slice(2)}${alumno.cedula_madre}`)[0]);
                         if (numberChild >= maxNumber) {
                             maxNumber = parseInt(i.cedula_escolar[0])
                         }
                     }
                 }
 
-                alumno.cedula = `${maxNumber + 1}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.cedula_madre}`
+                alumno.cedula = `${maxNumber + 1}${new Date(fecha_nacimiento).getFullYear().toString().slice(2)}${alumno.cedula_madre}`
             }
         }
 

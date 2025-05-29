@@ -68,7 +68,7 @@ export function createBuenaConductaDocument(alumno: Alumno, grado: Grado & Grado
                     ` Director(a) de la U.E.N. “Armando Reverón”, hace constar  por  medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
-                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${formatStringWithDots(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
+                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
                     ` cursa ${grado ? formatGrado(grado) : grado_cursado?.grado} del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}, en el turno de la ${capitalizeFirstLetter(grado?.turno)}.`
                 ],
                 margin: [0, 25, 0, 0],
@@ -154,7 +154,7 @@ export function createConstanciaEstudioDocument(alumno: Alumno, grado: Grado & G
                     ` Director(a) de la U.E.N. “Armando Reverón”, hace constar  por  medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
-                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${formatStringWithDots(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
+                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
                     ` se instribió para cursar ${grado ? formatGrado(grado) : grado_cursado?.grado} del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en dicha institución.`
                 ],
                 margin: [0, 25, 0, 0],
@@ -237,7 +237,7 @@ export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & Gra
                     ` Director(a) de la U.E.N. “Armando Reverón”, por medio de la presente hago saber que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
-                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${formatStringWithDots(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
+                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
                     ` fue aceptado para cursar el ${grado ? formatGrado(grado) : grado_cursado?.grado}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en esta institución educativa en el periodo del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}.`
                 ],
                 margin: [0, 25, 0, 0],
@@ -318,7 +318,7 @@ export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & Grado
                     ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
-                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${formatStringWithDots(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
+                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
                     ` se inscribió para cursar el ${grado ? formatGrado(grado) : grado_cursado?.grado}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en esta institución educativa en el periodo del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}.`
                 ],
                 margin: [0, 25, 0, 0],
@@ -399,7 +399,7 @@ export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumn
                     ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
-                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${formatStringWithDots(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
+                    { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
                     ` cursó el grado ${grado ? formatGrado(grado) : grado_cursado?.grado}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en esta institución educativa en el periodo del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}.`
                 ],
                 margin: [0, 25, 0, 0],
