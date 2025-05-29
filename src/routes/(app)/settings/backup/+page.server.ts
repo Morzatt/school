@@ -28,7 +28,6 @@ async function checkPuntos(puntos: PuntoRestauracion[] | undefined, log: pino.Lo
       } catch (error) {
         handleError(log, error, { msg: `El archivo ${i.nombre} no existe, borrado en proceso`, ...i })
         await async(db.deleteFrom('puntos_restauracion').where('backup_id', '=', i.backup_id).execute(), log)
-        invalidateAll()
       }
     }
   }

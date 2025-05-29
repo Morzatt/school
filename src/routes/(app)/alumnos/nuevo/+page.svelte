@@ -113,8 +113,6 @@
                     {asignStep('documentos') ? "Completado" : "Pendiente"}
                 </b>
             </li>   
-            <!-- <li data-content="{asignStep('documentos') ? "✓" : "?"}" class="step {asignStep("documentos") ? "step-primary" : ""}">Documentos</li>               
-            <li data-content="{asignStep('preview') ? "✓" : "?"}" class="step {asignStep("preview") ? "step-primary" : ""}">Preview</li>                -->
         </ul>
     </div>
 
@@ -125,7 +123,7 @@
         <div id="input_container"></div>
 
         {#if content === "personal"}
-            <PersonalData setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
+            <PersonalData relacion={relacion} setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
         {:else if content === "escolar"}
             <EscolarData setFormValues={setFormValues} hasCedula={hasCedula} changeContent={changeContent}/>
         {:else if content === "familiar"}

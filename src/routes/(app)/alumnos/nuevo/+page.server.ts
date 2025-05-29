@@ -32,6 +32,7 @@ export const actions = {
 
         let alumno = {
             cedula: '',
+            cedula_madre: '',
             nacionalidad: '',
             primer_nombre: '',
             segundo_nombre: '',
@@ -78,7 +79,7 @@ export const actions = {
         let familiares = [auth1, auth2, auth3]
 
         // Validate the form data
-        let schema = alumno.hasCedula === "true" ? AlumnoSchema.omit({ condicion: true, detalles_condicion: true }) : AlumnoSchema.omit({ condicion: true, cedula: true, detalles_condicion: true })
+        let schema = alumno.hasCedula === "true" ? AlumnoSchema.omit({ cedula_madre: true, condicion: true, detalles_condicion: true }) : AlumnoSchema.omit({ condicion: true, cedula: true, detalles_condicion: true })
         const validationResult = validateObject(alumno, schema);
         if (!validationResult.success) {
             return newValidationFailObject(validationResult.error, log);
@@ -91,24 +92,46 @@ export const actions = {
         }
 
         if (alumno.hasCedula === 'false') {
-            let numberOfHijos = await async(
-                db
-                .selectFrom("representantes_alumnos")
-                .innerJoin('alumnos', 'representantes_alumnos.id_alumno', "alumnos.cedula_escolar")
-                .select(['alumnos.cedula_escolar', 'alumnos.fecha_nacimiento'])
-                .execute()
-            , log)
+            if (alumno.relacion === 'Madre') {
+                let numberOfHijos = await async(
+                    db
+                    .selectFrom("representantes_alumnos")
+                    .innerJoin('alumnos', 'representantes_alumnos.id_alumno', "alumnos.cedula_escolar")
+                    .select(['alumnos.cedula_escolar', 'alumnos.fecha_nacimiento'])
+                    .execute()
+                , log)
 
-            let hijosSameYear: number = 1;
-            if (numberOfHijos && numberOfHijos?.length > 0) {
-                for (let i of numberOfHijos) {
-                    if (new Date(i.fecha_nacimiento).getFullYear() === new Date(alumno.fecha_nacimiento).getFullYear()) {
-                        hijosSameYear++
+                let hijosSameYear: number = 1;
+                if (numberOfHijos && numberOfHijos?.length > 0) {
+                    for (let i of numberOfHijos) {
+                        if (new Date(i.fecha_nacimiento).getFullYear() === new Date(alumno.fecha_nacimiento).getFullYear()) {
+                            hijosSameYear++
+                        }
                     }
                 }
-            }
 
-            alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
+                alumno.cedula = `${hijosSameYear}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.representante}`
+            } else { 
+                let numberOfHijos = await async(
+                    db
+                    .selectFrom("alumnos")
+                    .select(['alumnos.cedula_escolar'])
+                    .where('alumnos.cedula_escolar', 'like', `%${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.cedula_madre}%`)
+                    .execute()
+                , log)
+
+                let maxNumber = 0;
+                if (numberOfHijos && numberOfHijos.length > 0) {
+                    for (let i of numberOfHijos) {
+                        let numberChild = parseInt(i.cedula_escolar.split(`${alumno.fecha_nacimiento.slice(2)}${alumno.cedula_madre}`)[0]);
+                        if (numberChild >= maxNumber) {
+                            maxNumber = parseInt(i.cedula_escolar[0])
+                        }
+                    }
+                }
+
+                alumno.cedula = `${maxNumber + 1}${new Date(alumno.fecha_nacimiento).toLocaleString('es', { year: "2-digit" })}${alumno.cedula_madre}`
+            }
         }
 
         let alumnoFromDB = await async(alumnosRepository.getById(alumno.cedula), log)

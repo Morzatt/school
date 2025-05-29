@@ -103,6 +103,7 @@ let underAgeDate = setAge(new Date())
 
 export const AlumnoSchema = z.object({
     cedula: z.string(),
+    cedula_madre: z.string(),
     nacionalidad: z.string().min(1, 'El campo no puede estar vacío'),
     primer_nombre: z.string().min(1, 'El campo no puede estar vacío'),
     segundo_nombre: z.string(),

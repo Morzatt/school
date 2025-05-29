@@ -1,9 +1,10 @@
 <script lang="ts">
-    let { hasCedula, changeContent, setFormValues }: { setFormValues: (content: any, values: any) => void, hasCedula: string, changeContent: (newContent: any) => void } = $props()
+    let { hasCedula, changeContent, setFormValues, relacion }: { relacion: string, setFormValues: (content: any, values: any) => void, hasCedula: string, changeContent: (newContent: any) => void } = $props()
 
     import icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 
     let cedula : string = $state("")
+    let cedula_madre : string = $state("")
     let nacionalidad : string = $state("")
     let primer_nombre : string = $state("")
     let segundo_nombre : string = $state("")
@@ -17,6 +18,10 @@
             {
                 key: "cedula",
                 value: cedula
+            },
+            {
+                key: "cedula_madre",
+                value: cedula_madre
             },
             {
                 key: "nacionalidad",
@@ -92,6 +97,15 @@ border border-base-content/30" style="--delay: 100ms">
                         <option value="Extranjero">Extranjero</option>
                     </select>
                 </div>           
+
+                {#if hasCedula === "false" && relacion !== 'Madre'}
+                    <div class="form-control">
+                        <div class="label">
+                            <b class="label-text">C.I. de la Madre</b>
+                        </div>
+                        <input type="number" name="cedula_madre" class="max-w-[7rem] input input-sm input-bordered bg-base-200" bind:value={cedula_madre}>
+                    </div>                     
+                {/if}
             </div>
         </div> 
 
