@@ -80,7 +80,7 @@ let downloadFile: DownloadFunction = async (fileName, TEMP_DIR, log) => {
 }
 
 let downloadBackups: DownloadFunction = async (uniqueId, TEMP_DIR, log, response) => {
-    const tempFileName = `backup_${uniqueId}.dump`;
+    const tempFileName = `backup_${uniqueId}.tar`;
     const tempFilePath = path.join(TEMP_DIR, tempFileName);
 
     try {

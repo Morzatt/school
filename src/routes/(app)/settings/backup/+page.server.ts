@@ -11,6 +11,11 @@ import type { PuntoRestauracion } from '$lib/database/types';
 import type pino from 'pino';
 import { invalidateAll } from '$app/navigation';
 
+import { execSync } from "child_process"
+import * as tar from "tar"
+import { cp, mkdir, rm, readdir, unlink } from 'fs/promises';
+
+
 export const load = (async ({ locals, url }) => {
   let { log } = locals;
   let puntos = await async(db.selectFrom('puntos_restauracion').selectAll().orderBy('fecha desc').execute(), log)
@@ -23,7 +28,7 @@ async function checkPuntos(puntos: PuntoRestauracion[] | undefined, log: pino.Lo
   if (puntos) {
     for (let i of puntos) {
       try {
-        let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${i.backup_id}.dump`)
+        let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${i.backup_id}.tar`)
         await access(backupPath, constants.F_OK)
       } catch (error) {
         handleError(log, error, { msg: `El archivo ${i.nombre} no existe, borrado en proceso`, ...i })
@@ -38,36 +43,96 @@ function createBackupId(date: Date) {
 }
 
 export const actions = {
-  createBackup: async ({ locals, request }) => {
-    let { response } = locals;
-    let backupId = createBackupId(new Date())
-    let backupPath = path.join(process.cwd(), `/static/backups/temporal/backup_${backupId}.dump`)
-    createBackup(backupPath)
-    setTimeout(() => {
-      unlinkSync(backupPath)
-    }, 5000)
-    return response.success('Copia de Seguridad creada correctamente.', { timestamp: backupId })
+  generate: async ({ locals }) => {
+    let { response, log } = locals
+    let timestamp = formatDate(new Date())
+
+    let backupFolderPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}`)
+    let documentosFolderPath = path.join(process.cwd(), '/static/alumnos')
+    let backupPath = path.join(backupFolderPath, `/backup_${timestamp}.dump`)
+
+    let tarPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}.tar`)
+
+    try {
+      // CREAR CARPETA TEMPORAL DE RESPALDO
+      await async(mkdir(backupFolderPath), log)
+
+      // CREAR RESPALDO SQL
+      createBackup(backupPath)
+
+      // CARPETA DE DOCUMENTOS DENTRO DE LA CARPETA DE RESPALDO
+      await async(mkdir(path.join(backupFolderPath, '/alumnos')), log)
+
+      // COPIAR CARPETA DE RESPALDOS
+      await cp(documentosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+
+      // COMPRIMIR CARPETA DE RESPALDO
+      tar.c({
+        // gzip: false,
+        file: tarPath,
+        sync: true,
+        portable: true,
+        cwd: path.join(process.cwd(), '/static/backups/temporal')
+      }, [`backup_${timestamp}`])
+
+      setTimeout(() => {
+        unlinkSync(tarPath)
+        rm(backupFolderPath, { recursive: true, force: true })
+      }, 15000)
+
+      return response.success('Copia de Seguridad creada correctamente.', { timestamp: timestamp })
+    } catch (error) {
+      handleError(log, error, {})
+    }
   },
 
   uploadBackup: async ({ locals, request }) => {
-    let { response } = locals;
-
+    let { response, log } = locals
     let data = await request.formData()
+
     let backupUpload = data.get('backupUpload') as File
+    if (!backupUpload.name.endsWith(".tar")) {
+      return fail(400, response.error("El archivo seleccionado no es una archivo de respaldo compatible"));
+    }
 
-    if (!backupUpload || backupUpload.size <= 0) return fail(400, response.error("No ha seleccionado ningún archivo de respaldo."));
-    if (!backupUpload.name.endsWith(".dump")) return fail(400, response.error("El archivo seleccionado no es una archivo de respaldo (.dump)"));
+    let cwd = process.cwd()
+    let temporalTarPath = path.join(cwd, `/static/backups/temporal/${backupUpload.name}`)
+    let backupID = backupUpload.name.slice(backupUpload.name.lastIndexOf('_') + 1, backupUpload.name.lastIndexOf('.'))
 
-    let backupPath = path.join(process.cwd(), `/static/backups/temporal/${backupUpload.name}`)
+    try {
+      writeFileSync(temporalTarPath, Buffer.from(await backupUpload.arrayBuffer()));
 
-    writeFileSync(backupPath, Buffer.from(await backupUpload.arrayBuffer()));
-    restoreFromDump(backupPath)
+      tar.x({
+        sync: true,
+        file: temporalTarPath,
+        cwd: path.join(process.cwd(), '/static/backups/temporal')
+      })
 
-    setTimeout(() => {
-      unlinkSync(backupPath)
-    }, 5000)
+      await async(unlink(temporalTarPath), log)
 
-    return response.success('Copia de Seguridad creada correctamente.', { backupID: backupUpload.name })
+      let backupFolderPath = path.join(cwd, `/static/backups/temporal/backup_${backupID}`)
+      let backupFilePath = path.join(backupFolderPath, `/backup_${backupID}.dump`)
+      let backupDocumentosFolder = path.join(backupFolderPath, `/alumnos`)
+      let documentosPath = path.join(cwd, '/static/alumnos')
+
+      restoreFromDump(backupFilePath)
+
+      await async(access(documentosPath), log)
+      const items = await async(readdir(documentosPath), log);
+
+      if (items && items.length > 0) {
+        for (const item of items) {
+          const itemPath = path.join(documentosPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true }), log)
+      await async(rm(backupFolderPath, { recursive: true, force: true }), log)
+      return response.success('Respaldo restaurado correctamente..')
+    } catch (error) {
+      handleError(log, error, {})
+    }
   },
 
   createCheckpoint: async ({ locals, request }) => {
@@ -75,32 +140,98 @@ export const actions = {
     let nombre_checkpoint = (await request.formData()).get('backup_name') as string
 
     let today = new Date()
-    let backupId = createBackupId(today)
-    let relativePath = `/static/backups/checkpoints/backup_${backupId}.dump`
-    let backupPath = path.join(process.cwd(), relativePath)
-    createBackup(backupPath)
+    let timestamp = createBackupId(today)
 
-    await async(
-      db
-        .insertInto('puntos_restauracion')
-        .values({
-          nombre: nombre_checkpoint,
-          path: relativePath,
-          fecha: today.toLocaleDateString('en'),
-          backup_id: backupId
-        })
-        .execute()
-      , log)
+    let backupFolderPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}`)
+    let documentosFolderPath = path.join(process.cwd(), '/static/alumnos')
+    let backupPath = path.join(backupFolderPath, `/backup_${timestamp}.dump`)
 
-    return response.success('Punto de Restauración creada correctamente.', { timestamp: backupId })
+    let tarPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${timestamp}.tar`)
+
+    try {
+      // CREAR CARPETA TEMPORAL DE RESPALDO
+      await async(mkdir(backupFolderPath), log)
+
+      // CREAR RESPALDO SQL
+      createBackup(backupPath)
+
+      // CARPETA DE DOCUMENTOS DENTRO DE LA CARPETA DE RESPALDO
+      await async(mkdir(path.join(backupFolderPath, '/alumnos')), log)
+
+      // COPIAR CARPETA DE RESPALDOS
+      await cp(documentosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+
+      // COMPRIMIR CARPETA DE RESPALDO
+      tar.c({
+        // gzip: false,
+        file: tarPath,
+        sync: true,
+        portable: true,
+        cwd: path.join(process.cwd(), '/static/backups/temporal')
+      }, [`backup_${timestamp}`])
+
+      setTimeout(() => {
+        rm(backupFolderPath, { recursive: true, force: true })
+      }, 15000)
+
+      await async(
+        db
+          .insertInto('puntos_restauracion')
+          .values({
+            nombre: nombre_checkpoint,
+            path: `/static/backups/temporal/backup_${timestamp}.tar`,
+            fecha: today.toLocaleDateString('en'),
+            backup_id: timestamp 
+          })
+          .execute()
+        , log)
+
+      return response.success('Copia de Seguridad creada correctamente.', { timestamp: timestamp })
+    } catch (error) {
+      handleError(log, error, {})
+    }
+
+    return response.success('Punto de Restauración creada correctamente.', { timestamp: timestamp })
   },
 
   selectPunto: async ({ locals, request }) => {
     let { log, response } = locals;
     let backup_id = (await request.formData()).get('backup_id')
-    let backupPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${backup_id}.dump`)
 
-    restoreFromDump(backupPath)
+    let cwd = process.cwd()
+    let temporalTarPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${backup_id}.tar`)
+
+    try {
+      tar.x({
+        sync: true,
+        file: temporalTarPath,
+        cwd: path.join(process.cwd(), '/static/backups/checkpoints')
+      })
+
+      let backupFolderPath = path.join(cwd, `/static/backups/checkpoints/backup_${backup_id}`)
+      let backupFilePath = path.join(backupFolderPath, `/backup_${backup_id}.dump`)
+      let backupDocumentosFolder = path.join(backupFolderPath, `/alumnos`)
+      let documentosPath = path.join(cwd, '/static/alumnos')
+
+      restoreFromDump(backupFilePath)
+
+      await async(access(documentosPath), log)
+      const items = await async(readdir(documentosPath), log);
+
+      if (items && items.length > 0) {
+        for (const item of items) {
+          const itemPath = path.join(documentosPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true }), log)
+      await async(rm(backupFolderPath, { recursive: true, force: true }), log)
+
+      return response.success('Punto de restauracion correctamente restaurado.', { backupID: backup_id })
+    } catch (error) {
+      handleError(log, error, {})
+    }
 
     return response.success('Punto de restauracion correctamente restaurado.', { backupID: backup_id })
   },
@@ -112,13 +243,13 @@ export const actions = {
       return
     }
 
-    let relativePath = `/static/backups/checkpoints/backup_${backup_id}.dump`
+    let relativePath = `/static/backups/checkpoints/backup_${backup_id}.tar`
     let backupPath = path.join(process.cwd(), relativePath)
     unlinkSync(backupPath)
 
     await async(
       db.deleteFrom('puntos_restauracion').where('backup_id', '=', backup_id).execute()
-      , log)
+    , log)
 
     return response.success('Punto de Restauración correctamente eliminado.')
   },
@@ -196,4 +327,8 @@ function restoreFromDump(dumpPath: string) {
     const errorOutput = pgRestoreProcess.stderr.toString();
     throw new Error(`pg_restore failed: ${errorOutput}`);
   }
+}
+
+function formatDate(date: Date): string {
+  return date.toISOString().replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '').replaceAll('.', '');
 }

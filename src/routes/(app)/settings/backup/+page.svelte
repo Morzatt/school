@@ -13,9 +13,9 @@
     let { puntos } = $derived(data)
 
     $effect(() => {
-        if (form?.success && form?.form === "createBackup") {
+        if (form?.success && form?.form === "generate") {
             setTimeout(() => {
-                downloadFile(`/downloads/${form.timestamp}?type=backup`, `backup_${form.timestamp}.dump`) 
+                downloadFile(`/downloads/${form.timestamp}?type=backup`, `backup_${form.timestamp}.tar`) 
             }, 1000)
         }
     })
@@ -55,7 +55,7 @@
                 </div>
 
 
-                <form use:enhance method="post" action='?/createBackup' class="mt-4 w-full flex items-center justify-start gap-4">
+                <form use:enhance method="post" action='?/generate' class="mt-4 w-full flex items-center justify-start gap-4">
                     <button class="btn btn-wide btn-primary">Crear</button>
                     <p class="text-base-content/90 text-sm">Fecha: {new Date().toLocaleDateString("es")}</p>
                 </form>

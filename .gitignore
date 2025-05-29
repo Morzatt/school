@@ -22,5 +22,5 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-/static/backups/checkpoints/*.dump
+/static/backups/checkpoints/*.tar
 /static/alumnos/*
