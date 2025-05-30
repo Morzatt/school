@@ -4,6 +4,7 @@
 
     // Images Import
     import home_icon from "$lib/images/icons/home_icon.svg"
+    import personalizar_icon from "$lib/images/icons/personalizar_icon.svg"
     import menu_icon from "$lib/images/icons/menu_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import logout_icon from "$lib/images/icons/logout_icon.svg"
@@ -17,6 +18,12 @@
     let { data }: { data: Omit<Usuario, "contraseña"> } = $props()
 
     let swtch = $state(false)
+
+    let look = {
+        icon: personalizar_icon,
+        href: "settings/look",
+        name: "Personalización"
+    }
 </script>
 
 {#snippet drawer()}
@@ -105,8 +112,12 @@
                                     <a href="{basePath}/settings/account" onclick="{() => {document.getElementById("side-drawer")?.click()}}">Mi Usuario</a>
                                 </li>
                             </div>
-
                         {/each}
+                    {:else}
+                        <li class="mt-5">
+                            <img src="{look.icon}" alt="" class="icon">
+                            <a href="/{look.href}" onclick="{() => {document.getElementById("side-drawer")?.click()}}">{look.name}</a>
+                        </li>
                     {/if}
 
                     <li class="border-t border-base-300 mt-1.5 text-red-500">
@@ -162,6 +173,11 @@
                     </div>  
                 {/each}
             </div>
+        {:else}
+            <li class="mt-5">
+                <img src="{look.icon}" alt="" class="icon">
+                <a href="/{look.href}">{look.name}</a>
+            </li>
         {/if}
     </ul>
 {/snippet}

@@ -19,7 +19,7 @@
     import AddAlumnosModal from './AddAlumnosModal.svelte';
 
     let { data, form }: { data: PageData, form: ActionData & { horarioId: string } } = $props();
-    let { grado, grados, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
+    let { profesoresDisponibles, grado, grados, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales } = $derived(data)
 
     let { lunes, martes, miercoles, jueves, viernes } = $derived(data.horarios)
 
@@ -190,12 +190,25 @@
                             </div>
 
                             {#if edicion && field.updateable}
-                                <input type="text" 
-                                    min="3"
-                                    name="{field.name}"
-                                    placeholder="{field.title}..."
-                                    class="input input-bordered input-sm max-w-xs"
-                                    value="{field.name === "profesor" ? field.nameValue : field.value}">
+                                {#if field.name === "profesor"}
+                                    <select name="profesor" class="btn btn-sm btn-bordered">
+                                        <option selected disabled>Elegir Profesor</option>
+                                        {#if profesoresDisponibles && profesoresDisponibles.length > 0}
+                                            {#each profesoresDisponibles as pd}
+                                                <option value="{pd.cedula}">{pd.primer_nombre} {pd.primer_apellido}</option>
+                                            {/each}                                           
+                                        {:else}
+                                            <option disabled>No hay docentes disponibles</option>
+                                        {/if}
+                                    </select>
+                                {:else}
+                                    <input type="text" 
+                                        min="3"
+                                        name="{field.name}"
+                                        placeholder="{field.title}..."
+                                        class="input input-bordered input-sm max-w-xs"
+                                        value="{field.value}">
+                                {/if}
                             {:else}
                                 {#if field.name === "profesor"}
                                     {@html field.value} 

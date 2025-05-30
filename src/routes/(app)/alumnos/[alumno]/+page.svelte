@@ -35,7 +35,7 @@
         return form?.form === name ? form : null
     }
 
-    let { alumno, representantes, telefonos, familiares, grados_cursados, documentos } = $derived(data)
+    let { alumno, representantes, familiares, grados_cursados, documentos } = $derived(data)
 
     type Data = {
         name: string,
@@ -110,14 +110,6 @@
 
     function closeModal(id: string) {
         document!.getElementById(id)!.click()
-    }
-
-    function filterCellphoneNumber(id: string): string[] | undefined {
-        let n: string[] | undefined;
-        telefonos?.forEach(i => 
-            i.representante === id ? n = i.telefonos as string[] : null
-        )
-        return n
     }
 
     let editEscolares = $state(false)
@@ -350,7 +342,7 @@
                         </div>
 
                         <DeleteRepresentanteModal cedula_alumno={alumno.cedula_escolar} cedula_representante={representante.cedula} form={deleteRepresentanteForm}/>
-                        <RepresentanteModal representante={ representante } form={null} tel={filterCellphoneNumber(representante.cedula)}/>                           
+                        <RepresentanteModal representante={ representante } form={null}/>                           
                     {/each}
                 {:else}
                     <h2 class="text-base-content/70">El alumno no Representantes asociados.</h2>

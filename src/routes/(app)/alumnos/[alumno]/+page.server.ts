@@ -36,21 +36,6 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
 
     let representantes = await async(representantesAlumnosRepository.getRepresentantesByAlumno(cedula), log)
 
-    let telefonosQuery = await async(
-        db
-            .selectFrom('representantes')
-            .innerJoin("representantes_alumnos", "representantes.cedula", "representantes_alumnos.id_representante")
-            .where("representantes_alumnos.id_alumno", "=", cedula)
-            .leftJoin('telefonos_representantes', "representantes.cedula", "telefonos_representantes.representante")
-            .select([
-                'representantes.cedula as representante',
-                (eb) =>
-                    eb.fn.agg("array_agg", [eb.ref('telefonos_representantes.numero_telefono')])
-                        .as('telefonos')
-            ]).groupBy('representantes.cedula')
-            .execute()
-        , log)
-
     let familiares = await async(
         db.selectFrom('familiares_autorizados')
         .innerJoin('familiares_alumnos', 'familiares_alumnos.id_familiar', 'familiares_autorizados.cedula')
@@ -74,7 +59,7 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         .execute()
     ,log)
 
-    return { alumno: dataResult!, representantes: representantes, telefonos: telefonosQuery, familiares, grados_cursados, documentos};
+    return { alumno: dataResult!, representantes: representantes, familiares, grados_cursados, documentos};
 });
 
 function getId(url: string): string {
@@ -305,29 +290,24 @@ export const actions = {
             correo_electronico: data.get("correo_electronico") as string,
         } satisfies RepresentanteUpdateable
 
-        await async(representantesRepository.update(edit, cedula), log)
-    },
-
-
-    editTelefonos: async ({ request, locals }) => {
-        let { response, log } = locals
-        let data = await request.formData()
-        let id_representante = data.get("id_representante") as string
-        for (let i of data) {
-            if (!i[0].includes("representante")) {
-                let old = extractOldNumber(i[0]) as string
-                let n = i[1] as string
-                await async(
-                    db.updateTable("telefonos_representantes")
-                        .set({ numero_telefono: n })
-                        .where((eb) => eb.and([
-                            eb("telefonos_representantes.representante", "=", id_representante),
-                            eb("telefonos_representantes.numero_telefono", "=", old)
-                        ]))
-                        .execute()
-                    , log)
-            }
+        let telefonos = {
+            telefono_1: data.get("telefono_1") as string,
+            telefono_2: data.get("telefono_2") as string,
         }
+
+        if (telefonos.telefono_1 || telefonos.telefono_2) {
+            if (telefonos.telefono_1) {
+                await async(representantesRepository.update({ telefono_1: telefonos.telefono_1 }, cedula), log)
+            }
+
+            if (telefonos.telefono_2) {
+                await async(representantesRepository.update({ telefono_2: telefonos.telefono_2 }, cedula), log)
+            }
+
+            return response.success('Telefonos actualizados correctamente.')
+        }
+
+        await async(representantesRepository.update(edit, cedula), log)
     },
 
     // CONSTANCIAS

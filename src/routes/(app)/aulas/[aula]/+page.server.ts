@@ -85,6 +85,17 @@ export const load = (async ({ locals, url }) => {
         .executeTakeFirst()
     ,log)
 
+    let profesoresDisponibles = await async(
+        db
+        .selectFrom('empleados')
+        .selectAll('empleados')
+        .leftJoin('grados', 'grados.profesor', 'empleados.cedula')
+        .where('empleados.area', '=', 'Docente')
+        .where('empleados.estado', '=', "Activo")
+        .where('grados.profesor', 'is', null)
+        .execute()
+    , log)
+
     let bloques = await async(db.selectFrom('bloques_horarios').selectAll().orderBy("hora_inicio asc").execute(), log)
 
     let grados = (await async(db.selectFrom('grados').selectAll().execute(), log))?.filter(g => {
@@ -104,7 +115,7 @@ export const load = (async ({ locals, url }) => {
 
     })
 
-    return { grado, horarios, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales, grados };
+    return { profesoresDisponibles, grado, horarios, materias, alumnos, profesor, bloques, materiasAula, clasesSemanales, grados };
 }) satisfies PageServerLoad;
 
 function getId(url: string): string {

@@ -9,10 +9,7 @@
     let { representante, form, tel }: {
         representante: RepresentantesByAlumnosResult,
         form: any | null,
-        tel: string[] | undefined
     } = $props()
-
-    let telefonos = $derived(tel)
 
     let infoEdit = $state(false);
 
@@ -135,7 +132,7 @@
 
                 <div class="divider"></div>
 
-                <form action="?/editTelefonos" method="POST" class="mt-6 pb-12" use:enhance>
+                <form action="?/editRepresentante" method="POST" class="mt-6 pb-12" use:enhance>
                     <div class="flex items-center justify-between">
                         <h3 class="font-semibold">Información Telefónica</h3>
                         
@@ -149,24 +146,38 @@
 
                     <div class="w-full mt-4
                                 grid grid-cols-2 lg:grid-cols-3 gap-2 *:w-full">
-                        {#if telefonos}
-                            {#each telefonos as telefono, i}
-                                <label class="form-control max-w-xs col-span-2 border border-base-content/40 rounded-md relative">
-                                    <div class="label">
-                                        <span class="label-text">Telefono #{i+1}</span>
-                                    </div>
-                                    {#if telEdit}
-                                        <input type="text" 
-                                        value={telefono}
-                                        name="telefono_{telefono}"
-                                        placeholder="Telefono #{i+1}..." 
-                                        class="input input-bordered input-sm w-full max-w-xs" />
-                                    {:else}
-                                        <p>{telefono}</p>
-                                    {/if}
-                                </label>   
-                            {/each}                        
-                        {/if} 
+                        <label class="form-control max-w-xs col-span-2 border border-base-content/40 rounded-md relative">
+                            <div class="label">
+                                <span class="label-text">Telefono #1</span>
+                            </div>
+                            {#if telEdit}
+                                <input type="text" 
+                                value={representante.telefono_1}
+                                name="telefono_1"
+                                placeholder="Telefono #1..." 
+                                class="input input-bordered input-sm w-full max-w-xs" />
+                            {:else}
+                                <p>{representante.telefono_1}</p>
+                            {/if}
+                        </label>   
+                    </div>
+
+                    <div class="w-full mt-4
+                                grid grid-cols-2 lg:grid-cols-3 gap-2 *:w-full">
+                        <label class="form-control max-w-xs col-span-2 border border-base-content/40 rounded-md relative">
+                            <div class="label">
+                                <span class="label-text">Telefono #2</span>
+                            </div>
+                            {#if telEdit}
+                                <input type="text" 
+                                value={representante.telefono_2}
+                                name="telefono_2"
+                                placeholder="Telefono #2..." 
+                                class="input input-bordered input-sm w-full max-w-xs" />
+                            {:else}
+                                <p>{representante.telefono_2}</p>
+                            {/if}
+                        </label>   
                     </div>
                 </form>
             </div>

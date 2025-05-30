@@ -29,7 +29,9 @@ export const handle = (async ({ resolve, event }) => {
 
 
         if (session.data) {
-            if (!event.url.pathname.includes('/auth') || !event.url.pathname.includes('/account')) {
+            if (event.url.pathname.includes('/auth') || event.url.pathname.includes('/account') || event.url.pathname.includes('/look')) {
+
+            } else {
                 const requestMethod = event.request.method;
                 const contentType = event.request.headers.get('content-type');
 

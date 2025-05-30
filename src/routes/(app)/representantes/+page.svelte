@@ -150,7 +150,7 @@
                             <th>{representante.apellido}</th>
                             <th class="{ representante.sexo === "Masculino" ? "text-blue-600" : "text-pink-600"}">{representante.sexo}</th>
                             <th>{getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE')) : `${getAge(new Date(representante.fecha_nacimiento).toLocaleDateString('sv-SE'))} Años`}</th>
-                            <th>{representante.telefono}</th>
+                            <th>{representante.telefono_1}</th>
                             <th>
                                 <a class="btn btn-sm btn-square btn-accent text-base-100" href="{basePath}/representantes/{representante.cedula}">
                                     <img src="{ver_icon}" alt="" class="filter invert">

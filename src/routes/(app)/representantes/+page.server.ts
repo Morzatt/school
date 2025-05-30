@@ -21,9 +21,6 @@ export const load = (async ({ locals, url }) => {
             .selectAll()
             .limit(15)
             .offset(index ? index : 0)
-            .select((eb) => [
-                eb.selectFrom('telefonos_representantes').whereRef('telefonos_representantes.representante', '=', 'representantes.cedula').select(['numero_telefono']).limit(1).as('telefono')
-            ])
             .orderBy("representantes.apellido asc")
 
     if (sexo && sexo !== "All") {
