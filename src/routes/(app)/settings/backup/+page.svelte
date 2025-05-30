@@ -129,7 +129,7 @@
             <div class="max-h-[25rem] overflow-y-auto overflow-x-hidden">
                 {#if puntos && puntos.length > 0}
                     <div class="flex flex-col gap-4">
-                        {#each puntos as punto}
+                        {#each puntos as punto, i(punto.backup_id)}
                             <div class="w-full shadow-md min-h-20 rounded-md bg-base-300 flex px-4 py-2 items-center justify-between gap-4
                             transition-all duration-200 ease-in-out hover:bg-base-200 hover:cursor-help">
                                 <div class="flex flex-col items-center justify-center w-1/4">
@@ -144,27 +144,28 @@
                                         <p class="text-base-content/70 text-sm">{punto.fecha.toLocaleDateString('es', { dateStyle: "short" })}</p>
                                     </div>
 
-
                                     <div class="flex items-center justify-between gap-3">
                                         <!-- SELECT -->
                                         <button class="btn btn-square btn-sm btn-success *:filter *:invert font-bold
                                         flex items-center justify-center tooltip tooltip-top" data-tip="Elegir Backup"
-                                        onclick={() => { document.getElementById('select_confirmation').showModal() }}>
+                                        onclick={() => { document.getElementById(`select_${punto.backup_id}_confirmation`).showModal() }}>
                                             <img src="{success_icon}" alt="" class="icon">
                                         </button>
 
-                                        <dialog id="select_confirmation" class="modal modal-bottom sm:modal-middle">
+                                        <dialog id="select_{punto.backup_id}_confirmation" class="modal modal-bottom sm:modal-middle">
                                             <div class="modal-box relative
                                                         sm:w-10/12 sm:max-w-md overflow-hidden">
                                                 <form method="dialog">
                                                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                                                    id="select_confirmation_close">✕</button>
+                                                    id="select_{punto.backup_id}_confirmation_close">✕</button>
                                                 </form>
                                                 <h3 class="text-lg mt-2 font-bold">¿Seguro que desea restaurar este punto?</h3>
                                                 <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
 
                                                 <div class="modal-container">
-                                                    <form method="post" use:enhance action="?/selectPunto">
+                                                    <form method="post" use:enhance={() => { 
+                                                        document.getElementById(`select_${punto.backup_id}_confirmation_close`)?.click()
+                                                     }} action="?/selectPunto">
                                                         <input type="hidden" name="backup_id" value={punto.backup_id}>
                                                         <button class="btn btn-sm btn-success *:filter *:invert font-bold px-2 mt-4
                                                         flex items-center justify-center tooltip tooltip-top" data-tip="Elegir Backup">
@@ -178,22 +179,24 @@
                                         <!-- DELETE -->
                                         <button class="btn btn-square btn-sm btn-error *:filter *:invert font-bold
                                         flex items-center justify-center tooltip tooltip-top" data-tip="Eliminar Backup"
-                                        onclick={() => { document.getElementById('delete_confirmation').showModal() }}>
+                                        onclick={() => { document.getElementById(`delete_${punto.backup_id}_confirmation`).showModal() }}>
                                             <img src="{delete_icon}" alt="" class="icon">
                                         </button>
 
-                                        <dialog id="delete_confirmation" class="modal modal-bottom sm:modal-middle">
+                                        <dialog id="delete_{punto.backup_id}_confirmation" class="modal modal-bottom sm:modal-middle">
                                             <div class="modal-box relative
                                                         sm:w-10/12 sm:max-w-md overflow-hidden">
                                                 <form method="dialog">
                                                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                                                    id="delete_confirmation_close">✕</button>
+                                                    id="delete_{punto.backup_id}_confirmation_close">✕</button>
                                                 </form>
                                                 <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar este punto de restauracion?</h3>
                                                 <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
 
                                                 <div class="modal-container">
-                                                    <form action="?/deletePunto" method="post" use:enhance>
+                                                    <form action="?/deletePunto" method="post" use:enhance={() => { 
+                                                        document.getElementById(`delete_${punto.backup_id}_confirmation_close`)?.click()
+                                                     }}>
                                                         <input type="hidden" name="backup_id" value={punto.backup_id}>
                                                         <button class="btn btn-sm btn-error *:filter *:invert font-bold px-2 mt-4
                                                         flex items-center justify-center tooltip tooltip-top">

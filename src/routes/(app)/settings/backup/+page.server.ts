@@ -170,8 +170,8 @@ export const actions = {
         cwd: path.join(process.cwd(), '/static/backups/temporal')
       }, [`backup_${timestamp}`])
 
-      setTimeout(() => {
-        rm(backupFolderPath, { recursive: true, force: true })
+      setTimeout(async () => {
+        await async(rm(backupFolderPath, { recursive: true, force: true }), log)
       }, 15000)
 
       await async(
@@ -179,12 +179,12 @@ export const actions = {
           .insertInto('puntos_restauracion')
           .values({
             nombre: nombre_checkpoint,
-            path: `/static/backups/temporal/backup_${timestamp}.tar`,
+            path: `/static/backups/checkpoints/backup_${timestamp}.tar`,
             fecha: today.toLocaleDateString('en'),
             backup_id: timestamp 
           })
           .execute()
-        , log)
+      , log)
 
       return response.success('Copia de Seguridad creada correctamente.', { timestamp: timestamp })
     } catch (error) {
@@ -197,15 +197,16 @@ export const actions = {
   selectPunto: async ({ locals, request }) => {
     let { log, response } = locals;
     let backup_id = (await request.formData()).get('backup_id')
+    console.log(backup_id)
 
     let cwd = process.cwd()
-    let temporalTarPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${backup_id}.tar`)
+    let temporalTarPath = path.join(cwd, `/static/backups/checkpoints/backup_${backup_id}.tar`)
 
     try {
       tar.x({
         sync: true,
         file: temporalTarPath,
-        cwd: path.join(process.cwd(), '/static/backups/checkpoints')
+        cwd: path.join(cwd, '/static/backups/checkpoints')
       })
 
       let backupFolderPath = path.join(cwd, `/static/backups/checkpoints/backup_${backup_id}`)
@@ -225,8 +226,10 @@ export const actions = {
         }
       }
 
-      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true }), log)
-      await async(rm(backupFolderPath, { recursive: true, force: true }), log)
+      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true, force: true }), log)
+      setTimeout(async () => {
+        await async(rm(backupFolderPath, { recursive: true, force: true }), log)
+      }, 15000)
 
       return response.success('Punto de restauracion correctamente restaurado.', { backupID: backup_id })
     } catch (error) {
@@ -255,7 +258,7 @@ export const actions = {
   },
 } satisfies Actions
 
-async function createBackup(backupPath: string) {
+function createBackup(backupPath: string) {
   // Configure psql arguments
   const args = [
     '-h', import.meta.env.VITE_PGHOST,

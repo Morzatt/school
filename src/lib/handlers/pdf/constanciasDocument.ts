@@ -155,7 +155,7 @@ export function createConstanciaEstudioDocument(alumno: Alumno, grado: Grado & G
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
                     { text: ` ${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${(alumno.cedula_escolar)}`, bold: true, decoration: 'underline'},
-                    ` se instribió para cursar ${grado ? formatGrado(grado) : grado_cursado?.grado} del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en dicha institución.`
+                    ` se inscribió para cursar ${grado ? formatGrado(grado) : grado_cursado?.grado} del año escolar ${grado_cursado ? getYear(grado_cursado.fecha) : getYear()}, en el turno de la ${capitalizeFirstLetter(grado?.turno)} en dicha institución.`
                 ],
                 margin: [0, 25, 0, 0],
                 lineHeight: 2,
