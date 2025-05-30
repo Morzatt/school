@@ -65,14 +65,8 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('correo_electronico', 'text', (col) => col.notNull())
     .addColumn('ocupacion', 'text', (col) => col.notNull())
     .addColumn('grado_instruccion', 'text', (col) => col.notNull())
-    .execute()
-
-  await db.schema
-    .createTable('telefonos_representantes')
-    .addColumn('representante', 'text')
-    .addColumn('numero_telefono', 'text')
-    .addPrimaryKeyConstraint('primary_grado_alumno', ['representante', "numero_telefono"])
-    .addForeignKeyConstraint("fk_alumno", ["representante"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
+    .addColumn('telefono_1', 'text', (col) => col.notNull())
+    .addColumn('telefono_2', 'text')
     .execute()
 
   await db.schema

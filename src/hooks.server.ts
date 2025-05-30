@@ -1,5 +1,7 @@
 import { FormResponse } from "$lib/classes/responses.classes";
+import { usuarioRepository } from "$lib/database/repositories/user.repository";
 import { checkSession, clearSession } from "$lib/handlers/login.handler";
+import async from "$lib/utils/asyncHandler";
 import logger from "$lib/utils/logger";
 import type { Handle } from "@sveltejs/kit";
 import { json, redirect } from "@sveltejs/kit";
@@ -19,7 +21,7 @@ export const handle = (async ({ resolve, event }) => {
         if (!cookie) redirect(307, "/auth");
 
         const session = await checkSession(cookie, event.locals.log)
-        if (session === undefined) {
+        if (!session) {
             await clearSession(cookie, event.locals.log)
             event.cookies.delete("sessionId", { path: "" })
             redirect(307, "/auth")
@@ -43,12 +45,17 @@ export const handle = (async ({ resolve, event }) => {
                 }
             }
 
-            Reflect.deleteProperty(session.data, "contraseña")
-            event.locals.usuario = session.data
+            let usuario = await async(usuarioRepository.getByUsername(session.data.usuario), event.locals.log)
+            Reflect.deleteProperty(usuario!, "contraseña")
+            event.locals.usuario = usuario!
             event.locals.log = event.locals.log.child({
                 session_id: cookie,
                 usuario: session.data.usuario
             })
+
+            if (event.url.pathname.startsWith('/settings/look') && event.url.href.includes('?/changeTheme')) {
+                event.locals.usuario = usuario!
+            }
         }
     }
 

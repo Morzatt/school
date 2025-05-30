@@ -61,6 +61,8 @@ export const actions = {
             correo_electronico: data.get("correo_electronico") as string,
             ocupacion: data.get("ocupacion") as string,
             grado_instruccion: data.get("grado_instruccion") as string,
+            telefono_1: data.get('telefono_1') as string,
+            telefono_2: data.get('telefono_2') as string,
         } satisfies Omit<RepresentanteInsertable, "edad">;
 
         // Validate the form data
@@ -68,9 +70,6 @@ export const actions = {
         if (!validationResult.success) {
             return newValidationFailObject(validationResult.error, log);
         }
-
-        let telefono_1 = data.get('telefono_1') as string
-        let telefono_2 = data.get('telefono_2') as string
 
         let representante = await async(representantesRepository.getById(rep.cedula), log)
         if (representante !== undefined) {
@@ -83,23 +82,8 @@ export const actions = {
                     ...rep,
                     edad: getAge(rep.fecha_nacimiento)
                 }, trx)
-
-                await trx.insertInto("telefonos_representantes")
-                .values({
-                    representante: rep.cedula,
-                    numero_telefono: telefono_1
-                })
-                .execute()
-
-                await trx.insertInto("telefonos_representantes")
-                .values({
-                    representante: rep.cedula,
-                    numero_telefono: telefono_2
-                })
-                .execute()
             })
         , log)
-
 
         return response.success('Representante creado correctamente.')
     },

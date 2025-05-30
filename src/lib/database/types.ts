@@ -15,7 +15,6 @@ export interface Database {
     familiares_autorizados: FamiliaresAutorizadosTable,
     familiares_alumnos: FamiliaresAlumnosTable,
     representantes: RepresentantesTable,
-    telefonos_representantes: TelefonosRepresentantesTable,
     representantes_alumnos: RepresentantesAlumnosTable,
     grados_cursados: GradosCursadosTable,
     documentos_alumnos: DocumentosAlumnosTable,
@@ -44,6 +43,8 @@ export interface Database {
 // 
 // 
 // Usuarios
+export type Themes = 'forest' | 'dark' | 'winter' | 'autumn' | 'light' | 'cupcake' | 'bumblebee' | 'emerald' | 'corporate' | 'synthwave' | 'retro' | 'valentine' | 'halloween' | 'autumn' | 'acid'
+
 export type UsuariosTable = {
     nombre: string
     apellido: string
@@ -54,6 +55,7 @@ export type UsuariosTable = {
     write: ColumnType<boolean, never, boolean>,
     estado: ColumnType<Estados, Estados | undefined, Estados>
     created_at: ColumnType<Date, never>,
+    theme: Themes,
 }
 
 type Estados = "Activo" | "Bloqueado" | 'Por Asignar'
@@ -223,21 +225,13 @@ export type RepresentantesTable = {
     correo_electronico: string,
     ocupacion: string,
     grado_instruccion: string
+    telefono_1: string,
+    telefono_2: string | undefined,
 }
 
 export type Representante = Selectable<RepresentantesTable>
 export type RepresentanteInsertable = Insertable<RepresentantesTable>
 export type RepresentanteUpdateable = Updateable<RepresentantesTable>
-
-
-export type TelefonosRepresentantesTable = {
-    representante: string,
-    numero_telefono: string,
-}
-
-export type TelefonosRepresentante = Selectable<TelefonosRepresentantesTable>
-export type TelefonosRepresentanteInsertable = Insertable<TelefonosRepresentantesTable>
-export type TelefonosRepresentanteUpdateable = Updateable<TelefonosRepresentantesTable>
 
 export type RepresentantesAlumnosTable = {
     id_representante: string,

@@ -137,4 +137,5 @@ export const RepresentanteSchema = z.object({
     correo_electronico: z.string().email('El correo electrónico no es válido'),
     ocupacion: z.string().min(1, 'El campo no puede estar vacío'),
     grado_instruccion: z.string().min(1, 'El campo no puede estar vacío'),
+    telefono_1: z.string().min(1, 'El campo no puede estar vacío'),
 });

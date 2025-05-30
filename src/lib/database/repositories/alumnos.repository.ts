@@ -1,6 +1,6 @@
 import type { Transaction } from "kysely"
 import { db } from ".."
-import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Database, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable, TelefonosRepresentante } from "../types"
+import type { Alumno, AlumnoInsertable, AlumnoUpdateable, Database, Representante, RepresentanteInsertable, RepresentantesAlumnos, RepresentantesAlumnosInsertable, RepresentanteUpdateable } from "../types"
 
 export interface AlumnosRepositoryInterface {
     create: (alumno: AlumnoInsertable) => Promise<void>    ,

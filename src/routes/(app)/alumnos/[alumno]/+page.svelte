@@ -212,7 +212,7 @@
                 <div class="size-fit relative">
                     {#if true}
                         {@const documento = documentos?.filter(i => { return i.tipo_documento === "foto_carnet"; })[0] }
-                        <img src="{(documento && documento.path) ? `/downloads/0000?type=image&path=${documento.path}` : user_icon}" alt="" class="size-36 icon mask mask-circle">                       
+                        <img src="{(documento && documento.path) ? `/downloads/0000?type=image&path=${documento.path}` : user_icon}" alt="" class="{(documento && documento.path) ? '' : 'icon'} size-36 mask mask-circle">                       
                         <Documento visible="false" alumno={alumno} tipo_documento={"foto_carnet"} documento={ documento ? documento : null }  />                               
                     {/if}
                     <button type="button" class="btn btn-sm btn-square absolute bottom-1 right-1 flex items-center justify-center p-0.5 px-1" 

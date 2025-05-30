@@ -23,15 +23,7 @@ export const load: PageServerLoad = (async ({ url, locals }) => {
         .execute()
     , log)
 
-    let telefonos = await async (
-        db
-        .selectFrom('telefonos_representantes')
-        .selectAll()
-        .where('representante', '=', cedula)
-        .execute()
-    , log)
-
-    return { representante, alumnos, telefonos }
+    return { representante, alumnos }
 });
 
 function getId(url: string): string {
@@ -59,6 +51,8 @@ export const actions = {
             direccion: data.get('direccion') as string | undefined,
             correo_electronico: data.get('correo_electronico') as string | undefined,
             cedula: data.get('cedula') as string,
+            telefono_1: data.get('telefono_1') as string,
+            telefono_2: data.get('telefono_2') as string,
         }
 
         await async(
@@ -77,6 +71,14 @@ export const actions = {
 
                 if (d.correo_electronico) {
                     await trx.updateTable('representantes').set({ correo_electronico: d.correo_electronico }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.telefono_1) {
+                    await trx.updateTable('representantes').set({ telefono_1: d.telefono_1 }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.telefono_2) {
+                    await trx.updateTable('representantes').set({ telefono_2: d.telefono_2 }).where('cedula', '=', d.cedula).execute()
                 }
             })
         , log)

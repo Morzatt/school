@@ -1,4 +1,6 @@
 <script>
+    import { enhance } from "$app/forms";
+
   let colorMode = "system";
   let selectedTheme = "Royal Heath";
   let transparentSidebar = false;
@@ -83,21 +85,22 @@
       <div class="text-sm text-base-content/60 mb-4">Escoja un tema para cambiar los colores, formas y tonalidades de la aplicación.</div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {#each themes as theme}
-          <button
-            class={`flex items-center gap-2 px-4 py-2 rounded-full border
-            border-base-content
-              transition-all duration-150 shadow-sm hover:scale-105 hover:border-primary focus:ring-2 focus:ring-primary
-              ${selectedTheme === theme.color ? 'ring-2 ring-primary border-primary bg-primary/10 font-semibold' : ''}
-              `}
-
-            onclick={() => {
-              selectedTheme = theme.name;
-              let html = document.getElementsByTagName('html')[0].attributes.getNamedItem('data-theme').value = theme.theme
-            }}
-            type="button">
-            <span class={`w-6 h-6 rounded-full ${theme.color} border-2 border-white shadow`}></span>
-            <span class="text-sm">{theme.name}</span>
-          </button>
+          <form action="?/changeTheme" method="post" use:enhance={() => {
+            selectedTheme = theme.name;
+            let html = document.getElementsByTagName('html')[0].attributes.getNamedItem('data-theme').value = theme.theme
+          }} class="flex items-center rounded-full border
+              border-base-content
+                
+                {selectedTheme === theme.color ? 'ring-2 ring-primary border-primary bg-primary/10 font-semibold' : ''}">
+            <input type="hidden" name="theme_name" value={theme.theme}>
+            <button
+              class="flex size-full px-4 py-2 items-center gap-2 rounded-full
+              transition-all duration-150 shadow-sm hover:scale-95 hover:border-primary focus:ring-2 focus:ring-primary"
+              type="submit">
+              <span class={`w-6 h-6 rounded-full ${theme.color} border-2 border-white shadow`}></span>
+              <span class="text-sm">{theme.name}</span>
+            </button>
+          </form>
         {/each}
       </div>
     </div>

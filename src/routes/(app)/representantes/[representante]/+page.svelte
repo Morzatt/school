@@ -9,7 +9,7 @@
     import ver_icon from "$lib/images/icons/details_icon.svg"
     let { data, form }: { data: PageData, form: ActionData } = $props();
 
-    let { representante, alumnos, telefonos } = $derived(data)
+    let { representante, alumnos } = $derived(data)
 
     type Data = {
         name: string,
@@ -295,28 +295,41 @@
                             </div>
                         {/each}
 
-                        {#if telefonos}
-                            {#each telefonos as field, index}
-                                {@const i = index+1}
-                                <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <img src="" alt="" class="icon">
-                                        <p class="font-semibold text-base-content/80 ">Telefono #{i}</p> 
-                                    </div>
+                        <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                            <div class="flex items-center justify-between gap-2">
+                                <img src="" alt="" class="icon">
+                                <p class="font-semibold text-base-content/80 ">Telefono #1</p> 
+                            </div>
 
-                                    {#if edicion}
-                                        <input type="text" 
-                                            min="3"
-                                            name="telefono"
-                                            placeholder="Numero de telefono #{i}..."
-                                            class="input input-bordered input-sm max-w-xs"
-                                            value="{field.numero_telefono}">
-                                    {:else}
-                                        <b class="">{field.numero_telefono}</b> 
-                                    {/if}
-                                </div>
-                            {/each}     
-                        {/if}
+                            {#if editContacto}
+                                <input type="text" 
+                                    min="3"
+                                    name="telefono_1"
+                                    placeholder="Numero de telefono #1..."
+                                    class="input input-bordered input-sm max-w-xs"
+                                    value="{representante.telefono_1}">
+                            {:else}
+                                <b class="">{representante.telefono_1}</b> 
+                            {/if}
+                        </div>
+
+                        <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
+                            <div class="flex items-center justify-between gap-2">
+                                <img src="" alt="" class="icon">
+                                <p class="font-semibold text-base-content/80 ">Telefono #1</p> 
+                            </div>
+
+                            {#if editContacto}
+                                <input type="text" 
+                                    min="3"
+                                    name="telefono_2"
+                                    placeholder="Numero de telefono #2..."
+                                    class="input input-bordered input-sm max-w-xs"
+                                    value="{representante.telefono_2}">
+                            {:else}
+                                <b class="">{representante.telefono_2}</b> 
+                            {/if}
+                        </div>
                     </div>
                 </form>
             </div>
