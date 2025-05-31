@@ -9,7 +9,7 @@ import { insertAulaSchema, newValidationFailObject, validateObject } from '$lib/
 import { createGradoId, formatGrado } from '$lib/utils/createGradoId';
 import { gradosRepository } from '$lib/database/repositories/grados.repository';
 import { fail } from '@sveltejs/kit';
-import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro, retirarAlumnoHandler } from '$lib/handlers/alumnos.handlers';
+import { getAceptacion, getBuenaConducta, getConstanciaEstudio, getConstanciaInscripcion, getConstanciaRetiro, printAlumnoHandler, retirarAlumnoHandler } from '$lib/handlers/alumnos.handlers';
 import { existsSync, statSync, unlinkSync, writeFileSync } from "fs"
 import fs from "fs"
 import path from "path"
@@ -385,6 +385,8 @@ export const actions = {
 
         return response.success('Archivo subido exitosamente')
     },
+
+    printAlumno: printAlumnoHandler
 } satisfies Actions
 
 

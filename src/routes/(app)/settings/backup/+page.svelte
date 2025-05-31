@@ -191,7 +191,7 @@
                                                     id="delete_{punto.backup_id}_confirmation_close">✕</button>
                                                 </form>
                                                 <h3 class="text-lg mt-2 font-bold">¿Seguro que desea eliminar este punto de restauracion?</h3>
-                                                <p class="text-wrap text-sm">Los datos eliminados son irrecuperables, asegurese de realizar una copia de seguridad antes de realizar cambios.</p>
+                                                <p class="text-wrap text-sm">Una vez eliminado, los datos y documentos guardados en el punto de restauracion seran permanentemente eliminados.</p>
 
                                                 <div class="modal-container">
                                                     <form action="?/deletePunto" method="post" use:enhance={() => { 

@@ -13,14 +13,10 @@ export async function up(db: Kysely<any>):  Promise<void> {
 
     .addColumn('sexo', 'text', (col) => col.notNull().check(sql`sexo in ('Masculino', 'Femenino')`))
     .addColumn('fecha_nacimiento', 'date', (col) => col.notNull())
-    .addColumn('direccion', 'text', (col) => col.notNull())
-    .addColumn('edad', 'integer', (col) => col.notNull())
+    .addColumn('edad', 'text', (col) => col.notNull())
 
     .addColumn('estado', 'text', (col) => col.notNull().check(sql`estado IN  ('Activo', 'Retirado', 'Expulsado')`))
     .addColumn('created_at', "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
-
-    .addColumn('madre', 'text', (col) => col.notNull())
-    .addColumn('padre', 'text')
 
     .addColumn('lateralidad', 'text', (col) => col.notNull().check(sql`lateralidad IN ('Diestro', 'Zurdo')`))
     .addColumn('peso', 'text', (col) => col.notNull())
@@ -29,9 +25,6 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('calzado', 'text', (col) => col.notNull())
     .addColumn('camisa', 'text', (col) => col.notNull())
     .addColumn('pantalon', 'text', (col) => col.notNull())
-
-    .addForeignKeyConstraint("fk_madre", ["madre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
-    .addForeignKeyConstraint("fk_padre", ["padre"], "representantes", ["cedula"], (col) => col.onDelete("cascade").onUpdate("cascade"))
     .execute()
 
   await db.schema

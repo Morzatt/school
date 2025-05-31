@@ -10,6 +10,7 @@
 
     // IMAGES IMPORT
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
+    import print from "$lib/images/icons/print.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
@@ -80,6 +81,49 @@
             icon: edad_icon,
             title: "Edad",
             value: getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')).toLowerCase() === 'menos de un año' ? getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE')) : `${getAge(alumno.fecha_nacimiento.toLocaleDateString('sv-SE'))} Años`
+        },
+
+        {
+            name: "lateralidad",
+            updateable: true,
+            icon: cedula_escolar_icon,
+            title: "Lateralidad",
+            value: `${(alumno.lateralidad)}`
+        },
+        {
+            name: "peso",
+            updateable: false,
+            icon: alumno.sexo === "Masculino" ? male_icon : female_icon,
+            title: "Peso",
+            value: `${alumno.peso}kg`
+        },
+        {
+            name: "estatura",
+            updateable: false,
+            icon: birhtday_icon,
+            title: "Estatura",
+            value: `${alumno.estatura}cm`
+        },
+        {
+            name: "calzado",
+            updateable: false,
+            icon: edad_icon,
+            title: "Calzado",
+            value: `${alumno.calzado}`
+        },
+        {
+            name: "camisa",
+            updateable: false,
+            icon: edad_icon,
+            title: "Camisa",
+            value: `${alumno.camisa}`
+        },
+        {
+            name: "pantalon",
+            updateable: false,
+            icon: edad_icon,
+            title: "Pantalón",
+            value: `${alumno.pantalon}`
         }
     ])
     let edicion = $state(false)
@@ -135,6 +179,9 @@
         if (form && form.success && form.form === "getConstanciaRetiro") {
             downloadFile(`/downloads/${form.documentId}?type=retiro`, `constancia_retiro_${form.documentId}.pdf`)
         }
+        if (form && form.success && form.form === "printAlumno") {
+            downloadFile(`/downloads/${form.documentId}?type=alumno`, `alumno_${form.documentId}.pdf`)
+        }
 
         if (form && form.success && form.form === "retirar") {
             form.paths.forEach((i) => {
@@ -151,6 +198,7 @@
 
 <main class="w-full h-full relative">
     <Alert form={form} styles="lg:fixed absolute top-8 left-12 max-w-sm" />
+
     <div class="w-full h-max max-h-20 flex items-center justify-between">
         <div>
             <h2 class="text-xl font-bold">Datos del Alumno</h2>
@@ -192,10 +240,20 @@
             </div>
         </div>
 
-        <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("delete_confirmation")}}">
-            <img src="{delete_icon}" alt="" class="icon">
-            <span>Eliminar Alumno</span>
-        </button>
+        <div class="w-fit flex gap-6 items-center justify-between">
+            <form method="post" use:enhance action="?/printAlumno">
+                <input type="hidden" name="cedula_escolar" value={alumno.cedula_escolar}>
+                <button class="btn btn-sm btn-primary flex gap-2">
+                    <img src="{print}" alt="" class="icon filter invert">
+                    <span>Imprimir</span>
+                </button>           
+            </form>
+
+            <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("delete_confirmation")}}">
+                <img src="{delete_icon}" alt="" class="icon">
+                <span>Eliminar Alumno</span>
+            </button>
+        </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4">
@@ -265,7 +323,8 @@
             </div>
         </div>
 
-        <form use:enhance action="?/edit" method="POST" class="w-full lg:w-3/5 min-h-60 rounded-md p-4 bg-base-100 shadow-md animate-y" style="--delay: 100ms">
+        <form use:enhance action="?/edit" method="POST" 
+        class="w-full min-h-60 rounded-md p-4 bg-base-100 shadow-md animate-y" style="--delay: 100ms">
             <div class="w-full h-max flex justify-between items-center ">
                 <h3 class="text-xl font-bold">Detalles del Alumno</h3>
 
@@ -276,7 +335,7 @@
                 </button>
             </div>
 
-            <div class="mt-2">
+            <div class="mt-2 flex lg:max-h-52 w-full lg:w-2/4 flex-col flex-wrap">
                 <input type="hidden" name="alumno" value={alumno.cedula_escolar}>
                 {#each personalData as field}
                     <div class="w-full flex items-center justify-between px-4 py-2 text-[0.95rem]">
@@ -299,10 +358,6 @@
                 {/each}
             </div>
         </form>
-
-        <div class="hidden lg:flex flex-1 min-h-72 rounded-md p-4 bg-base-100 shadow-md animate--x" style="--delay:150ms">
-
-        </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-center justify-start gap-4">

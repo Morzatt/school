@@ -62,6 +62,10 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
         const dir = path.join(process.cwd(), `/static/constancias/empleados/temporal`); 
         return await downloadFile(`constancia_aceptacion_${id}.pdf`, dir, log, response)
     }
+    if (type === "alumno") {
+        const dir = path.join(process.cwd(), `/static/constancias/alumnos/temporal`); 
+        return await downloadFile(`alumno_${id}.pdf`, dir, log, response)
+    }
 };
 
 async function accessReadStream(path: string) {

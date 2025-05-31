@@ -31,6 +31,10 @@ function print(docDef: TDocumentDefinitions, path: string) {
     pdfDoc.end();
 }
 
+export function printFunc(doc: TDocumentDefinitions, path: string) {
+    print(doc, path)
+}
+
 // 
 // 
 // 

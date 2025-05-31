@@ -1,15 +1,16 @@
-import { alumnosRepository } from "$lib/database/repositories/alumnos.repository";
+import { alumnosRepository, representantesRepository } from "$lib/database/repositories/alumnos.repository";
 import type { Alumno, AlumnoInsertable } from "$lib/database/types";
 import async from "$lib/utils/asyncHandler";
 import { capitalizeFirstLetter } from "$lib/utils/capitlizeFirstLetter";
 import { getAge } from "$lib/utils/getAge";
 import type { RequestEvent } from "@sveltejs/kit";
-import { printAceptacion, printBuenaConducta, printConstanciaEstudio, printConstanciaInscripcion, printConstanciaRetiro } from "./pdf";
+import { printAceptacion, printBuenaConducta, printConstanciaEstudio, printConstanciaInscripcion, printConstanciaRetiro, printFunc } from "./pdf";
 import { db } from "$lib/database";
 import path from "path";
 import { unlinkSync } from "fs";
 import type pino from "pino";
 import { invalidateAll } from "$app/navigation";
+import { createAlumnoDocDef } from "./pdf/alumnosDocuments";
 
 export async function createAlumnoHandler (
     { request, locals }: RequestEvent,
@@ -232,4 +233,44 @@ export async function retirarAlumnoHandler({ request, locals }: RequestEvent) {
     return response.success('Documento creado correctamente', {
         paths: paths
     })
+}
+
+export async function printAlumnoHandler({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula_escolar') as string
+
+    let alumno = await async(alumnosRepository.getById(cedula), log)
+    if (!alumno) {
+        return response.error('El alumno no existe')
+    }
+
+    let representantes = await async(
+        db.selectFrom('representantes')
+        .innerJoin('representantes_alumnos', 'representantes.cedula', 'representantes_alumnos.id_representante')
+        .selectAll()
+        .where('representantes_alumnos.id_alumno', '=', alumno.cedula_escolar)
+        .execute()
+    , log)
+
+    let gradosCursados = await async(
+        db.selectFrom('grados_cursados')
+        .selectAll()
+        .where("grados_cursados.id_alumno", '=', alumno.cedula_escolar)
+        .execute()
+    ,log)
+
+    let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+    let documentId = `${alumno.cedula_escolar}_${timeId}`
+    let temporalPath = path.join(process.cwd(), `static/constancias/alumnos/temporal/alumno_${documentId}.pdf`)
+
+    printFunc(
+        createAlumnoDocDef(alumno, representantes, gradosCursados),
+        temporalPath
+    )
+    // setTimeout(() => {
+    //     unlinkSync(temporalPath)
+    // }, 10000)
+
+    return response.success('Documento creado correctamente', { documentId })
 }
