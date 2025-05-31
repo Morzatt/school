@@ -3,6 +3,10 @@ import { representantesRepository } from '$lib/database/repositories/alumnos.rep
 import async from '$lib/utils/asyncHandler';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import path from "path"
+import { printFunc } from '$lib/handlers/pdf';
+import { createRepresentanteDocDef } from '$lib/handlers/pdf/alumnosDocuments';
+import { unlinkSync } from 'fs';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -85,4 +89,47 @@ export const actions = {
 
         return response.success('Datos actualizados correctamente')
     },
+
+    printRepresentante: async ({ request, locals }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+        let cedula = data.get('cedula') as string
+
+        let representante = await async(representantesRepository.getById(cedula), log)
+        if (!representante) {
+            return response.error('El empleado no existe')
+        }
+
+        let alumnos = await async(
+            db
+                .selectFrom('alumnos')
+                .innerJoin('representantes_alumnos', 'alumnos.cedula_escolar', 'representantes_alumnos.id_alumno')
+                .where("representantes_alumnos.id_representante", '=', representante.cedula)
+                .select(['representantes_alumnos.relacion'])
+                .innerJoin('grados_cursados', 'grados_cursados.id_alumno', 'alumnos.cedula_escolar')
+                .select((eb) => [
+                    eb.fn.jsonAgg(
+                        eb.fn.toJson('grados_cursados')
+                    ).as('grados_cursados'),
+                ])
+                .selectAll(['alumnos'])
+                .groupBy(['alumnos.cedula_escolar', 'representantes_alumnos.relacion'])
+                .execute()
+            , log)
+
+        let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+        let documentId = `${representante.cedula}_${timeId}`
+        let temporalPath = path.join(process.cwd(), `static/constancias/empleados/temporal/representante_${documentId}.pdf`)
+
+        printFunc(
+            createRepresentanteDocDef(representante, alumnos),
+            temporalPath
+        )
+
+        setTimeout(() => {
+            unlinkSync(temporalPath)
+        }, 10000)
+
+        return response.success('Documento creado correctamente', { documentoId: documentId })
+    }
 } satisfies Actions

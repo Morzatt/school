@@ -2,6 +2,7 @@
     import type { PageData } from './$types';
     import Alert from "$lib/components/Messages/Alert.svelte"
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
+    import print from "$lib/images/icons/print.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import camera_icon from "$lib/images/icons/camara_icon.svg"   
     import description_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
@@ -145,6 +146,10 @@
         if (form && form.success && form.form === 'getConstanciaAceptacion') {
            downloadFile(`/downloads/${form.documentoId}?type=constanciaAceptacionEmpleados`, `constancia_aceptacion_${form.documentoId}.pdf`)
         }
+
+        if (form && form.success && form.form === 'printEmpleado') {
+           downloadFile(`/downloads/${form.documentoId}?type=empleado`, `empleado_${form.documentoId}.pdf`)
+        }
     })
 </script>
 
@@ -192,10 +197,20 @@
             </div>
         </div>
 
-        <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("delete_confirmation")}}">
-            <img src="{delete_icon}" alt="" class="icon">
-            <span>Eliminar Empleado</span>
-        </button>
+        <div class="flex gap-6">
+            <form method="post" use:enhance action="?/printEmpleado">
+                <input type="hidden" name="cedula" value={empleado.cedula}>
+                <button class="btn btn-sm btn-primary flex gap-2">
+                    <img src="{print}" alt="" class="icon filter invert">
+                    <span>Imprimir</span>
+                </button>           
+            </form>
+
+            <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {openModal("delete_confirmation")}}">
+                <img src="{delete_icon}" alt="" class="icon">
+                <span>Eliminar Empleado</span>
+            </button>
+        </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col-reverse lg:flex-row items-start justify-start gap-4">

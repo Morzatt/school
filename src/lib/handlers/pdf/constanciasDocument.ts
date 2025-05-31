@@ -481,7 +481,7 @@ export function createConstanciaAceptacionEmpleado(empleado: Empleado, director:
                     { text: `${empleado.primer_nombre} ${empleado.segundo_nombre} ${empleado.primer_apellido} ${empleado.segundo_apellido},`, bold: true, decoration: 'underline' },
                     ' C.I ',
                     { text: ` V-${formatStringWithDots(empleado.cedula)}`, bold: true, decoration: 'underline'},
-                    ` fue aceptado(a) para cumplir funciones como personal docente en esta Institución Educativa. Dicha aceptación se realiza por necesidad de recurso`
+                    ` fue aceptado(a) para cumplir funciones como personal del area ${empleado.area}, con el cargo de ${empleado.cargo} en esta Institución Educativa. Dicha aceptación se realiza por necesidad de recurso`
                 ],
                 margin: [0, 25, 0, 0],
                 lineHeight: 2,

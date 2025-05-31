@@ -3,6 +3,7 @@
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
+    import print from "$lib/images/icons/print.svg"
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
     import { enhance } from '$app/forms';
@@ -33,6 +34,7 @@
     import Alert from '$lib/components/Messages/Alert.svelte';
     import CreateAlumnoModal from './CreateAlumnoModal.svelte';
     import { getAge } from '$lib/utils/getAge';
+    import { downloadFile } from '$lib/utils/downloadFile';
 
     let personalData: Data[] = $derived([
         {
@@ -101,6 +103,12 @@
     function stripDots(inputString: string) {
         return inputString.replace(/\./g, '');
     }
+
+    $effect(() => {
+        if (form && form.success && form.form === 'printRepresentante') {
+            downloadFile(`/downloads/${form.documentoId}?type=representante`, `representante_${form.documentoId}.pdf`)
+        }
+    })
 </script>
 
 <main class="w-full h-full relative">
@@ -146,10 +154,19 @@
             </div>
         </div>
 
-        <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {document.getElementById("delete_representante").showModal()}}">
-            <img src="{delete_icon}" alt="" class="icon">
-            <span>Eliminar Representante</span>
-        </button>
+        <div class="flex items-center justify-between gap-6">
+            <form method="post" use:enhance action="?/printRepresentante">
+                <input type="hidden" name="cedula" value={representante.cedula}>
+                <button class="btn btn-sm btn-primary flex gap-2">
+                    <img src="{print}" alt="" class="icon filter invert">
+                    <span>Imprimir</span>
+                </button>           
+            </form>
+            <button class="btn btn-sm btn-error *:filter *:invert font-bold" onclick="{() => {document.getElementById("delete_representante").showModal()}}">
+                <img src="{delete_icon}" alt="" class="icon">
+                <span>Eliminar Representante</span>
+            </button>
+        </div>
     </div>
 
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4 ">

@@ -7,8 +7,9 @@ import { getFormData } from "$lib/utils/getFormData";
 import { InsertEmpleadoSchema, newValidationFailObject, validateObject } from "$lib/utils/validators";
 import { fail, type RequestEvent } from "@sveltejs/kit";
 import path from 'path'
-import { printConstanciaAceptacionEmpleado } from "./pdf";
+import { printConstanciaAceptacionEmpleado, printFunc } from "./pdf";
 import { unlinkSync } from "fs";
+import { createEmpleadoDocDef } from "./pdf/empleadosDocuments";
 
 export async function createEmpleadoHandler(
     { request, locals }: RequestEvent,
@@ -86,6 +87,34 @@ export async function getConstanciaAceptacion({ request, locals }: RequestEvent,
     let temporalPath = path.join(process.cwd(), `static/constancias/empleados/temporal/constancia_aceptacion_${documentId}.pdf`)
 
     printConstanciaAceptacionEmpleado(empleado, director, temporalPath)
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
+
+    return response.success('Documento creado correctamente', { documentoId: documentId })
+}
+
+
+
+export async function printEmpleadoHandler({ request, locals }: RequestEvent,) {
+    let { log, response } = locals;
+    let data = await request.formData()
+    let cedula = data.get('cedula') as string
+
+    let empleado = await async(empleadosRepository.getById(cedula), log)
+    if (!empleado) {
+        return response.error('El empleado no existe')
+    }
+
+    let timeId = new Date().toISOString().replaceAll(' ', '').replaceAll(':', '').replaceAll('-', '').replaceAll('.', '')
+    let documentId = `${empleado.cedula}_${timeId}`
+    let temporalPath = path.join(process.cwd(), `static/constancias/empleados/temporal/empleado_${documentId}.pdf`)
+
+    printFunc(
+        createEmpleadoDocDef(empleado),
+        temporalPath
+    )
+
     setTimeout(() => {
         unlinkSync(temporalPath)
     }, 10000)

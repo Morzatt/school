@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 import type { Grado } from '$lib/database/types';
 import { gradosRepository } from '$lib/database/repositories/grados.repository';
 import { db } from '$lib/database';
-import { getConstanciaAceptacion } from '$lib/handlers/empleados.handlers';
+import { getConstanciaAceptacion, printEmpleadoHandler } from '$lib/handlers/empleados.handlers';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals;
@@ -64,4 +64,5 @@ export const actions = {
     },
 
     getConstanciaAceptacion: getConstanciaAceptacion,
+    printEmpleado: printEmpleadoHandler 
 } satisfies Actions

@@ -268,9 +268,10 @@ export async function printAlumnoHandler({ request, locals }: RequestEvent,) {
         createAlumnoDocDef(alumno, representantes, gradosCursados),
         temporalPath
     )
-    // setTimeout(() => {
-    //     unlinkSync(temporalPath)
-    // }, 10000)
+
+    setTimeout(() => {
+        unlinkSync(temporalPath)
+    }, 10000)
 
     return response.success('Documento creado correctamente', { documentId })
 }

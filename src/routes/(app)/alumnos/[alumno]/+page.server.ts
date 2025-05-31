@@ -348,10 +348,12 @@ export const actions = {
             let fileExtension = documento.archivo.name.slice(documento.archivo.name.lastIndexOf('.'))
             let fileName = `${documento.tipo_documento}_${documento.id_alumno}${fileExtension}`
             let filePath = path.join(folderPath, fileName)
-            let fileExists = existsSync(filePath)
 
-            if (fileExists) {
-                unlinkSync(filePath)
+            if (documentoFromDB) {
+                let fileExists = existsSync(path.join(process.cwd(), '/static', documentoFromDB.path))
+                if (fileExists) {
+                    unlinkSync(path.join(process.cwd(), '/static', documentoFromDB.path))
+                }
             }
 
             writeFileSync(filePath, Buffer.from(await documento.archivo.arrayBuffer()));

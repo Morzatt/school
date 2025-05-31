@@ -52,6 +52,12 @@
     import birhtday_icon from "$lib/images/icons/cake_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edad_icon from "$lib/images/icons/description_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import RepresentanteModal from './RepresentanteModal.svelte';
+    import pan_icon from "$lib/images/icons/pan_tool_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import balance_icon from "$lib/images/icons/balance_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import straighten_icon from "$lib/images/icons/straighten_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import footprint_icon from "$lib/images/icons/footprint_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import apparel_icon from "$lib/images/icons/apparel_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+    import checkroom_icon from "$lib/images/icons/checkroom_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 
     let personalData: Data[] = $derived([
         {
@@ -86,42 +92,42 @@
         {
             name: "lateralidad",
             updateable: true,
-            icon: cedula_escolar_icon,
+            icon: pan_icon,
             title: "Lateralidad",
             value: `${(alumno.lateralidad)}`
         },
         {
             name: "peso",
             updateable: false,
-            icon: alumno.sexo === "Masculino" ? male_icon : female_icon,
+            icon: balance_icon,
             title: "Peso",
             value: `${alumno.peso}kg`
         },
         {
             name: "estatura",
             updateable: false,
-            icon: birhtday_icon,
+            icon: straighten_icon,
             title: "Estatura",
             value: `${alumno.estatura}cm`
         },
         {
             name: "calzado",
             updateable: false,
-            icon: edad_icon,
+            icon: footprint_icon,
             title: "Calzado",
             value: `${alumno.calzado}`
         },
         {
             name: "camisa",
             updateable: false,
-            icon: edad_icon,
+            icon: apparel_icon,
             title: "Camisa",
             value: `${alumno.camisa}`
         },
         {
             name: "pantalon",
             updateable: false,
-            icon: edad_icon,
+            icon: checkroom_icon,
             title: "Pantalón",
             value: `${alumno.pantalon}`
         }
