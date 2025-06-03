@@ -106,7 +106,7 @@
                                         <img src="{turno_all}" alt=""  class="inline-block h-8 w-8 stroke-current icon">
                                     </div>
                                     <div class="stat-value">{matriculas.matricula?.alumnos}</div>
-                                    <div class="stat-title">Total de Alumnos</div>
+                                    <div class="stat-title">Matrícula de Alumnos</div>
                                     <!-- <div class="stat-desc text-secondary">31 tasks remaining</div> -->
                                 </div>
 
