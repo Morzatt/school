@@ -13,5 +13,5 @@ export const load = (async (event) => {
         }
     }
 
-    return { usuario: event.data.usuario };
+    return { usuario: event.data.usuario, relacionSexo: event.data.relacionSexo, totalPersonas: event.data.totalPersonas };
 }) satisfies LayoutLoad;

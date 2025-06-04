@@ -11,8 +11,8 @@
     import Captcha from "$lib/components/Captcha/Captcha.svelte";
     import question_icon from "$lib/images/icons/question_exchange_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
 
-
-    import bg_1 from "$lib/images/bg-1.gif"
+    import bg_1 from "$lib/images/bg-3.gif"
+    import logo from "$lib/images/logoColegio.png"
     import PregsegModal from "./PregsegModal.svelte";
 
     let pageData: { data: PageData, form: ActionData & { usuario: string } } = $props()
@@ -398,13 +398,24 @@
                 p-2 bg-white rounded-xl shadow-xl
                 min-[730px]:flex min-[730px]:items-center min-[730px]:justify-between">
 
-                <div class="xl:w-3/5 xl:h-full rounded-xl rounded-tr-none rounded-br-none">
-                    <img src="{bg_1}" alt="" class="size-full rounded-xl bg-base-300">
+                <div class="xl:w-3/5 xl:h-full rounded-xl rounded-tr-none rounded-br-none relative ">
+                    <img src="{bg_1}" alt="" class="size-full rounded-xl bg-base-300 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10 blur-sm drop-shadow-xl">
+                    <div class="size-full 
+                    bg-base-content/20
+                    text-base-100 border border-base-content rounded-md
+                    absolute p-4 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-20
+                    text-center
+                    flex items-center justify-center gap-4 flex-col">
+                        <b class="text-8xl w-full text-wrap">RevApp</b>
+                        <p class="leading-3 text-lg font-semibold">Aplicación web para el registro y gestión de datos del alumnado</p>
+                        <p class="leading-3 text-lg font-semibold">de la U.E.N Armando Reverón</p>
+                        <img src="{logo}" alt="" class="size-[60%] mt-2">
+                    </div>
                 </div>
 
                 <div class="xl:w-2/5 xl:h-full rounded-xl rounded-tl-none rounded-bl-none p-2 overflow-hidden">
                     <div class="w-full flex items-center justify-end">
-                        <button class="p-1 bg-base-200/50 rounded-md font-bold px-2 text-sm hover:bg-base-200/70 active:bg-base-300"
+                        <button class="p-1 bg-primary/70 rounded-md font-bold px-2 text-sm hover:bg-primary/40 active:bg-base-300"
                          onclick="{() => {changeContent()}}">{formContent === "login" ? "Registrarse" : "Acceder"}</button>
                     </div>
 

@@ -13,15 +13,15 @@
 
 
     let { data }: { data: PageData }= $props()
-    let { usuario } = $derived(data)
+    let { usuario, relacionSexo, totalPersonas } = $derived(data)
 
         // Datos de ejemplo (puedes reemplazarlos con datos reales)
     const data2 = {
-      labels: ['1° Primaria - A', '2° Primaria - B', '3° Primaria - A', '4° Secundaria - C', '5° Secundaria - A'],
+      labels: ['Femenino', 'Masculino'],
       datasets: [{
-        data: [25, 30, 22, 28, 20],
+        data: [relacionSexo!.hembras, relacionSexo!.varones],
         backgroundColor: [
-          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+          '#FF6384', '#36A2EB'
         ],
         borderWidth: 1
       }]
@@ -29,14 +29,14 @@
 
     // Configuración del gráfico
     const config = {
-      type: 'doughnut',
+      type: "pie",
       data: data2,
       options: {
         responsive: true,
         plugins: {
           title: {
             display: true,
-            text: 'Distribución de Alumnos por Grado/Sección',
+            text: 'Sexos de Alumnos',
             font: { size: 16 }
           },
           legend: {
@@ -146,74 +146,44 @@
 
 <div class="size-full flex flex-col lg:flex-row items-start justify-start gap-2">
     <div class="w-full lg:w-3/4 h-full">
-        <div class="flex justify-center bg-base-100 p-4 rounded-xl shadow-md animate-y" style="--delay: 220ms">
-            <div class="flex flex-col items-center text-center gap-4 max-w-xl drop-shadow-sm">
-                <span class="text-sm text-base-content/80">Bienvenido: <span class="text-accent">{capitalizeFirstLetter(usuario.role)}</span> <span class="text-primary">{usuario.nombre} {usuario.apellido}</span></span>
-                <h1 class="text-3xl font-bold">Eficiencia Educativa en un Solo Panel<span class="loading loading-ring loading-xl"></span></h1>
-                <span class="">
-                    Centraliza el control de alumnos, profesores, aulas y horarios en una sola plataforma intuitiva.
-                </span>
-                <div class="flex gap-4">
-                    <a class="btn btn-primary" href="/representantes">
-                        Representantes
-                    </a>
-
-                    <a class="btn btn-neutral" href="/alumnos">
-                        Alumnos
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-full h-20 mt-3 hidden lg:flex items-center justify-start gap-4 animate-y" style="--delay: 400ms">
-            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
-                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
-                    <img src="{stat_icon}" alt="" class="size-full icon">
-                </div>
-                <div class="w-3/4 h-full py-2">
-                    <p class="text-base-content/80 text-sm">Tasa de Ingreso</p>
-                    <b>34.20%</b>
-                </div>
-            </div>     
-            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
-                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
+        <div class="w-full min-h-24 mt-3 hidden lg:flex items-center justify-start gap-4 animate-y" style="--delay: 400ms">
+            <div class="bg-base-100 w-1/3 h-full rounded-md p-2 flex items-center justify-between gap-2">
+                <div class="h-full rounded-md bg-base-300 w-20 border border-base-content/20">
                     <img src="{retencion_icon}" alt="" class="size-full icon p-2">
                 </div>
                 <div class="w-3/4 h-full py-1">
-                    <p class="text-base-content/80 text-sm">Tasa de Retención</p>
-                    <b>64.93%</b>
+                    <p class="text-base-content/80 ">Total de Alumnos</p>
+                    <b class="text-4xl">{totalPersonas.alumnos}</b>
                 </div>
             </div>               
-            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
-                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
+            <div class="bg-base-100 w-1/3 h-full rounded-md p-2 flex items-center justify-between gap-2">
+                <div class="h-full rounded-md bg-base-300 w-20 border border-base-content/20">
                     <img src="{success_icon}" alt="" class="size-full icon p-1">
                 </div>
                 <div class="w-3/4 h-full">
-                    <p class="text-base-content/80 text-sm">Tasa de Aprobración</p>
-                    <b>34.20%</b>
+                    <p class="text-base-content/80 ">Total de Representantes</p>
+                    <b class="text-4xl">{totalPersonas.representantes}</b>
                 </div>
             </div>                    
-            <div class="bg-base-100 w-1/4 h-full rounded-xl p-2 flex items-center justify-between gap-2">
-                <div class="h-full rounded-full bg-base-300 w-20 border border-base-content/20">
+            <div class="bg-base-100 w-1/3 h-full rounded-md p-2 flex items-center justify-between gap-2">
+                <div class="h-full rounded-md bg-base-300 w-20 border border-base-content/20">
                     <img src="{stat_icon}" alt="" class="size-full icon">
                 </div>
                 <div class="w-3/4 h-full py-2">
-                    <p class="text-base-content/80 text-sm">Matricula</p>
-                    <b>100 Alumnos</b>
+                    <p class="text-base-content/80 ">Total de Empleados</p>
+                    <b class="text-4xl">{totalPersonas.empleados}</b>
                 </div>
             </div> 
         </div>
 
         <div class="w-full min-h-20 mt-3 flex items-start justify-start gap-4 animate-x" style="--delay: 500ms;">
-
-            <div class="chart-container flex items-center justify-center bg-base-100 w-1/4 p-3 rounded-xl">
-                <canvas id="donutChart"></canvas>
-            </div>
-
             <div class="chart-container flex items-center justify-center bg-base-100 w-3/4 p-3 rounded-xl">
                 <canvas id="lineChart"></canvas>
             </div>
 
+            <div class="chart-container flex items-center justify-center bg-base-100 w-[35%] p-3 rounded-xl">
+                <canvas id="donutChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -224,7 +194,7 @@
 
             <span class="text-center text-sm">
                 Aprende sobre los procedimientos, tutoriales, guías, entre otros.
-                <a class="link link-accent">Vea la sección de ayuda</a> para aprender más.
+                <a href="/settings/ayuda" class="link link-accent">Vea la sección de ayuda</a> para aprender más.
             </span>
         </div>
 
