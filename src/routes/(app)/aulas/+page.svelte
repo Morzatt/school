@@ -76,7 +76,7 @@
         </div>
         <button class="btn btn-sm btn-accent"
         onclick="{() => {document.getElementById('manage_materias_modal')!.showModal()}}">
-            <span>Materias</span>
+            <span>Asignaturas</span>
         </button>
     </div>
 

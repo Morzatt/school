@@ -41,8 +41,8 @@
             id="manage_materias_modal">✕</button>
         </form>
 
-        <h2 class="font-bold text-xl">Administrar Materias</h2>
-        <p class="text-sm text-base-content/80">Cree, edite, elimine y administre materias.</p>
+        <h2 class="font-bold text-xl">Administrar Asignaturas</h2>
+        <p class="text-sm text-base-content/80">Cree, edite, elimine y administre asignaturas.</p>
 
         <div class="modal-container flex flex-col lg:flex-row gap-4 mt-3">
             <div class="w-[60%] flex flex-col gap-2 h-[24rem] overflow-y-auto overflow-x-hidden pr-4">
@@ -89,12 +89,12 @@
             <div class="divider divider-horizontal m-0 p-0">O</div>
 
             <form method="post" action="?/createMateria" use:enhance class="w-[40%]">
-                <h2 class="font-bold text-xl">Crear Materia</h2>
-                <p class="text-sm text-base-content/80">Cree, edite, elimine y administre materias.</p>
+                <h2 class="font-bold text-xl">Crear Asignatura</h2>
+                <p class="text-sm text-base-content/80">Cree, edite, elimine y administre asignaturas.</p>
 
                 <div class="form-control">
                     <div class="label">
-                        <b class="label-text">Nombre de la Materia</b>
+                        <b class="label-text">Nombre de la Asignatura</b>
                     </div>
                     <input type="text" name="nombre_materia" class="input input-sm input-bordered max-w-[13rem]"
                     placeholder="Nombre de la materia...">

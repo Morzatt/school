@@ -61,8 +61,8 @@
             name: "materias",
             updateable: false,
             icon: seccion,
-            title: "Total de Materias",
-            value: `${materiasAula?.length} Materias`
+            title: "Total de Asignaturas",
+            value: `${materiasAula?.length} Asignaturas`
         },
         {
             name: "clases",
