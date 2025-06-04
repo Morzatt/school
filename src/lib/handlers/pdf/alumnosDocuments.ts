@@ -466,7 +466,7 @@ export function createRepresentanteDocDef(representante: Representante, alumnos:
             },
 
             {
-                text: "INFORMACIÓN DEL ALUMNO",
+                text: "INFORMACIÓN DEL REPRESENTANTE",
                 bold: true,
                 margin: [0, 20, 0, 0],
                 alignment: 'center',

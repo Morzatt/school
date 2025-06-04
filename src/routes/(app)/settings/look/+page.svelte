@@ -106,13 +106,13 @@
     </div>
 
     <!-- Transparent Sidebar -->
-    <div>
+    <!-- <div>
       <div class="font-semibold mb-2">Transparent sidebar</div>
       <div class="text-sm text-base-content/60 mb-4">Make the desktop sidebar transparent</div>
       <label class="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" class="toggle toggle-primary" bind:checked={transparentSidebar} />
         <span class="text-sm">Transparent sidebar sidebar</span>
       </label>
-    </div>
+    </div> -->
   </div>
 </div>

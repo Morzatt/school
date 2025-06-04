@@ -149,7 +149,7 @@ export function createEmpleadoDocDef(empleado: Empleado) {
                     body: [
                         [
                             { text: 'CARGO', bold: true, border: [true, true, true, false] },
-                            { text: 'GECHA DE INGRESO', bold: true, border: [true, true, true, false]},
+                            { text: 'FECHA DE INGRESO', bold: true, border: [true, true, true, false]},
                             { text: 'TIEMPO DE SERVICIO', bold: true, border: [true, true, true, false] },
                             { text: 'TURNO', bold: true, border: [true, true, true, false] },
                         ],
