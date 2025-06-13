@@ -6,7 +6,8 @@ import type { PageServerLoad } from './$types';
 import path from "path"
 import { printFunc } from '$lib/handlers/pdf';
 import { createRepresentanteDocDef } from '$lib/handlers/pdf/alumnosDocuments';
-import { unlinkSync } from 'fs';
+import { existsSync, unlinkSync, writeFileSync } from 'fs';
+import { mkdir } from 'fs/promises';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -131,5 +132,52 @@ export const actions = {
         }, 10000)
 
         return response.success('Documento creado correctamente', { documentoId: documentId })
-    }
+    },
+
+    updateFotoPerfil: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData();
+
+        let documento = {
+            cedula_representante: data.get('cedula_representante') as string,
+            archivo: data.get('archivo') as File,
+        }
+
+        let representante = await async(representantesRepository.getById(documento.cedula_representante), log)
+
+        let folderPath = path.join(process.cwd(), `/static/representantes/${documento.cedula_representante}`)
+        let folderExists = existsSync(folderPath)
+        if (!folderExists) {
+            await async(mkdir(folderPath), log)
+        }
+
+        let archivoPath: string;
+        if (documento.archivo && documento.archivo.size > 0) {
+            let fileExtension = documento.archivo.name.slice(documento.archivo.name.lastIndexOf('.'))
+            let fileName = `foto_perfil_${documento.cedula_representante}${fileExtension}`
+            let filePath = path.join(folderPath, fileName)
+
+            if (representante && representante.foto_path) {
+                let fileExists = existsSync(path.join(process.cwd(), '/static', representante.foto_path))
+                if (fileExists) {
+                    unlinkSync(path.join(process.cwd(), '/static', representante.foto_path))
+                }
+            }
+
+            writeFileSync(filePath, Buffer.from(await documento.archivo.arrayBuffer()));
+            archivoPath = path.join(`/representantes/${documento.cedula_representante}`, fileName)
+        } else {
+            return response.error('El archivo esta vacio')
+        }
+
+        db
+        .updateTable('representantes')
+        .set({
+            foto_path: archivoPath,
+        })
+        .where('representantes.cedula', '=', documento.cedula_representante)
+        .execute()
+
+        return response.success('Archivo subido exitosamente')
+    },
 } satisfies Actions

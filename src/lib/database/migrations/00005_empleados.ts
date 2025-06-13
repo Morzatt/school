@@ -30,6 +30,8 @@ export async function up(db: Kysely<any>):  Promise<void> {
     // 'Mañana' | 'Tarde'
     // CHECK - El un profesor con turno de 'Tarde' no puede dar clases en una sección de turno 'Mañana'
     .addColumn('turno', 'text', (col) => col.notNull().check(sql`turno in ('Mañana', 'Tarde')`))
+
+    .addColumn('foto_path', 'text', (col) => col.notNull())
     .execute()
 }
 

@@ -60,6 +60,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     .addColumn('grado_instruccion', 'text', (col) => col.notNull())
     .addColumn('telefono_1', 'text', (col) => col.notNull())
     .addColumn('telefono_2', 'text')
+    .addColumn('foto_path', 'text')
     .execute()
 
   await db.schema

@@ -227,6 +227,7 @@ export type RepresentantesTable = {
     grado_instruccion: string
     telefono_1: string,
     telefono_2: string | undefined,
+    foto_path: string | undefined,
 }
 
 export type Representante = Selectable<RepresentantesTable>
@@ -277,6 +278,8 @@ export type EmpleadosTable = {
     fecha_ingreso: ColumnType<Date, string, never>
     tiempo_servicio: string,
     turno: Turnos
+
+    foto_path: string | undefined
 }
 
 export type Empleado = Selectable<EmpleadosTable>

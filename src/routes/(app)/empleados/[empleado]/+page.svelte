@@ -116,6 +116,7 @@
     import ingreso_icon from "$lib/images/icons/book_icon.svg"
     import { getAge } from '$lib/utils/getAge';
     import { downloadFile } from '$lib/utils/downloadFile';
+    import Documento from "./Documento.svelte"
 
     let institucionData: Data[] = $derived([
         {
@@ -348,13 +349,19 @@
 
         <div class="w-full h-full lg:w-[30%] gap-3 min-h-60 flex flex-col items-center justify-center animate--x" style="--delay: 150ms">
             <div class="w-full h-full relative p-5 flex items-center justify-center flex-col rounded-md bg-base-100 shadow-lg">
+                <!-- IMAGEN DE PERFIL -->
                 <div class="size-fit relative">
-                    <img src="{user_icon}" alt="" class="size-36 icon">
-                    <!-- <button type="button" class="absolute bottom-1 right-1 size-7 flex items-center justify-center p-0.5
-                    hover:bg-base-content/20 active:bg-base-content/10 rounded-md transition-all duration-200">
+                    <img src="{(empleado.foto_path) ? `/downloads/0000?type=image&path=${empleado.foto_path}` : user_icon}" alt="" class="{(empleado.foto_path) ? '' : 'icon'} size-36 mask mask-circle">                       
+                    <Documento visible="false" empleado={empleado} tipo_documento={"foto_perfil"} path={empleado.foto_path}  />                               
+
+                    <button type="button" class="btn btn-sm btn-square absolute bottom-1 right-1 flex items-center justify-center p-0.5 px-1" 
+                    onclick={() => {
+                        document.getElementById(`foto_perfil_modal`).showModal()
+                    }}>
                         <img src="{camera_icon}" alt="" class="size-full icon">
-                    </button> -->
+                    </button>
                 </div>
+
                 <h3 class="font-bold text-center text-lg mt-2">{empleado.primer_nombre} {empleado.segundo_nombre} {empleado.primer_apellido} {empleado.segundo_apellido}</h3>
                 <h3 class="{empleado.estado === "Retirado" ? "text-error" : "text-base-content/60"} text-sm"> 
                     {

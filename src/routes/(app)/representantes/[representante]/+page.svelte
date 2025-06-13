@@ -3,6 +3,7 @@
     import type { ActionData, PageData } from './$types';
     import delete_icon from "$lib/images/icons/borrar_icon.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
+    import camera_icon from "$lib/images/icons/camara_icon.svg"   
     import print from "$lib/images/icons/print.svg"
     import add_icon from "$lib/images/icons/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import edit_icon from "$lib/images/icons/edit_icon.svg"
@@ -35,6 +36,7 @@
     import CreateAlumnoModal from './CreateAlumnoModal.svelte';
     import { getAge } from '$lib/utils/getAge';
     import { downloadFile } from '$lib/utils/downloadFile';
+    import Documento from './Documento.svelte';
 
     let personalData: Data[] = $derived([
         {
@@ -172,9 +174,19 @@
     <div class="w-full mt-4 flex flex-col lg:flex-row items-start justify-start gap-4 ">
         <div class="w-full lg:max-w-xs min-h-60 flex flex-col items-center justify-center lg:items-start gap-4 ">
             <div class="w-max gap-5 p-5 flex items-center justify-center rounded-md bg-base-100 shadow-lg animate--x">
+                <!-- IMAGEN DE PERFIL -->
                 <div class="size-fit relative">
-                    <img src="{user_icon}" alt="" class="size-28 icon">
+                    <img src="{(representante.foto_path) ? `/downloads/0000?type=image&path=${representante.foto_path}` : user_icon}" alt="" class="{(representante.foto_path) ? '' : 'icon'} size-36 mask mask-circle">                       
+                    <Documento visible="false" representante={representante} tipo_documento={"foto_perfil"} path={representante.foto_path}  />                               
+
+                    <button type="button" class="btn btn-sm btn-square absolute bottom-1 right-1 flex items-center justify-center p-0.5 px-1" 
+                    onclick={() => {
+                        document.getElementById(`foto_perfil_modal`).showModal()
+                    }}>
+                        <img src="{camera_icon}" alt="" class="size-full icon">
+                    </button>
                 </div>
+
                 <div class="">
                     <h3 class="font-bold text-lg mt-2">{representante?.nombre} {representante?.apellido}</h3>
                     <h3 class="text-base-content/60 text-sm"> 
