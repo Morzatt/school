@@ -14,24 +14,21 @@
 
 
     let { data }: { data: PageData }= $props()
-    let { usuario, relacionSexo, totalPersonas } = $derived(data)
+    let { usuario, relacionSexo, totalPersonas, distribucionIngresos } = $derived(data)
 
-        // Datos de ejemplo (puedes reemplazarlos con datos reales)
-    const data2 = {
-      labels: ['Femenino', 'Masculino'],
-      datasets: [{
-        data: [relacionSexo!.hembras, relacionSexo!.varones],
-        backgroundColor: [
-          '#FF6384', '#36A2EB'
-        ],
-        borderWidth: 1
-      }]
-    };
-
-    // Configuración del gráfico
+    // Configuración del gráfico PIE
     const config = {
       type: "pie",
-      data: data2,
+      data: {
+        labels: ['Femenino', 'Masculino'],
+        datasets: [{
+          data: [relacionSexo!.hembras, relacionSexo!.varones],
+          backgroundColor: [
+            '#FF6384', '#36A2EB'
+          ],
+          borderWidth: 1
+        }]
+      },
       options: {
         responsive: true,
         plugins: {
@@ -57,94 +54,22 @@
       }
     };
 
-      // Datos de ejemplo (últimos 6 meses)
-    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
-    const datos = {
-      representantes: [15, 22, 30, 18, 25, 20],
-      alumnos: [45, 60, 75, 50, 65, 70],
-      empleados: [5, 8, 10, 6, 7, 9]
-    };
+    // CONFIGURACION DEL GRAFICO BAR
+    // const barChartData = {
+    //   labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+    //   datasets: [{
+    //     label: 'Ingreso Promedio',
+    //     data: [16, 15, 17, 18, 16, 17],
+    //     backgroundColor: '#8b5cf6',
+    //     borderRadius: 8,
+    //   }]
+    // };
 
-    // Configuración del gráfico
-    const config2 = {
-      type: 'line',
-      data: {
-        labels: meses,
-        datasets: [
-          {
-            label: 'Representantes',
-            data: datos.representantes,
-            borderColor: '#FF6384',
-            backgroundColor: 'rgba(255, 99, 132, 0.1)',
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: 'Alumnos',
-            data: datos.alumnos,
-            borderColor: '#36A2EB',
-            backgroundColor: 'rgba(54, 162, 235, 0.1)',
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: 'Empleados',
-            data: datos.empleados,
-            borderColor: '#FFCE56',
-            backgroundColor: 'rgba(255, 206, 86, 0.1)',
-            tension: 0.3,
-            fill: true
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Ingresos Mensuales (Últimos 6 Meses)',
-            font: { size: 18 }
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false
-          },
-          legend: {
-            position: 'top'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Número de Registros'
-            }
-          },
-          x: {
-            title: {
-              display: true,
-              text: 'Meses'
-            }
-          }
-        }
-      }
-    };
-
-    // Example data for new bar chart
-    const barChartData = {
-      labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
-      datasets: [{
-        label: 'Ingreso Promedio',
-        data: [16, 15, 17, 18, 16, 17],
-        backgroundColor: '#8b5cf6',
-        borderRadius: 8,
-      }]
-    };
+    // const barChartData = $derived(distribucionIngresos);
 
     const barChartConfig = {
       type: 'bar',
-      data: barChartData,
+      data: distribucionIngresos,
       options: {
         responsive: true,
         plugins: {
@@ -157,23 +82,17 @@
         scales: {
           y: {
             beginAtZero: true,
-            max: 20,
+            max: Math.max(...distribucionIngresos.datasets[0].data)+10,
             title: { display: true }
           }
         }
       }
     };
 
-    // Renderizar
-
-
     onMount(() => {
         // Renderizar el gráfico
         const ctx = document.getElementById('donutChart').getContext('2d');
         new Chart(ctx, config);
-
-        // const ctx2 = document.getElementById('lineChart').getContext('2d');
-        // new Chart(ctx2, config2);
 
         const ctx3 = document.getElementById('barChart').getContext('2d');
         new Chart(ctx3, barChartConfig);
