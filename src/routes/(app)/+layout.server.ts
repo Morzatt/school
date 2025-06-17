@@ -37,7 +37,12 @@ export const load = (async ({ locals }) => {
         .select(['representantes.cedula'])
         .execute()
 
-        return { alumnos: alumnos.length, empleados: empleados.length, representantes: representantes.length }
+        let cursos = await trx
+        .selectFrom('grados')
+        .select(["grados.id_grado"])
+        .execute()
+
+        return { alumnos: alumnos.length, empleados: empleados.length, representantes: representantes.length, cursos: cursos.length }
     })
 
     return { usuario: locals.usuario, relacionSexo, totalPersonas };

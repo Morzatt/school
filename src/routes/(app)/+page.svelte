@@ -227,7 +227,7 @@
               <!-- Card 4: Net Profit (example colored card) -->
               <div class="rounded-2xl p-6 bg-gradient-to-br from-purple-500 to-fuchsia-400 text-white shadow-lg flex flex-col gap-2 relative overflow-hidden">
                 <span class="text-base font-medium">Total de Cursos</span>
-                <span class="text-3xl font-bold">12</span>
+                <span class="text-3xl font-bold">{totalPersonas.cursos}</span>
                 <span class="text-xs opacity-80">Este mes</span>
                 <img src="{courses_icon}" alt="" class="absolute right-4 bottom-4 w-10 h-10 opacity-20 icon" />
               </div>

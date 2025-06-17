@@ -95,6 +95,7 @@
 
             <div class="flex items-center justify-center gap-2">
                 <img src="/logoColegio.png" alt="" class="h-12">
+                <b class="text-base-content/80 text-sm">U.E.N, "Armando Reverón"</b>
             </div>
 
             <div class="flex items-center justify-center gap-2">
