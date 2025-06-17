@@ -33,7 +33,7 @@
 <UploadBackupModal form={null}/>
 
 <div class="size-full relative">
-    <h1 class="font-bold text-2xl">Respaldos/Restauraciones {file}</h1>
+    <h1 class="font-bold text-2xl">Respaldos/Restauraciones</h1>
 
     <Alert form={form} styles="fixed left-4 top-4 max-w-sm"/>
 

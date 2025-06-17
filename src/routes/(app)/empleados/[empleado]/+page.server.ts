@@ -7,7 +7,7 @@ import { db } from '$lib/database';
 import { getConstanciaAceptacion, printEmpleadoHandler } from '$lib/handlers/empleados.handlers';
 import path from 'path'
 import { existsSync, unlinkSync, writeFileSync } from 'fs';
-import { mkdir } from 'fs/promises';
+import { mkdir, rm } from 'fs/promises';
 
 export const load = (async ({ locals, url }) => {
     let { log } = locals;
@@ -42,6 +42,12 @@ export const actions = {
         let { log, response } = locals;
         let data = await request.formData()
         let cedula = data.get('empleado') as string
+
+        let folderPath = path.join(process.cwd(), `/static/empleados/${cedula}`)
+        let folderExists = existsSync(folderPath)
+        if (folderExists) {
+            await async(rm(folderPath, { recursive: true, force: true }), log)
+        }
 
         await async(empleadosRepository.delete(cedula), log)
         redirect(307, '/empleados')

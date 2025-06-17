@@ -7,7 +7,7 @@ import path from "path"
 import { printFunc } from '$lib/handlers/pdf';
 import { createRepresentanteDocDef } from '$lib/handlers/pdf/alumnosDocuments';
 import { existsSync, unlinkSync, writeFileSync } from 'fs';
-import { mkdir } from 'fs/promises';
+import { mkdir, rm } from 'fs/promises';
 
 export const load: PageServerLoad = (async ({ url, locals }) => {
     const { log, response } = locals;
@@ -41,6 +41,11 @@ export const actions = {
         let data = await request.formData()
         let id = data.get('cedula_representante') as string
 
+        let folderPath = path.join(process.cwd(), `/static/empleados/${id}`)
+        let folderExists = existsSync(folderPath)
+        if (folderExists) {
+            await async(rm(folderPath, { recursive: true, force: true }), log)
+        }
         await async(representantesRepository.delete(id), log)
 
         redirect(307, '/representantes')

@@ -9,14 +9,12 @@ import { db } from '$lib/database';
 import { fail } from '@sveltejs/kit';
 import type { PuntoRestauracion } from '$lib/database/types';
 import type pino from 'pino';
-import { invalidateAll } from '$app/navigation';
 
-import { execSync } from "child_process"
 import * as tar from "tar"
 import { cp, mkdir, rm, readdir, unlink } from 'fs/promises';
 
 
-export const load = (async ({ locals, url }) => {
+export const load = (async ({ locals }) => {
   let { log } = locals;
   let puntos = await async(db.selectFrom('puntos_restauracion').selectAll().orderBy('fecha desc').execute(), log)
   await checkPuntos(puntos, log)
@@ -48,7 +46,9 @@ export const actions = {
     let timestamp = formatDate(new Date())
 
     let backupFolderPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}`)
-    let documentosFolderPath = path.join(process.cwd(), '/static/alumnos')
+    let alumnosFolderPath = path.join(process.cwd(), `/static/alumnos`)
+    let empleadosFolderPath = path.join(process.cwd(), `/static/empleados`)
+    let representantesFolderPath = path.join(process.cwd(), `/static/representantes`)
     let backupPath = path.join(backupFolderPath, `/backup_${timestamp}.dump`)
 
     let tarPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}.tar`)
@@ -62,9 +62,13 @@ export const actions = {
 
       // CARPETA DE DOCUMENTOS DENTRO DE LA CARPETA DE RESPALDO
       await async(mkdir(path.join(backupFolderPath, '/alumnos')), log)
+      await async(mkdir(path.join(backupFolderPath, '/empleados')), log)
+      await async(mkdir(path.join(backupFolderPath, '/representantes')), log)
 
       // COPIAR CARPETA DE RESPALDOS
-      await cp(documentosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+      await cp(alumnosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+      await cp(empleadosFolderPath, path.join(backupFolderPath, '/empleados'), { recursive: true });
+      await cp(representantesFolderPath, path.join(backupFolderPath, '/representantes'), { recursive: true });
 
       // COMPRIMIR CARPETA DE RESPALDO
       tar.c({
@@ -112,22 +116,58 @@ export const actions = {
 
       let backupFolderPath = path.join(cwd, `/static/backups/temporal/backup_${backupID}`)
       let backupFilePath = path.join(backupFolderPath, `/backup_${backupID}.dump`)
-      let backupDocumentosFolder = path.join(backupFolderPath, `/alumnos`)
-      let documentosPath = path.join(cwd, '/static/alumnos')
+
+      // RUTAS DE CARPETAS DE IMAGENES EN LA CARPETA DE RESPALDO
+      let alumnosBackupFolderPath = path.join(backupFolderPath, `/alumnos`)
+      let empleadosBackupFolderPath = path.join(backupFolderPath, `/empleados`)
+      let representantesBackupFolderPath = path.join(backupFolderPath, `/representantes`)
+
+
+      // RUTAS DE CARPETAS DE IMAGENES DEL PROYECTO 
+      let alumnosPath = path.join(cwd, '/static/alumnos')
+      let empleadosPath = path.join(cwd, '/static/empleados')
+      let representantesPath = path.join(cwd, '/static/representantes')
 
       restoreFromDump(backupFilePath)
 
-      await async(access(documentosPath), log)
-      const items = await async(readdir(documentosPath), log);
+      // BORRAR TODO DE ALUMNOS
+      await async(access(alumnosPath), log)
+      const alumnosItems = await async(readdir(alumnosPath), log);
 
-      if (items && items.length > 0) {
-        for (const item of items) {
-          const itemPath = path.join(documentosPath, item);
+      if (alumnosItems && alumnosItems.length > 0) {
+        for (const item of alumnosItems) {
+          const itemPath = path.join(alumnosPath, item);
           await async(rm(itemPath, { recursive: true, force: true }), log);
         }
       }
 
-      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true }), log)
+      // BORRAR TODO DE EMPLEADOS 
+      await async(access(empleadosPath), log)
+      const empleadosItems = await async(readdir(empleadosPath), log);
+
+      if (empleadosItems && empleadosItems.length > 0) {
+        for (const item of empleadosItems) {
+          const itemPath = path.join(empleadosPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      // BORRAR TODO DE REPRESENTANTES 
+      await async(access(representantesPath), log)
+      const representantesItems = await async(readdir(representantesPath), log);
+
+      if (representantesItems && representantesItems.length > 0) {
+        for (const item of representantesItems) {
+          const itemPath = path.join(representantesPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      // COPIAR IMAGENES
+      await async(cp(alumnosBackupFolderPath, alumnosPath, { recursive: true }), log)
+      await async(cp(empleadosBackupFolderPath, empleadosPath, { recursive: true }), log)
+      await async(cp(representantesBackupFolderPath, representantesPath, { recursive: true }), log)
+
       await async(rm(backupFolderPath, { recursive: true, force: true }), log)
       return response.success('Respaldo restaurado correctamente..')
     } catch (error) {
@@ -143,7 +183,9 @@ export const actions = {
     let timestamp = createBackupId(today)
 
     let backupFolderPath = path.join(process.cwd(), `/static/backups/temporal/backup_${timestamp}`)
-    let documentosFolderPath = path.join(process.cwd(), '/static/alumnos')
+    let alumnosFolderPath = path.join(process.cwd(), `/static/alumnos`)
+    let empleadosFolderPath = path.join(process.cwd(), `/static/empleados`)
+    let representantesFolderPath = path.join(process.cwd(), `/static/representantes`)
     let backupPath = path.join(backupFolderPath, `/backup_${timestamp}.dump`)
 
     let tarPath = path.join(process.cwd(), `/static/backups/checkpoints/backup_${timestamp}.tar`)
@@ -157,9 +199,13 @@ export const actions = {
 
       // CARPETA DE DOCUMENTOS DENTRO DE LA CARPETA DE RESPALDO
       await async(mkdir(path.join(backupFolderPath, '/alumnos')), log)
+      await async(mkdir(path.join(backupFolderPath, '/empleados')), log)
+      await async(mkdir(path.join(backupFolderPath, '/representantes')), log)
 
       // COPIAR CARPETA DE RESPALDOS
-      await cp(documentosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+      await cp(alumnosFolderPath, path.join(backupFolderPath, '/alumnos'), { recursive: true });
+      await cp(empleadosFolderPath, path.join(backupFolderPath, '/empleados'), { recursive: true });
+      await cp(representantesFolderPath, path.join(backupFolderPath, '/representantes'), { recursive: true });
 
       // COMPRIMIR CARPETA DE RESPALDO
       tar.c({
@@ -211,22 +257,58 @@ export const actions = {
 
       let backupFolderPath = path.join(cwd, `/static/backups/checkpoints/backup_${backup_id}`)
       let backupFilePath = path.join(backupFolderPath, `/backup_${backup_id}.dump`)
-      let backupDocumentosFolder = path.join(backupFolderPath, `/alumnos`)
-      let documentosPath = path.join(cwd, '/static/alumnos')
+
+      // RUTAS DE CARPETAS DE IMAGENES EN LA CARPETA DE RESPALDO
+      let alumnosBackupFolderPath = path.join(backupFolderPath, `/alumnos`)
+      let empleadosBackupFolderPath = path.join(backupFolderPath, `/empleados`)
+      let representantesBackupFolderPath = path.join(backupFolderPath, `/representantes`)
+
+
+      // RUTAS DE CARPETAS DE IMAGENES DEL PROYECTO 
+      let alumnosPath = path.join(cwd, '/static/alumnos')
+      let empleadosPath = path.join(cwd, '/static/empleados')
+      let representantesPath = path.join(cwd, '/static/representantes')
 
       restoreFromDump(backupFilePath)
 
-      await async(access(documentosPath), log)
-      const items = await async(readdir(documentosPath), log);
+      // BORRAR TODO DE ALUMNOS
+      await async(access(alumnosPath), log)
+      const alumnosItems = await async(readdir(alumnosPath), log);
 
-      if (items && items.length > 0) {
-        for (const item of items) {
-          const itemPath = path.join(documentosPath, item);
+      if (alumnosItems && alumnosItems.length > 0) {
+        for (const item of alumnosItems) {
+          const itemPath = path.join(alumnosPath, item);
           await async(rm(itemPath, { recursive: true, force: true }), log);
         }
       }
 
-      await async(cp(backupDocumentosFolder, documentosPath, { recursive: true, force: true }), log)
+      // BORRAR TODO DE EMPLEADOS 
+      await async(access(empleadosPath), log)
+      const empleadosItems = await async(readdir(empleadosPath), log);
+
+      if (empleadosItems && empleadosItems.length > 0) {
+        for (const item of empleadosItems) {
+          const itemPath = path.join(empleadosPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      // BORRAR TODO DE REPRESENTANTES 
+      await async(access(representantesPath), log)
+      const representantesItems = await async(readdir(representantesPath), log);
+
+      if (representantesItems && representantesItems.length > 0) {
+        for (const item of representantesItems) {
+          const itemPath = path.join(representantesPath, item);
+          await async(rm(itemPath, { recursive: true, force: true }), log);
+        }
+      }
+
+      // COPIAR IMAGENES
+      await async(cp(alumnosBackupFolderPath, alumnosPath, { recursive: true }), log)
+      await async(cp(empleadosBackupFolderPath, empleadosPath, { recursive: true }), log)
+      await async(cp(representantesBackupFolderPath, representantesPath, { recursive: true }), log)
+
       setTimeout(async () => {
         await async(rm(backupFolderPath, { recursive: true, force: true }), log)
       }, 15000)
