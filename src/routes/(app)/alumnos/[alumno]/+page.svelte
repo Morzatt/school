@@ -557,9 +557,6 @@
 
                     {#if editEscolares}
                         <label class="form-control">
-                            <div class="label">
-                                <span class="label-text">Turno</span>
-                            </div>
                             <select name="turno" required>
                                 <option disabled selected>Elegir</option>
                                 <option value="Mañana">Mañana</option>

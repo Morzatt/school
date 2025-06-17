@@ -257,11 +257,11 @@
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Detalles Profesionales</h3>
 
-                        <!-- <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
-                        onclick="{() =>{ setTimeout(() => { },100) }}"
-                        type={"submit"}>
+                        <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                        onclick="{() =>{ setTimeout(() => { edicionProfesional = !edicionProfesional; }, 100) }}"
+                        type={edicionProfesional ? "submit" : "button"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                        </button> -->
+                        </button>
                     </div>
 
                     <div class="mt-2">
@@ -295,11 +295,11 @@
                     <div class="w-full h-max flex justify-between items-center ">
                         <h3 class="text-xl font-bold">Datos dentro de la Institución</h3>
 
-                        <!-- <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
-                        onclick="{() =>{ setTimeout(() => { },100) }}"
-                        type={"submit"}>
+                        <button class="btn btn-circle btn-active btn-sm p-1 active:btn-primary group"
+                        onclick="{() =>{ setTimeout(() => { edicionInstitucion = !edicionInstitucion },100) }}"
+                        type={edicionInstitucion ? "submit" : "button"}>
                             <img src="{edit_icon}" alt="" class="group-active:invert filter icon">
-                        </button> -->
+                        </button>
                     </div>
 
                     <div class="mt-2">
@@ -311,13 +311,18 @@
                                     <p class="font-semibold text-base-content/80 ">{field.title}</p> 
                                 </div>
 
+
                                 {#if edicionInstitucion && field.updateable}
-                                    <input type="text" 
-                                        min="3"
-                                        name="{field.name}"
-                                        placeholder="{field.title}..."
-                                        class="input input-bordered input-sm max-w-xs"
-                                        value="{field.value}">
+                                    <label class="form-control">
+                                        <div class="label">
+                                            <span class="label-text">Turno</span>
+                                        </div>
+                                        <select name="turno" required>
+                                            <option disabled selected>{field.value}</option>
+                                            <option value="Mañana">Mañana</option>
+                                            <option value="Tarde">Tarde</option>
+                                        </select>
+                                    </label>
                                 {:else}
                                     <b class="{field.name === "turno" ? field.value === "Mañana" ? "text-orange-500" : "text-purple-600" : ""}">{field.value}</b> 
                                 {/if}

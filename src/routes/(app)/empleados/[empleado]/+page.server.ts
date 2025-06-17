@@ -120,4 +120,44 @@ export const actions = {
 
         return response.success('Archivo subido exitosamente')
     },
+
+    edit: async ({ locals, request }) => {
+        let { log, response } = locals;
+        let data = await request.formData()
+
+        let d = {
+            cedula: data.get('empleado') as string,
+            grado_instruccion: data.get('grado_instruccion') as string,
+            especializacion: data.get('especializacion') as string,
+            area: data.get('area') as string,
+            cargo: data.get('cargo') as string,
+            turno: data.get('turno') as "Mañana" | "Tarde"
+        }
+
+        await async(
+            db.transaction().execute(async (trx) => {
+                if (d.grado_instruccion) {
+                    await trx.updateTable('empleados').set({ grado_instruccion: d.grado_instruccion }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.especializacion) {
+                    await trx.updateTable('empleados').set({ especializacion: d.especializacion }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.area) {
+                    await trx.updateTable('empleados').set({ area: d.area }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.cargo) {
+                    await trx.updateTable('empleados').set({ cargo: d.cargo }).where('cedula', '=', d.cedula).execute()
+                }
+
+                if (d.turno) {
+                    await trx.updateTable('empleados').set({ turno: d.turno }).where('cedula', '=', d.cedula).execute()
+                }
+            })
+        , log)
+
+        return response.success('Datos actualizados correctamente')
+    },
 } satisfies Actions
