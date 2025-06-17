@@ -29,9 +29,9 @@ export async function printHorarioGrado({ locals, request }: RequestEvent) {
                 'horarios_grados_alt.cedula_profesor', 'horarios_grados_alt.dia_semana', 'horarios_grados_alt.hora_fin',
                 'horarios_grados_alt.hora_inicio', 'horarios_grados_alt.id_grado', 'horarios_grados_alt.id_horario', 'horarios_grados_alt.id_materia'
             ])
-            .innerJoin('empleados', 'empleados.cedula', 'horarios_grados_alt.cedula_profesor')
+            .leftJoin('empleados', 'empleados.cedula', 'horarios_grados_alt.cedula_profesor')
             .select(['primer_nombre as nombre_profesor', 'primer_apellido as apellido_profesor'])
-            .innerJoin('materias', 'materias.id_materia', 'horarios_grados_alt.id_materia')
+            .leftJoin('materias', 'materias.id_materia', 'horarios_grados_alt.id_materia')
             .select(['materias.nombre_materia', 'materias.color'])
             .orderBy('horarios_grados_alt.hora_inicio')
             .execute()

@@ -10,6 +10,7 @@
     // Images Import
     import menu_icon from "$lib/images/icons/menu_icon.svg"
     import chevron_icon from "$lib/images/icons/chevron_right.svg"
+    import ayuda_icon from "$lib/images/icons/help_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
     import user_icon from "$lib/images/icons/username_icon.svg"
     import logout_icon from "$lib/images/icons/logout_icon.svg"
     import admin_icon from "$lib/images/icons/admin_icon.svg"
@@ -46,6 +47,7 @@
             <ul tabindex="0"
             class="menu dropdown-content bg-base-100 z-[1] mt-4 w-52 p-2 shadow">
                 <li><a href="{basePath}/settings/account"><img src="{administrar_usuario_icon}" alt="" class="icon">Mi Usuario</a></li>
+                <li><a href="{basePath}/settings/ayuda"><img src="{ayuda_icon}" alt="" class="icon">Ayuda</a></li>
 
                 <li class="border-t border-base-300 mt-1.5 text-red-500"><a href="{basePath}/logout" class="m-1.5"><img src="{logout_icon}" alt="" class="red-filter">Cerrar Sesión</a></li>
             </ul>
