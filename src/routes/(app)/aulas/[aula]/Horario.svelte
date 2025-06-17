@@ -80,7 +80,7 @@
                             {i.nombre_materia}
                         </div>
                         <div class="profesor">
-                            {i.nombre_profesor} {i.apellido_profesor}
+                            {(i.nombre_profesor && i.apellido_profesor) ? `${i.nombre_profesor} ${i.apellido_profesor}` : "No Asignado"}
                         </div>
                     </div>
                 </div>  

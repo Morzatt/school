@@ -185,10 +185,10 @@
       <!-- DASHBOARD HEADER -->
       <div class="w-full flex flex-col gap-4 px-6 pt-6 pb-2">
         <div class="flex flex-col md:flex-row md:items-center md:justify-start gap-6">
-          <div class="flex flex-col items-center justify-center gap-2">
+          <!-- <div class="flex flex-col items-center justify-center gap-2">
             <img src="/logoColegio.png" alt="" class="h-28">
             <b class="text-base-content/70 text-base">U.E.N "Armando Reverón"</b>
-          </div>
+          </div> -->
           <div>
             <h1 class="text-3xl font-bold text-base-content mb-1">Bienvenido, {capitalizeFirstLetter(usuario.nombre)}!</h1>
             <p class="text-base-content/70 text-base">Este es el resumen de tu plataforma este mes.</p>

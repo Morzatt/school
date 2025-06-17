@@ -57,7 +57,7 @@
 
             <label for="side-drawer" class="transition-all duration-200 ease-in-out 
                     p-1 rounded-lg group">
-                <img src="{menu_icon}" alt="" class="filter group-active:invert">
+                <img src="{menu_icon}" alt="" class="filter group-active:invert icon">
             </label>
         </div>
 
@@ -132,6 +132,7 @@
 
 {#snippet items()}
     <ul class="items hidden lg:flex flex-col">
+        
         <li class="mt-4 bg-base-300/80 border border-base-content/40">
             <img src="{home_icon}" alt="" class="icon">
             <a href="/">Inicio</a>
@@ -178,46 +179,6 @@
                 <img src="{look.icon}" alt="" class="icon">
                 <a href="/{look.href}">{look.name}</a>
             </li>
-        {/if}
-    </ul>
-{/snippet}
-
-{#snippet itemsNormal()}
-    <ul class="items hidden lg:flex flex-col pb-7 {swtch ? "" : "scale-0"} overflow-y-auto" style="scrollbar-width: thin;">
-        <li class="mt-4 mb-4">
-            <img src="{home_icon}" alt="" class="icon">
-            <a href="/">Inicio</a>
-        </li>
-        
-
-        {#each routes as group}
-            <h2 class="font-bold">{group.name}</h2>
-
-            <div class="join join-vertical w-full px-1 pt-2 pb-4">
-                {#each group.routes as route}
-                    <li class="join-item border border-base-content/40">
-                        <img src="{route.icon}" alt="" class="icon">
-                        <a href="{basePath}/{route.href}">{route.name}</a>
-                    </li> 
-                {/each}
-            </div>
-        {/each}
-
-        {#if data.role.toLowerCase().includes('admin')}
-            <div class="w-full mt-4">
-                {#each adminRoutes as group}
-                    <h2 class=" mb-2 font-bold">{group.name}</h2>
-
-                    <div class="w-content w-full px-1 join join-vertical">
-                        {#each group.routes as route}
-                            <li class="join-item border border-base-content/40">
-                                <img src="{route.icon}" alt="" class="icon">
-                                <a href="{basePath}/{route.href}">{route.name}</a>
-                            </li> 
-                        {/each}
-                    </div>
-                {/each}
-            </div>
         {/if}
     </ul>
 {/snippet}

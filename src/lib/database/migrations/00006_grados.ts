@@ -19,8 +19,7 @@ export async function up(db: Kysely<any>):  Promise<void> {
     // 8933618 -> Cedula del profesor
     // CHECK - Al introducir una cedula, el cargo del empleado debe de ser 'Docente'
     .addColumn('profesor', 'text') 
-
-    .addForeignKeyConstraint("fk_profesor", ["profesor"], "empleados", ["cedula"], (col) => col.onDelete("set default").onUpdate("cascade"))
+    .addForeignKeyConstraint("fk_profesor", ["profesor"], "empleados", ["cedula"], (col) => col.onDelete("set null").onUpdate("cascade"))
     .execute()
 
     // https://es.pinterest.com/pin/164803667607207691/

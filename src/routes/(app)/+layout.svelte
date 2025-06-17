@@ -26,7 +26,6 @@
 
 {#snippet US()}
     <div class="h-full min-w-40 flex items-center justify-around gap-4">
-
         <div class="text-sm flex items-center justify-around gap-2 px-4 ">
             <span class="*:flex *:items-center *:justify-end *:gap-2">
                 <p> {usuario.nombre} {usuario.apellido} </p>
@@ -89,12 +88,19 @@
 
     <div class="size-full overflow-hidden">
         <div class="w-full min-h-10 
-                hidden lg:flex justify-end items-center
+                hidden lg:flex justify-between items-center
                 sticky top-0 z-40 
                 bg-base-300 border-b border-base-content/30 shadow-sm 
                 px-8 p-1"> 
-            {@render themeController()}
-            {@render US()}
+
+            <div class="flex items-center justify-center gap-2">
+                <img src="/logoColegio.png" alt="" class="h-12">
+            </div>
+
+            <div class="flex items-center justify-center gap-2">
+                {@render themeController()}
+                {@render US()}
+            </div>
         </div> 
 
         <div class="p-4 w-full h-full relative max-h-[calc(100%-3.5rem)] overflow-y-auto overflow-x-hidden">
