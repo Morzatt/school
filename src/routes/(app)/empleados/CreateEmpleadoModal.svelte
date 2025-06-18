@@ -93,7 +93,7 @@
                             <div class="label">
                                 <span class="label-text">Dirección de Habitación</span>
                             </div>
-                            <input type="text" name="direccion" class="input input-sm input-bordered rounded-md md:max-w-[22rem]" placeholder="Direccion de Trabajo">
+                            <input type="text" name="direccion" class="input input-sm input-bordered rounded-md md:max-w-[22rem]" placeholder="Direccion de Habitacion">
                         </label>
                     </div>
                 </div>
