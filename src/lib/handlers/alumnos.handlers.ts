@@ -61,7 +61,10 @@ async function getObjects(alumno: Alumno, log: pino.Logger) {
         db
         .selectFrom('empleados')
         .selectAll()
-        .where('empleados.cargo', '=', 'Director')
+        .where((eb) => eb.or([
+            eb('empleados.cargo', '=', 'Director'),
+            eb('empleados.cargo', '=', 'Directora')
+        ]))
         .executeTakeFirst()
     , log)
 

@@ -44,6 +44,8 @@
         title: string,
         value: string,
         updateable?: boolean,
+        type?: "text" | "number",
+        medida?: string,
     }
 
     import cedula_escolar_icon from "$lib/images/icons/personalizar_icon.svg"
@@ -91,45 +93,49 @@
 
         {
             name: "lateralidad",
-            updateable: true,
+            updateable: false,
             icon: pan_icon,
             title: "Lateralidad",
             value: `${(alumno.lateralidad)}`
         },
         {
             name: "peso",
-            updateable: false,
+            updateable: true,
             icon: balance_icon,
             title: "Peso",
-            value: `${alumno.peso}kg`
+            value: `${alumno.peso}`,
+            type: "number",
+            medida: "Kg"
         },
         {
             name: "estatura",
-            updateable: false,
+            updateable: true,
             icon: straighten_icon,
             title: "Estatura",
-            value: `${alumno.estatura}cm`
+            value: `${alumno.estatura}`,
+            type: "number",
+            medida: "Cm"
         },
         {
             name: "calzado",
-            updateable: false,
+            updateable: true,
             icon: footprint_icon,
             title: "Calzado",
             value: `${alumno.calzado}`
         },
         {
             name: "camisa",
-            updateable: false,
+            updateable: true,
             icon: apparel_icon,
             title: "Camisa",
             value: `${alumno.camisa}`
         },
         {
             name: "pantalon",
-            updateable: false,
+            updateable: true,
             icon: checkroom_icon,
             title: "Pantalón",
-            value: `${alumno.pantalon}`
+            value: `${alumno.pantalon}`,
         }
     ])
     let edicion = $state(false)
@@ -351,14 +357,31 @@
                         </div>
 
                         {#if edicion && field.updateable}
-                            <input type="text" 
-                                min="3"
-                                name="{field.name}"
-                                placeholder="{field.title}..."
-                                class="input input-bordered input-sm max-w-xs"
-                                value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">
+                            {#if !field.type || field.type === "text"}
+                                <input type="text" 
+                                    min="3"
+                                    name="{field.name}"
+                                    placeholder="{field.title}..."
+                                    class="input input-bordered input-sm max-w-fit"
+                                    value="{field.name === "cedula_escolar" ? stripDots(field.value) : field.value}">                               
+                            {:else if field.type && field.type === "number"}
+                                <div class="form-control focus:outline-0">
+                                    <label class="flex items-center justify-start 
+                                    input input-sm input-bordered focus:outline-0 bg-base-200
+                                    rounded-md max-w-[7rem]">
+                                        <input
+                                        type="number" 
+                                        name="{field.name}"
+                                        placeholder="{field.value}"
+                                        class="max-w-[3rem] focus:outline-0"
+                                        value="{field.value}"
+                                        >
+                                        <p class="select-none">{field.medida || ""}</p>
+                                    </label>
+                                </div>
+                            {/if}
                         {:else}
-                            <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.name === "cedula_escolar" ? `${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${field.value}` : field.value}</b> 
+                            <b class="{field.name === "sexo" ? alumno.sexo === "Masculino" ? "text-blue-600" : "text-pink-600" : ""}">{field.name === "cedula_escolar" ? `${alumno.nacionalidad === "Venezolano" ? "V-" : "E-"}${field.value}` : field.value} {field.medida || ""}</b> 
                         {/if}
                     </div>
                 {/each}

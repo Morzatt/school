@@ -73,27 +73,27 @@ export function printListadeAsistencias(asistencias: Array<Alumno & GradoAlumno>
 // 
 // 
 // CONSTANCIAS DE ALUMNOS
-export function printBuenaConducta(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+export function printBuenaConducta(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined, path: string) {
     const asistenciasDocDefinition = createBuenaConductaDocument(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }
 
-export function printConstanciaEstudio(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+export function printConstanciaEstudio(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined, path: string) {
     const asistenciasDocDefinition = createConstanciaEstudioDocument(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }
 
-export function printAceptacion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+export function printAceptacion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined, path: string) {
     const asistenciasDocDefinition = createCartaAceptacionDocument(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }
 
-export function printConstanciaInscripcion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+export function printConstanciaInscripcion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined, path: string) {
     const asistenciasDocDefinition = createConstanciaInscripcion(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }
 
-export function printConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado, path: string) {
+export function printConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined, path: string) {
     const asistenciasDocDefinition = createConstanciaRetiro(alumno, grado, grado_cursado, director)
     print(asistenciasDocDefinition, path)
 }

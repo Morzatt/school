@@ -183,7 +183,7 @@ export function createConstanciaEstudioDocument(alumno: Alumno, grado: Grado & G
     return grupalDocDefinition
 }
 
-export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado) {
+export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined) {
     let bannerGobernacionPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/bannerMinisterio.jpg')
     let logoColegioPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/logoColegio.jpg')
     let date = new Date()
@@ -231,9 +231,9 @@ export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & Gra
             {
                 text: [
                     `Quien suscribe, `,
-                    { text: `${director.primer_nombre} ${director.primer_apellido},`, bold: true, decoration: 'underline' },
+                    { text: `${director?.primer_nombre || ""} ${director?.primer_apellido || ""},`, bold: true, decoration: 'underline' },
                     ' titular de la cédula de identidad',
-                    { text: ` V-${formatStringWithDots(director.cedula)}`, bold: true, decoration: 'underline' },
+                    { text: ` V-${formatStringWithDots(director?.cedula)}`, bold: true, decoration: 'underline' },
                     ` Director(a) de la U.E.N. “Armando Reverón”, por medio de la presente hago saber que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
@@ -255,7 +255,7 @@ export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & Gra
             },
             {
                 text: [
-                    { text: `${director.primer_nombre} ${director.primer_apellido} \n` },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido} \n` },
                     { text: `Director(a)` }
                 ],
                 alignment: 'center'
@@ -266,7 +266,7 @@ export function createCartaAceptacionDocument(alumno: Alumno, grado: Grado & Gra
     return grupalDocDefinition
 }
 
-export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado) {
+export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined) {
     let bannerGobernacionPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/bannerMinisterio.jpg')
     let logoColegioPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/logoColegio.jpg')
     let date = new Date()
@@ -312,9 +312,9 @@ export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & Grado
             {
                 text: [
                     `Quien suscribe, `,
-                    { text: `${director.primer_nombre} ${director.primer_apellido},`, bold: true, decoration: 'underline' },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' titular de la cédula de identidad',
-                    { text: ` V-${formatStringWithDots(director.cedula)}`, bold: true, decoration: 'underline' },
+                    { text: ` V-${formatStringWithDots(director?.cedula)}`, bold: true, decoration: 'underline' },
                     ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
@@ -336,7 +336,7 @@ export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & Grado
             },
             {
                 text: [
-                    { text: `${director.primer_nombre} ${director.primer_apellido} \n` },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido} \n` },
                     { text: `Director(a)` }
                 ],
                 alignment: 'center'
@@ -347,7 +347,7 @@ export function createConstanciaInscripcion(alumno: Alumno, grado: Grado & Grado
     return grupalDocDefinition
 }
 
-export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado) {
+export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumno | undefined, grado_cursado: GradoCursado | undefined, director: Empleado | undefined) {
     let bannerGobernacionPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/bannerMinisterio.jpg')
     let logoColegioPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/logoColegio.jpg')
     let date = new Date()
@@ -393,9 +393,9 @@ export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumn
             {
                 text: [
                     `Quien suscribe, `,
-                    { text: `${director.primer_nombre} ${director.primer_apellido},`, bold: true, decoration: 'underline' },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' titular de la cédula de identidad',
-                    { text: ` V-${formatStringWithDots(director.cedula)}`, bold: true, decoration: 'underline' },
+                    { text: ` V-${formatStringWithDots(director?.cedula)}`, bold: true, decoration: 'underline' },
                     ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el alumno(a)`,
                     { text: ` ${alumno.primer_nombre} ${alumno.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' C.E ',
@@ -417,7 +417,7 @@ export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumn
             },
             {
                 text: [
-                    { text: `${director.primer_nombre} ${director.primer_apellido} \n` },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido} \n` },
                     { text: `Director(a)` }
                 ],
                 alignment: 'center'
@@ -428,7 +428,7 @@ export function createConstanciaRetiro(alumno: Alumno, grado: Grado & GradoAlumn
     return grupalDocDefinition
 }
 
-export function createConstanciaAceptacionEmpleado(empleado: Empleado, director: Empleado) {
+export function createConstanciaAceptacionEmpleado(empleado: Empleado, director: Empleado | undefined) {
     let bannerGobernacionPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/bannerMinisterio.jpg')
     let logoColegioPath = path.join(process.cwd(), '/src/lib/handlers/pdf/images/logoColegio.jpg')
     let date = new Date()
@@ -474,9 +474,9 @@ export function createConstanciaAceptacionEmpleado(empleado: Empleado, director:
             {
                 text: [
                     `Quien suscribe, `,
-                    { text: `${director.primer_nombre} ${director.primer_apellido},`, bold: true, decoration: 'underline' },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido},`, bold: true, decoration: 'underline' },
                     ' titular de la cédula de identidad',
-                    { text: ` V-${formatStringWithDots(director.cedula)}`, bold: true, decoration: 'underline' },
+                    { text: ` V-${formatStringWithDots(director?.cedula)}`, bold: true, decoration: 'underline' },
                     ` Director(a) de la U.E.N. “Armando Reverón”, hago constar por medio de la presente que el funcionario(a)`,
                     { text: `${empleado.primer_nombre} ${empleado.segundo_nombre} ${empleado.primer_apellido} ${empleado.segundo_apellido},`, bold: true, decoration: 'underline' },
                     ' C.I ',
@@ -503,7 +503,7 @@ export function createConstanciaAceptacionEmpleado(empleado: Empleado, director:
             },
             {
                 text: [
-                    { text: `${director.primer_nombre} ${director.primer_apellido} \n` },
+                    { text: `${director?.primer_nombre} ${director?.primer_apellido} \n` },
                     { text: `Director(a)` }
                 ],
                 alignment: 'center'

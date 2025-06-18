@@ -187,56 +187,66 @@ export const actions = {
         let data = await request.formData()
 
         let id = data.get("alumno") as string
+        let cedula_escolar = data.get('cedula_escolar') as string
+
         let alumno = {
-            cedula_escolar: data.get("cedula_escolar") as string
+            peso: data.get("peso") as string,
+            estatura: data.get("estatura") as string,
+            calzado: data.get("calzado") as string,
+            camisa: data.get("camisa") as string,
+            pantalon: data.get("pantalon") as string,
         } satisfies AlumnoUpdateable
 
-        let alumnoFromDB = await async(alumnosRepository.getById(alumno.cedula_escolar), log)
+        let alumnoFromDB = await async(alumnosRepository.getById(cedula_escolar), log)
         if (alumnoFromDB) {
-            return response.error('La identificación del alumno ya existe dentro de la base de datos.')
+            await async(alumnosRepository.update(alumno, id), log)
+            return
+        } else {
+            await async(alumnosRepository.update({ cedula_escolar: cedula_escolar }, id), log)
+
+            let folderPath = path.join(process.cwd(), `/static/alumnos/${id}`)
+            let folderExists = existsSync(folderPath)
+
+            if (!folderExists) {
+                await async(mkdir(folderPath), log)
+            }
+
+            if (!statSync(folderPath).isDirectory()) {
+                console.error(`Error: Path is not a directory: ${folderPath}`);
+                return;
+            }
+
+            await processDirectory(folderPath, id, cedula_escolar, log)
+            await async(fs.promises.rename(folderPath, path.join(process.cwd(), `/static/alumnos/${cedula_escolar}`)), log)
+
+            await async(
+                db.transaction().execute(async (trx) => {
+                    let documentos = await trx.selectFrom('documentos_alumnos').selectAll()
+                        .where('documentos_alumnos.id_alumno', '=', cedula_escolar)
+                        .execute()
+
+                    if (!documentos) {
+                        return
+                    }
+
+                    for (let i of documentos) {
+                        let newPath = i.path.replaceAll(id, cedula_escolar)
+
+                        await trx
+                            .updateTable('documentos_alumnos')
+                            .set({ path: newPath })
+                            .where((eb) => eb.and([
+                                eb('documentos_alumnos.id_alumno', '=', i.id_alumno),
+                                eb('documentos_alumnos.tipo_documento', '=', i.tipo_documento)
+                            ]))
+                            .executeTakeFirst()
+                    }
+                })
+            , log)
+
+            await async(alumnosRepository.update(alumno, cedula_escolar), log)
+            redirect(307, `${basePath}/alumnos/${cedula_escolar}`)
         }
-
-        await async(alumnosRepository.update({ cedula_escolar: alumno.cedula_escolar }, id), log)
-
-        let folderPath = path.join(process.cwd(), `/static/alumnos/${id}`)
-        let folderExists = existsSync(folderPath)
-        if (!folderExists) {
-            return response.error('La carpeta de documentos del alumno no existe.')
-        }
-        if (!statSync(folderPath).isDirectory()) {
-            console.error(`Error: Path is not a directory: ${folderPath}`);
-            return;
-        }
-
-        await processDirectory(folderPath, id, alumno.cedula_escolar, log)
-        await async(fs.promises.rename(folderPath, path.join(process.cwd(), `/static/alumnos/${alumno.cedula_escolar}`)), log)
-
-        await async(
-            db.transaction().execute(async (trx) => {
-                let documentos = await trx.selectFrom('documentos_alumnos').selectAll()
-                .where('documentos_alumnos.id_alumno', '=', alumno.cedula_escolar)
-                .execute()
-
-                if (!documentos) {
-                    return
-                }
-
-                for (let i of documentos) {
-                    let newPath = i.path.replaceAll(id, alumno.cedula_escolar)
-
-                    await trx
-                    .updateTable('documentos_alumnos')
-                    .set({ path: newPath })
-                    .where((eb) => eb.and([
-                        eb('documentos_alumnos.id_alumno', '=', i.id_alumno),
-                        eb('documentos_alumnos.tipo_documento', '=', i.tipo_documento)
-                    ]))
-                    .executeTakeFirst()
-                }
-            })
-        ,log)
-
-        redirect(307, `${basePath}/alumnos/${alumno.cedula_escolar}`)
     },
 
     asociarRepresentante: async ({request, locals}) => {

@@ -399,10 +399,12 @@
             id="retiro_confirmation_close">✕</button>
         </form>
         <h3 class="text-lg mt-2 font-bold">¿Seguro que retirar al Empleado del sistema?</h3>
-        <p class="text-wrap text-sm">Una vez retirado, el alumno no podrá ser asignado a ningún grado ni sección, y sus datos serán cambiados al modo <i>sólo lectura.</i> </p>
+        <p class="text-wrap text-sm">Una vez retirado, el empleado no podrá ser asignado como docente a ningún grado ni sección.</p>
 
         <div class="modal-container">
-            <form action="?/retirar" method="POST" use:enhance class="h-auto w-full ">
+            <form action="?/retirar" method="POST" use:enhance={() => { 
+                document.getElementById('retiro_confirmation_close').click()
+             }} class="h-auto w-full ">
                 <input type="hidden" value="{empleado.cedula}" name="empleado">
                 <button class="btn btn-error btn-sm mt-6">Retirar</button>
             </form>
