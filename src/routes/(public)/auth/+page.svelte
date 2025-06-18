@@ -380,7 +380,7 @@
             <Captcha text={ text } data={ data } invalidate={invalidateLoad} bind:result={captchaResult}/>
             <input type="hidden" name="captcha" value={captchaResult}>
         </div>
-        <button class="btn btn-wide mt-4 bg-blue-200 " type="submit">Acceder</button>
+        <button class="btn w-full mt-4 bg-primary text-base-100 text-xl" type="submit">Acceder</button>
 
         <div class="flex items-center justify-around text-xs mt-2 gap-2 p-1">
             <p>¿Ha olvidado su Contraseña?</p>
@@ -392,30 +392,37 @@
 <main transition:slide={{ duration: 200, easing: sineInOut, axis: "y" }}>
     <Alert form={ form } styles="absolute left-10 top-6 max-w-[25rem]"/>
 
-	<div class="h-screen w-full lg:w-[85%] xl:w-3/4 border-0 border-red-500 flex items-center justify-center">
+	<div class="h-screen w-full lg:w-[85%] xl:w-3/4 flex items-center justify-center">
         <div class="p-5 w-full lg:h-full">
             <div class="main-container w-full lg:h-full
                 p-2 bg-white rounded-xl shadow-xl
                 min-[730px]:flex min-[730px]:items-center min-[730px]:justify-between">
 
                 <div class="xl:w-3/5 xl:h-full rounded-xl rounded-tr-none rounded-br-none relative ">
-                    <img src="{bg_1}" alt="" class="size-full rounded-xl bg-base-300 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10 blur-sm drop-shadow-xl">
-                    <div class="size-full 
-                    bg-base-content/20
-                    text-base-100 border border-base-content rounded-md
+                    <!-- GIF -->
+                    <img src="{bg_1}" alt="" class="size-full rounded-xl bg-base-300 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10 blur-2xl drop-shadow-xl">
+                    <!-- GIF -->
+
+                    <!-- COLOR DE LAS LETRAS  -->
+                    <!-- CAMBIAR text-base-100 POR text-base-content -->
+                    <div class="text-black
+                    h-full w-full hidden lg:flex
+                    rounded-md
                     absolute p-4 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-20
-                    text-center
-                    flex items-center justify-center gap-4 flex-col">
-                        <b class="text-8xl w-full text-wrap">RevApp</b>
+                    text-center gap-4 
+                    items-center justify-center flex-col
+                    bg-gradient-to-b
+                    from-base-content/10 to-base-content/20">
+                        <b class="text-6xl w-full text-wrap">RevApp</b>
                         <p class="leading-3 text-lg font-semibold">Aplicación web para el registro y gestión de datos del alumnado</p>
                         <p class="leading-3 text-lg font-semibold">de la U.E.N Armando Reverón</p>
-                        <img src="{logo}" alt="" class="size-[60%] mt-2">
+                        <img src="{logo}" alt="" class="size-[50%] mt-2 drop-shadow-xl shadow-white">
                     </div>
                 </div>
 
                 <div class="xl:w-2/5 xl:h-full rounded-xl rounded-tl-none rounded-bl-none p-2 overflow-hidden">
                     <div class="w-full flex items-center justify-end">
-                        <button class="p-1 bg-primary/70 rounded-md font-bold px-2 text-sm hover:bg-primary/40 active:bg-base-300"
+                        <button class="p-1 bg-primary/70 text-base-100 rounded-md font-bold px-2 text-sm hover:bg-primary/40 active:bg-base-300"
                          onclick="{() => {changeContent()}}">{formContent === "login" ? "Registrarse" : "Acceder"}</button>
                     </div>
 
@@ -438,7 +445,7 @@
 
 <style lang="postcss">
 	main {
-		@apply max-h-screen w-full flex items-center justify-center overflow-y-auto bg-info/60;
+		@apply max-h-screen w-full flex items-center justify-center overflow-y-auto bg-secondary/40;
 	}
     label input {
         @apply w-full grow shrink;

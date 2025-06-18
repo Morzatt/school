@@ -82,7 +82,7 @@ export const actions = {
       setTimeout(() => {
         unlinkSync(tarPath)
         rm(backupFolderPath, { recursive: true, force: true })
-      }, 15000)
+      }, 7000)
 
       return response.success('Copia de Seguridad creada correctamente.', { timestamp: timestamp })
     } catch (error) {
@@ -216,9 +216,7 @@ export const actions = {
         cwd: path.join(process.cwd(), '/static/backups/temporal')
       }, [`backup_${timestamp}`])
 
-      setTimeout(async () => {
-        await async(rm(backupFolderPath, { recursive: true, force: true }), log)
-      }, 15000)
+      await async(rm(backupFolderPath, { recursive: true, force: true }), log)
 
       await async(
         db
@@ -309,10 +307,7 @@ export const actions = {
       await async(cp(empleadosBackupFolderPath, empleadosPath, { recursive: true }), log)
       await async(cp(representantesBackupFolderPath, representantesPath, { recursive: true }), log)
 
-      setTimeout(async () => {
-        await async(rm(backupFolderPath, { recursive: true, force: true }), log)
-      }, 15000)
-
+      await async(rm(backupFolderPath, { recursive: true, force: true }), log)
       return response.success('Punto de restauracion correctamente restaurado.', { backupID: backup_id })
     } catch (error) {
       handleError(log, error, {})

@@ -37,6 +37,13 @@ export function createEmpleadoDocDef(empleado: Empleado) {
             },
 
             {
+                image: logoColegioPath,
+                alignment: 'center',
+                width: 100,
+                margin: [0, 20, 0, 0]
+            },
+
+            {
                 text: "INFORMACIÓN DEL EMPLEADO",
                 bold: true,
                 margin: [0, 20, 0, 0],

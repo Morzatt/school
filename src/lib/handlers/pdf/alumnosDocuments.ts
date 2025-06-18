@@ -187,6 +187,13 @@ export function createAlumnoDocDef(alumno: Alumno, representantes: Array<Represe
             },
 
             {
+                image: logoColegioPath,
+                alignment: 'center',
+                width: 100,
+                margin: [0, 20, 0, 0]
+            },
+
+            {
                 text: "INFORMACIÓN DEL ALUMNO",
                 bold: true,
                 margin: [0, 20, 0, 0],
@@ -463,6 +470,13 @@ export function createRepresentanteDocDef(representante: Representante, alumnos:
                 alignment: "center",
                 margin: [0, 20, 0, 0],
                 lineHeight: 1.5
+            },
+
+            {
+                image: logoColegioPath,
+                alignment: 'center',
+                width: 100,
+                margin: [0, 20, 0, 0]
             },
 
             {
